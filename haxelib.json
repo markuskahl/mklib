@@ -1,0 +1,11 @@
+{
+	"name": "mklib",
+	"url" : "https://github.com/markuskahl/mklib",
+	"license": "MIT",
+	"tags": ["game", "openfl", "flixel"],
+	"description": "Flixel library",
+	"version": "1.0.0",
+	"releasenote": "",
+	"contributors": ["markuskahl"],
+	"dependencies": {}
+}
