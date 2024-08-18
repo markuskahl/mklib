@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"tags": ["game", "openfl", "flixel"],
 	"description": "Flixel library",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"classPath": "src/",
 	"releasenote": "",
 	"contributors": ["markuskahl"],

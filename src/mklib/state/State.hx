@@ -38,19 +38,18 @@ class State extends FlxState{
         return container;
     }
 
-    public function addCbTypes():Void {
-        
-            
-            for (tag in Data.Enum_Tags.createAll()) {
-                var cbtype:CbType=new CbType();
-                tags.set(tag.getName(),cbtype);
-                FlxNapeSpace.space.world.cbTypes.add(cbtype);
-            }
+    public function addCbTypes():Void 
+    {
+        for (tag in Data.Enum_Tags.createAll()) {
+            var cbtype:CbType=new CbType();
+            tags.set(tag.getName(),cbtype);
+            FlxNapeSpace.space.world.cbTypes.add(cbtype);
+        }
     }
 
-    public function napeInit() {
+    public function napeInit(gx:Int, gy:Int):Void {
         FlxNapeSpace.init();
-        FlxNapeSpace.space.gravity.set(Vec2.weak(0,300));
+        FlxNapeSpace.space.gravity.set(Vec2.weak(gx,gy));
         addCbTypes();
     }
 
