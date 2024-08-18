@@ -9,7 +9,7 @@ import flixel.FlxG;
 import flixel.FlxState;
 import ldtk.Layer_Tiles;
 import flixel.group.FlxSpriteGroup;
-import mklib.macro.Data;
+import mklib.assets.Data;
 
 class State extends FlxState{
 
@@ -42,6 +42,8 @@ class State extends FlxState{
 
     public function addCbTypes():Void {
         try {
+
+            
             
             for (tag in Data.Enum_Tags.createAll()) {
                 var cbtype:CbType=new CbType();
