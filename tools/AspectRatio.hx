@@ -1,7 +1,7 @@
 package mklib.tools;
 
 import openfl.system.Capabilities;
-import mk.math.MathTool;
+import mklib.math.MathTool;
 
 class AspectRatio
 {
