@@ -1,5 +1,6 @@
 package mklib.state;
 
+import haxe.macro.Expr.Catch;
 import flixel.system.scaleModes.StageSizeScaleMode;
 import nape.geom.Vec2;
 import flixel.addons.nape.FlxNapeSpace;
@@ -39,11 +40,16 @@ class State extends FlxState{
     }
 
     public function addCbTypes():Void {
-        for (tag in Data.Enum_Tags.createAll()) {
-			var cbtype:CbType=new CbType();
-            tags.set(tag.getName(),cbtype);
-            FlxNapeSpace.space.world.cbTypes.add(cbtype);
-		}
+        try {
+            
+            for (tag in Data.Enum_Tags.createAll()) {
+                var cbtype:CbType=new CbType();
+                tags.set(tag.getName(),cbtype);
+                FlxNapeSpace.space.world.cbTypes.add(cbtype);
+            }
+        }catch(e) {
+            // do nothing
+        }
     }
 
     public function napeInit() {
