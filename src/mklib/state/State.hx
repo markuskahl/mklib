@@ -8,7 +8,6 @@ import flixel.FlxG;
 import flixel.FlxState;
 import ldtk.Layer_Tiles;
 import flixel.group.FlxSpriteGroup;
-import mklib.assets.Data;
 
 class State extends FlxState{
 
