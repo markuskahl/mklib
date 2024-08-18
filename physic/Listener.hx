@@ -2,7 +2,7 @@ package mklib.physic;
 
 
 import flixel.addons.nape.FlxNapeSpace;
-import mk.tools.Tags;
+import mklib.tools.Tags;
 import nape.callbacks.CbEvent;
 import nape.callbacks.CbType;
 import nape.callbacks.InteractionCallback;
