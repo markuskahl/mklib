@@ -1,6 +1,10 @@
 package mklib.state;
 
-import flixel.system.scaleModes.StageSizeScaleMode;
+import ldtk.Json.LevelJson;
+import ldtk.Layer;
+import ldtk.Layer_Entities;
+import ldtk.Project;
+import ldtk.Json.LayerType;
 import nape.geom.Vec2;
 import flixel.addons.nape.FlxNapeSpace;
 import nape.callbacks.CbType;
@@ -13,36 +17,79 @@ class State extends FlxState{
 
     public var project:Data;
     public var tags:Map<String,CbType>=new Map();
-    
+    public var levelName:String;
+    public var levelData:Data.Data_Level;
 
-    public function new() {
+    public function new(LevelName:String="Level_0") {
+        
         super();
+        this.levelName=LevelName;
         project=new Data();
+        levelData=project.all_worlds.Default.getLevel(LevelName);
+
     }
     
     override function create():Void {
         
         super.create();
-        
-        //FlxG.scaleMode = new flixel.system.scaleModes.RatioScaleMode(true);
 
-        
     }
 
+    public function resolveLayer(layerName:String):ldtk.Layer{
+        return levelData.resolveLayer(layerName);
+    }
 
-    public function renderTileLayer(layer:Layer_Tiles):FlxSpriteGroup
+    public function renderEntityLayer(entities:Array<Dynamic>,packageName:String="entities"):FlxSpriteGroup {
+        var container = new FlxSpriteGroup();
+        add(container);
+        
+        for (i in 0...entities.length) {
+
+            var entity:ldtk.Entity=entities[i];
+            
+            var className:String = packageName+"."+entity.identifier;
+
+            var cl = Type.resolveClass(className);
+
+            if (cl != null) {
+                var instance = Type.createInstance(cl, [entity]);
+                add(instance);
+
+                
+            } else {
+                trace('Klasse ' + className + ' konnte nicht gefunden werden.');
+            }
+        }
+
+
+        return container;
+    }
+
+    public function renderTileLayer(layerName:String):FlxSpriteGroup
     {
         var container = new FlxSpriteGroup();
         add(container);
-        layer.render(container);
+
+        var layer:ldtk.Layer=resolveLayer(layerName);
+        
+        if(layer.type==LayerType.Tiles){
+            
+            var tileLayer:ldtk.Layer_Tiles = cast(layer,Layer_Tiles);
+            tileLayer.render(container);
+
+        }
+
         return container;
     }
 
     public function addCbTypes():Void 
     {
-        for (tag in Data.Enum_Tags.createAll()) {
+        
+        var jsonTags:ldtk.Json.EnumDefJson = project.getEnumDefJson("Tags");
+
+        for (value in jsonTags.values) {
             var cbtype:CbType=new CbType();
-            tags.set(tag.getName(),cbtype);
+            tags.set(value.id,cbtype);
             FlxNapeSpace.space.world.cbTypes.add(cbtype);
         }
     }
@@ -56,7 +103,7 @@ class State extends FlxState{
     override function update(elapsed:Float) {
         super.update(elapsed);
         #if windows
-		FlxG.mouse.visible = false;
+		FlxG.mouse.visible = true;
         #end
 
         #if html5
