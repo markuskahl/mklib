@@ -1,5 +1,5 @@
-export
-assets
-source
+export/
+assets/
+source/
 compile.bat
 Project.xml
