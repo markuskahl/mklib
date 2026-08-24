@@ -54,10 +54,8 @@ class State extends FlxState{
             if (cl != null) {
                 var instance = Type.createInstance(cl, [entity]);
                 add(instance);
-
-                
             } else {
-                trace('Klasse ' + className + ' konnte nicht gefunden werden.');
+                trace('Die Klasse ' + className + 'wurde nicht gefunden!');
             }
         }
 
