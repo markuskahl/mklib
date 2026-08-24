@@ -1,1 +1,0 @@
-cls & lime test hl --connect 6000 --times 
