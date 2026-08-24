@@ -5,22 +5,28 @@ import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.FlxG;
 
+typedef EntityLayerSource = {
+	var identifier:String;
+	function getAllUntyped():Array<Data.Data_Entity>;
+}
+
 class EntityLayer extends FlxSpriteGroup
 {
 	public var layerName:String;
 	public var state:State;
 
-	public function new(LayerName:String, ?Entities:Array<Data.Data_Entity>)
+	public function new(layer:EntityLayerSource)
 	{
 		super();
 		if (FlxG.state != null && Std.isOfType(FlxG.state, State))
 		{
 			state = cast(FlxG.state, State);
 		}
-		this.layerName = LayerName;
-		if (Entities != null)
+
+		if (layer != null)
 		{
-			addEntities(Entities);
+			this.layerName = layer.identifier;
+			addEntities(layer.getAllUntyped());
 		}
 	}
 
@@ -49,10 +55,5 @@ class EntityLayer extends FlxSpriteGroup
 				trace('Error: Class "entities.' + entityName + '" does not exist!');
 			}
 		}
-	}
-
-	public inline function addEntites(entities:Array<Data.Data_Entity>):Void
-	{
-		addEntities(entities);
 	}
 }

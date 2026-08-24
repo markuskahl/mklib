@@ -13,98 +13,47 @@ import flixel.FlxState;
 import ldtk.Layer_Tiles;
 import flixel.group.FlxSpriteGroup;
 
-class State extends FlxState{
+class State extends FlxState {
+	public var project:Data;
+	public var tags:Map<String, CbType> = new Map();
+	public var levelName:String;
+	public var data:Data.Data_Level;
 
-    public var project:Data;
-    public var tags:Map<String,CbType>=new Map();
-    public var levelName:String;
-    public var data:Data.Data_Level;
+	public function new(LevelName:String = "Level_0") {
+		super();
+		this.levelName = LevelName;
+		project = new Data();
+		data = project.all_worlds.Default.getLevel(LevelName);
+	}
 
-    public function new(LevelName:String="Level_0") {
-        
-        super();
-        this.levelName=LevelName;
-        project=new Data();
-        data=project.all_worlds.Default.getLevel(LevelName);
+	override function create():Void {
+		super.create();
+	}
 
-    }
-    
-    override function create():Void {
-        super.create();
-    }
+	public function addCbTypes():Void {
+		var jsonTags:ldtk.Json.EnumDefJson = project.getEnumDefJson("Tags");
+		if (jsonTags != null && jsonTags.values != null) {
+			for (value in jsonTags.values) {
+				var cbtype:CbType = new CbType();
+				tags.set(value.id, cbtype);
+			}
+		}
+	}
 
-    public function resolveLayer(layerName:String):ldtk.Layer{
-        return data.resolveLayer(layerName);
-    }
+	public function napeInit(gx:Int, gy:Int):Void {
+		FlxNapeSpace.init();
+		FlxNapeSpace.space.gravity.set(Vec2.weak(gx, gy));
+		addCbTypes();
+	}
 
-    public function renderEntityLayer(entities:Array<Dynamic>, packageName:String = "entities"):FlxSpriteGroup {
-        var container = new FlxSpriteGroup();
-        add(container);
-        
-        if (entities == null) {
-            return container;
-        }
-
-        for (i in 0...entities.length) {
-            var entity:ldtk.Entity = entities[i];
-            var className:String = packageName + "." + entity.identifier;
-            var cl = Type.resolveClass(className);
-
-            if (cl != null) {
-                var instance = Type.createInstance(cl, [entity]);
-                if (Std.isOfType(instance, flixel.FlxSprite)) {
-                    container.add(cast instance);
-                } else {
-                    add(instance);
-                }
-            } else {
-                trace('Die Klasse ' + className + ' wurde nicht gefunden!');
-            }
-        }
-
-        return container;
-    }
-
-    public function renderTileLayer(layerName:String):FlxSpriteGroup
-    {
-        var container = new FlxSpriteGroup();
-        add(container);
-
-        var layer:ldtk.Layer = resolveLayer(layerName);
-        
-        if (layer != null && layer.type == LayerType.Tiles) {
-            var tileLayer:ldtk.Layer_Tiles = cast(layer, Layer_Tiles);
-            tileLayer.render(container);
-        }
-
-        return container;
-    }
-
-    public function addCbTypes():Void 
-    {
-        var jsonTags:ldtk.Json.EnumDefJson = project.getEnumDefJson("Tags");
-        if (jsonTags != null && jsonTags.values != null) {
-            for (value in jsonTags.values) {
-                var cbtype:CbType = new CbType();
-                tags.set(value.id, cbtype);
-            }
-        }
-    }
-
-    public function napeInit(gx:Int, gy:Int):Void {
-        FlxNapeSpace.init();
-        FlxNapeSpace.space.gravity.set(Vec2.weak(gx, gy));
-        addCbTypes();
-    }
-
-    override function update(elapsed:Float) {
-        super.update(elapsed);
-        #if windows
+	override function update(elapsed:Float) {
+		super.update(elapsed);
+		#if windows
 		FlxG.mouse.visible = true;
-        #end
+		#end
 
-        #if html5
+		#if html5
 		FlxG.mouse.visible = false;
-        #end
-    }
+		#end
+	}
 }
