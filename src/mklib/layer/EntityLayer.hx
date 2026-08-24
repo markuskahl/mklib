@@ -6,18 +6,18 @@ import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.FlxG;
 
-typedef EntityLayerSource = {
+typedef EntityLayerSource<T = Dynamic> = {
 	var identifier:String;
-	function getAllUntyped():Array<ldtk.Entity>;
+	function getAllUntyped():Array<T>;
 }
 
 class EntityLayer extends FlxSpriteGroup
 {
 	public var layerName:String;
 	public var packageName:String;
-	public var state:State;
+	public var state:State<Dynamic>;
 
-	public function new(layer:EntityLayerSource, packageName:String = "entities")
+	public function new(layer:EntityLayerSource<Dynamic>, packageName:String = "entities")
 	{
 		super();
 		this.packageName = packageName;
@@ -29,7 +29,12 @@ class EntityLayer extends FlxSpriteGroup
 		if (layer != null)
 		{
 			this.layerName = layer.identifier;
-			addEntities(layer.getAllUntyped());
+			var untypedList:Array<Dynamic> = layer.getAllUntyped();
+			if (untypedList != null)
+			{
+				var entityList:Array<ldtk.Entity> = [for (e in untypedList) cast e];
+				addEntities(entityList);
+			}
 		}
 	}
 

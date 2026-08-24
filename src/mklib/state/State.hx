@@ -7,11 +7,11 @@ import nape.callbacks.CbType;
 import flixel.FlxG;
 import flixel.FlxState;
 
-class State extends FlxState {
+class State<TLevel = Dynamic> extends FlxState {
 	public var project:ldtk.Project;
 	public var tags:Map<String, CbType> = new Map();
 	public var levelName:String;
-	public var data:Dynamic;
+	public var data:TLevel;
 
 	public function new(LevelName:String = "Level_0", ?projectInstance:ldtk.Project) {
 		super();
@@ -28,9 +28,9 @@ class State extends FlxState {
 		if (project != null) {
 			var dynProject:Dynamic = project;
 			if (dynProject.all_worlds != null && dynProject.all_worlds.Default != null) {
-				data = dynProject.all_worlds.Default.getLevel(null, LevelName);
+				data = cast dynProject.all_worlds.Default.getLevel(null, LevelName);
 			} else if (Reflect.isFunction(dynProject.getLevel)) {
-				data = dynProject.getLevel(null, LevelName);
+				data = cast dynProject.getLevel(null, LevelName);
 			}
 		}
 	}
