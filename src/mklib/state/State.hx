@@ -1,29 +1,38 @@
 package mklib.state;
 
-import ldtk.Json.LevelJson;
-import ldtk.Layer;
-import ldtk.Layer_Entities;
 import ldtk.Project;
-import ldtk.Json.LayerType;
 import nape.geom.Vec2;
 import flixel.addons.nape.FlxNapeSpace;
 import nape.callbacks.CbType;
 import flixel.FlxG;
 import flixel.FlxState;
-import ldtk.Layer_Tiles;
-import flixel.group.FlxSpriteGroup;
 
 class State extends FlxState {
-	public var project:Data;
+	public var project:ldtk.Project;
 	public var tags:Map<String, CbType> = new Map();
 	public var levelName:String;
-	public var data:Data.Data_Level;
+	public var data:Dynamic;
 
-	public function new(LevelName:String = "Level_0") {
+	public function new(LevelName:String = "Level_0", ?projectInstance:ldtk.Project) {
 		super();
 		this.levelName = LevelName;
-		project = new Data();
-		data = project.all_worlds.Default.getLevel(LevelName);
+		if (projectInstance != null) {
+			project = projectInstance;
+		} else {
+			var dataCls = Type.resolveClass("Data");
+			if (dataCls != null) {
+				project = Type.createInstance(dataCls, []);
+			}
+		}
+
+		if (project != null) {
+			var dynProject:Dynamic = project;
+			if (dynProject.all_worlds != null && dynProject.all_worlds.Default != null) {
+				data = dynProject.all_worlds.Default.getLevel(null, LevelName);
+			} else if (Reflect.isFunction(dynProject.getLevel)) {
+				data = dynProject.getLevel(null, LevelName);
+			}
+		}
 	}
 
 	override function create():Void {
@@ -31,7 +40,10 @@ class State extends FlxState {
 	}
 
 	public function addCbTypes():Void {
-		var jsonTags:ldtk.Json.EnumDefJson = project.getEnumDefJson("Tags");
+		if (project == null) {
+			return;
+		}
+		var jsonTags:ldtk.Json.EnumDefJson = project.getEnumDefJson(null, "Tags");
 		if (jsonTags != null && jsonTags.values != null) {
 			for (value in jsonTags.values) {
 				var cbtype:CbType = new CbType();

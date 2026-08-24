@@ -1,5 +1,6 @@
 package mklib.layer;
 
+import ldtk.Entity;
 import mklib.state.State;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
@@ -7,17 +8,19 @@ import flixel.FlxG;
 
 typedef EntityLayerSource = {
 	var identifier:String;
-	function getAllUntyped():Array<Data.Data_Entity>;
+	function getAllUntyped():Array<ldtk.Entity>;
 }
 
 class EntityLayer extends FlxSpriteGroup
 {
 	public var layerName:String;
+	public var packageName:String;
 	public var state:State;
 
-	public function new(layer:EntityLayerSource)
+	public function new(layer:EntityLayerSource, packageName:String = "entities")
 	{
 		super();
+		this.packageName = packageName;
 		if (FlxG.state != null && Std.isOfType(FlxG.state, State))
 		{
 			state = cast(FlxG.state, State);
@@ -30,7 +33,7 @@ class EntityLayer extends FlxSpriteGroup
 		}
 	}
 
-	public function addEntities(entities:Array<Data.Data_Entity>):Void
+	public function addEntities(entities:Array<ldtk.Entity>):Void
 	{
 		if (entities == null)
 		{
@@ -39,12 +42,14 @@ class EntityLayer extends FlxSpriteGroup
 
 		for (i in 0...entities.length)
 		{
-			var entityName = entities[i].entityType.getName();
+			var entity:ldtk.Entity = entities[i];
+			var entityName:String = entity.identifier;
 
-			var cls = Type.resolveClass("entities." + entityName);
+			var targetClass:String = (packageName != null && packageName.length > 0) ? (packageName + "." + entityName) : entityName;
+			var cls = Type.resolveClass(targetClass);
 			if (cls != null)
 			{
-				var o:Dynamic = Type.createInstance(cls, [entities[i]]);
+				var o:Dynamic = Type.createInstance(cls, [entity]);
 				if (Std.isOfType(o, FlxSprite))
 				{
 					add(cast o);
@@ -52,7 +57,7 @@ class EntityLayer extends FlxSpriteGroup
 			}
 			else
 			{
-				trace('Error: Class "entities.' + entityName + '" does not exist!');
+				trace('Error: Class "' + targetClass + '" does not exist!');
 			}
 		}
 	}
