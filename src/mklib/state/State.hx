@@ -18,47 +18,49 @@ class State extends FlxState{
     public var project:Data;
     public var tags:Map<String,CbType>=new Map();
     public var levelName:String;
-    public var levelData:Data.Data_Level;
+    public var data:Data.Data_Level;
 
     public function new(LevelName:String="Level_0") {
         
         super();
         this.levelName=LevelName;
         project=new Data();
-        levelData=project.all_worlds.Default.getLevel(LevelName);
+        data=project.all_worlds.Default.getLevel(LevelName);
 
     }
     
     override function create():Void {
-        
         super.create();
-
     }
 
     public function resolveLayer(layerName:String):ldtk.Layer{
-        return levelData.resolveLayer(layerName);
+        return data.resolveLayer(layerName);
     }
 
-    public function renderEntityLayer(entities:Array<Dynamic>,packageName:String="entities"):FlxSpriteGroup {
+    public function renderEntityLayer(entities:Array<Dynamic>, packageName:String = "entities"):FlxSpriteGroup {
         var container = new FlxSpriteGroup();
         add(container);
         
+        if (entities == null) {
+            return container;
+        }
+
         for (i in 0...entities.length) {
-
-            var entity:ldtk.Entity=entities[i];
-            
-            var className:String = packageName+"."+entity.identifier;
-
+            var entity:ldtk.Entity = entities[i];
+            var className:String = packageName + "." + entity.identifier;
             var cl = Type.resolveClass(className);
 
             if (cl != null) {
                 var instance = Type.createInstance(cl, [entity]);
-                add(instance);
+                if (Std.isOfType(instance, flixel.FlxSprite)) {
+                    container.add(cast instance);
+                } else {
+                    add(instance);
+                }
             } else {
-                trace('Die Klasse ' + className + 'wurde nicht gefunden!');
+                trace('Die Klasse ' + className + ' wurde nicht gefunden!');
             }
         }
-
 
         return container;
     }
@@ -68,13 +70,11 @@ class State extends FlxState{
         var container = new FlxSpriteGroup();
         add(container);
 
-        var layer:ldtk.Layer=resolveLayer(layerName);
+        var layer:ldtk.Layer = resolveLayer(layerName);
         
-        if(layer.type==LayerType.Tiles){
-            
-            var tileLayer:ldtk.Layer_Tiles = cast(layer,Layer_Tiles);
+        if (layer != null && layer.type == LayerType.Tiles) {
+            var tileLayer:ldtk.Layer_Tiles = cast(layer, Layer_Tiles);
             tileLayer.render(container);
-
         }
 
         return container;
@@ -82,19 +82,18 @@ class State extends FlxState{
 
     public function addCbTypes():Void 
     {
-        
         var jsonTags:ldtk.Json.EnumDefJson = project.getEnumDefJson("Tags");
-
-        for (value in jsonTags.values) {
-            var cbtype:CbType=new CbType();
-            tags.set(value.id,cbtype);
-            FlxNapeSpace.space.world.cbTypes.add(cbtype);
+        if (jsonTags != null && jsonTags.values != null) {
+            for (value in jsonTags.values) {
+                var cbtype:CbType = new CbType();
+                tags.set(value.id, cbtype);
+            }
         }
     }
 
     public function napeInit(gx:Int, gy:Int):Void {
         FlxNapeSpace.init();
-        FlxNapeSpace.space.gravity.set(Vec2.weak(gx,gy));
+        FlxNapeSpace.space.gravity.set(Vec2.weak(gx, gy));
         addCbTypes();
     }
 

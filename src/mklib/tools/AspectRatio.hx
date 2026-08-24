@@ -16,10 +16,16 @@ class AspectRatio
 	 */
 	public function new(?screenWidth:Float = 0, ?screenHeight:Float = 0)
 	{
-		if (screenWidth == 0 && screenHeight == 0)
+		if (screenWidth <= 0 || screenHeight <= 0)
 		{
 			screenWidth = Capabilities.screenResolutionX;
 			screenHeight = Capabilities.screenResolutionY;
+		}
+
+		if (screenWidth <= 0 || screenHeight <= 0)
+		{
+			screenWidth = 1280;
+			screenHeight = 720;
 		}
 
 		screenRatio = screenWidth / screenHeight;
@@ -28,35 +34,26 @@ class AspectRatio
 
 	private function calc()
 	{
+		var designWidth:Int = 400;
+		var designHeight:Int = 180;
+
 		if (isInRange())
 		{
-			var designWidth:Int = 400;
-			var designHeight:Int = 180;
-
-			var designRatio:Float = designWidth / designHeight;
-			var prozentsatz:Float = Math.fround((screenRatio / designRatio) * 100);
-
-			width = Math.round((designWidth * prozentsatz) / 100);
+			width = Math.round(designHeight * screenRatio);
 			height = designHeight;
+			isDefault = false;
 		}
 		else
 		{
-			width = 400;
-			height = 180;
+			width = designWidth;
+			height = designHeight;
+			isDefault = true;
 		}
 	}
 
 	public function isInRange():Bool
 	{
-		var ret:Bool = false;
-
 		var ratio:Float = MathTool.floatFix(screenRatio, 2);
-
-		if (ratio >= 1.77 && ratio <= 2.22)
-		{
-			ret = true;
-		}
-
-		return ret;
+		return (ratio >= 1.77 && ratio <= 2.22);
 	}
 }
