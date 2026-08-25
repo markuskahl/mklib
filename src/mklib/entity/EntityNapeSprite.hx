@@ -50,6 +50,8 @@ class EntityNapeSprite extends FlxNapeSprite {
 		_entity = entity;
 		super(entity.pixelX, entity.pixelY);
 
+		createRectangularBody(entity.width, entity.height);
+
 		if (FlxG.state != null && Std.isOfType(FlxG.state, State)) {
 			state = cast FlxG.state;
 		}
@@ -58,6 +60,79 @@ class EntityNapeSprite extends FlxNapeSprite {
 
 		if (hasGraphic) {
 			loadGraphic(graphicPath, true, _entity.tileInfos.w, _entity.tileInfos.h);
+		}
+
+		if (hasField("sensorEnabled")) {
+			sensorEnabled();
+		}
+
+		if (hasField("visible")) {
+			visible = getField("visible");
+		}
+
+		if (hasField("Tag") || hasField("Tags")) {
+			addCbType();
+		}
+
+		body.allowRotation = false;
+
+		if (hasField("allowMovement")) {
+			body.allowMovement = getField("allowMovement");
+		}
+
+		updateShapePosition();
+	}
+
+	/**
+	 * Liest den Wert eines benutzerdefinierten LDtk-Feldes (`fieldInstances`) aus.
+	 *
+	 * @param identifier Der Bezeichner des Feldes in LDtk (z. B. "sensorEnabled" oder "image").
+	 * @return Der Wert des Feldes oder `null`, falls nicht vorhanden.
+	 */
+	public function getField(identifier:String):Dynamic {
+		if (_entity != null && _entity.json != null && _entity.json.fieldInstances != null) {
+			for (inst in _entity.json.fieldInstances) {
+				if (inst.__identifier == identifier) {
+					return inst.__value;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert.
+	 *
+	 * @param identifier Der Bezeichner des Feldes in LDtk.
+	 * @return `true`, wenn das Feld vorhanden ist, andernfalls `false`.
+	 */
+	public function hasField(identifier:String):Bool {
+		if (_entity != null && _entity.json != null && _entity.json.fieldInstances != null) {
+			for (inst in _entity.json.fieldInstances) {
+				if (inst.__identifier == identifier) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Aktiviert oder deaktiviert die Sensor-Eigenschaft für alle Shapes des Körpers.
+	 * Wird kein Parameter übergeben (`null`), wird das LDtk-Feld `"sensorEnabled"` ausgelesen.
+	 * 
+	 * @param enable Optional: `true`, um alle Shapes als Sensoren zu markieren, `false` andernfalls.
+	 */
+	public function sensorEnabled(?enable:Null<Bool>):Void {
+		if (enable == null) {
+			var fieldVal = getField("sensorEnabled");
+			enable = (fieldVal == true);
+		}
+
+		if (body != null && body.shapes != null) {
+			body.shapes.foreach(function(shape:nape.shape.Shape) {
+				shape.sensorEnabled = enable;
+			});
 		}
 	}
 

@@ -27,6 +27,8 @@ Erbt von `flixel.FlxSprite`. Position (`pixelX`, `pixelY`), Abmessungen (`width`
 | :--- | :--- | :--- | :--- |
 | `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntitySprite`, setzt Position (`pixelX`, `pixelY`), `width`, `height`, `iid`, bindet den aktuellen `State` und initialisiert `graphicPath` sowie `hasGraphic`. |
 | `getGraphicPath` | `()` | `Null<String>` | Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`), falls ein Tile in LDtk definiert ist, und setzt `hasGraphic`. |
+| `getField` | `(identifier:String)` | `Dynamic` | Liest den Wert eines benutzerdefinierten LDtk-Feldes (`fieldInstances`) aus oder `null`. |
+| `hasField` | `(identifier:String)` | `Bool` | Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert. |
 
 ### Beispiel: Animierte Feuer-Dekoration (`Fire.hx`)
 
@@ -56,7 +58,7 @@ class Fire extends EntitySprite {
 
 ## ⚡ `EntityNapeSprite` (`mklib.entity.EntityNapeSprite`)
 
-Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur nahtlosen Kopplung an LDtk-Felder, LDtk-Tags (`CbType`) und Nape-Schwerpunkte.
+Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur nahtlosen Kopplung an LDtk-Felder, LDtk-Tags (`CbType`), Sensoren und Nape-Schwerpunkte.
 
 ### Eigenschaften (Properties)
 
@@ -76,6 +78,9 @@ Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur
 | :--- | :--- | :--- | :--- |
 | `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntityNapeSprite`, initialisiert `_entity`, `iid`, Position, den `state`, `graphicPath` und `hasGraphic`. |
 | `getGraphicPath` | `()` | `Null<String>` | Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`), falls ein Tile in LDtk definiert ist. |
+| `getField` | `(identifier:String)` | `Dynamic` | Liest den Wert eines benutzerdefinierten LDtk-Feldes (`fieldInstances`) aus oder `null`. |
+| `hasField` | `(identifier:String)` | `Bool` | Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert. |
+| `sensorEnabled` | `(?enable:Null<Bool>)` | `Void` | Setzt die `sensorEnabled`-Eigenschaft für alle Shapes. Ohne Parameter wird der Wert aus dem LDtk-Feld `"sensorEnabled"` ausgelesen. |
 | `addCbType` | `(name:String = null)` | `Void` | Weist dem Nape-Physikkörper (`body`) CbType-Tags zu. Ist `name == null`, werden die Entity-Felder `Tag` bzw. `Tags` aus LDtk automatisch ausgelesen. Setzt zudem `body.userData.instance = this`. |
 | `updateShapePosition` | `()` | `Void` | Positioniert den Nape-Körper im Mittelpunkt der LDtk-Entity (`pixelX + width/2`, `pixelY + height/2`), um die Nape-Schwerpunktsausrichtung auszugleichen. |
 

@@ -155,15 +155,15 @@
                 <tr>
                   <td><code>mklib.entity</code></td>
                   <td><strong><code>EntitySprite</code></strong></td>
-                  <td><code>_entity</code>, <code>iid</code>, <code>state</code></td>
-                  <td><code>new</code></td>
+                  <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code></td>
+                  <td><code>new</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code></td>
                   <td><a href="#entities">Entities →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.entity</code></td>
                   <td><strong><code>EntityNapeSprite</code></strong></td>
-                  <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>body</code></td>
-                  <td><code>new</code>, <code>addCbType</code>, <code>updateShapePosition</code></td>
+                  <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code>, <code>body</code></td>
+                  <td><code>new</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>sensorEnabled</code>, <code>addCbType</code>, <code>updateShapePosition</code></td>
                   <td><a href="#entities">Entities →</a></td>
                 </tr>
                 <tr>
@@ -665,6 +665,18 @@
                   <td><code>public</code></td>
                   <td>Referenz auf den aktuellen `State`.</td>
                 </tr>
+                <tr>
+                  <td><code>graphicPath</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Der aufgelöste Pfad zur Grafikdatei (beginnend mit <code>assets/</code>, z. B. <code>assets/tilesets/Fire.png</code>), falls ein Tile zugewiesen ist, sonst <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasGraphic</code></td>
+                  <td><code>Bool</code></td>
+                  <td><code>public</code></td>
+                  <td>Gibt an, ob der Entity in LDtk eine gültige Grafikdatei zugewiesen ist (<code>true</code>), andernfalls <code>false</code>.</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -685,7 +697,25 @@
                   <td><code>new</code></td>
                   <td><code>(entity:ldtk.Entity)</code></td>
                   <td><code>Void</code></td>
-                  <td>Erstellt das Sprite, setzt <code>x = entity.pixelX</code>, <code>y = entity.pixelY</code>, <code>width</code>, <code>height</code> und <code>iid</code>.</td>
+                  <td>Erstellt das Sprite, setzt Position, Abmessungen, bindet den <code>State</code>, initialisiert <code>graphicPath</code> / <code>hasGraphic</code> und lädt automatisch die Kachelgrafik, falls vorhanden.</td>
+                </tr>
+                <tr>
+                  <td><code>getGraphicPath</code></td>
+                  <td><code>():Null&lt;String&gt;</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td>Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile in LDtk definiert ist, und setzt <code>hasGraphic</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>getField</code></td>
+                  <td><code>(identifier:String):Dynamic</code></td>
+                  <td><code>Dynamic</code></td>
+                  <td>Liest den Wert eines benutzerdefinierten LDtk-Feldes (<code>fieldInstances</code>) aus oder <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasField</code></td>
+                  <td><code>(identifier:String):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert.</td>
                 </tr>
               </tbody>
             </table>
@@ -727,6 +757,18 @@
                   <td>Referenz auf den aktiven `State`.</td>
                 </tr>
                 <tr>
+                  <td><code>graphicPath</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Der aufgelöste Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile zugewiesen ist, sonst <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasGraphic</code></td>
+                  <td><code>Bool</code></td>
+                  <td><code>public</code></td>
+                  <td>Gibt an, ob der Entity in LDtk eine gültige Grafikdatei zugewiesen ist (<code>true</code>), andernfalls <code>false</code>.</td>
+                </tr>
+                <tr>
                   <td><code>body</code></td>
                   <td><code>nape.phys.Body</code></td>
                   <td><code>public</code></td>
@@ -752,7 +794,31 @@
                   <td><code>new</code></td>
                   <td><code>(entity:ldtk.Entity)</code></td>
                   <td><code>Void</code></td>
-                  <td>Erstellt das Nape-Sprite und synchronisiert Position, Entity und State.</td>
+                  <td>Erstellt das Nape-Sprite und synchronisiert Position, Entity, State, <code>graphicPath</code> und <code>hasGraphic</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>getGraphicPath</code></td>
+                  <td><code>():Null&lt;String&gt;</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td>Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile in LDtk definiert ist.</td>
+                </tr>
+                <tr>
+                  <td><code>getField</code></td>
+                  <td><code>(identifier:String):Dynamic</code></td>
+                  <td><code>Dynamic</code></td>
+                  <td>Liest den Wert eines benutzerdefinierten LDtk-Feldes (<code>fieldInstances</code>) aus oder <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasField</code></td>
+                  <td><code>(identifier:String):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert.</td>
+                </tr>
+                <tr>
+                  <td><code>sensorEnabled</code></td>
+                  <td><code>(?enable:Null&lt;Bool&gt;):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Setzt die <code>sensorEnabled</code>-Eigenschaft für alle Shapes des Körpers. Ohne Parameter wird der Wert aus dem LDtk-Feld <code>"sensorEnabled"</code> ausgelesen.</td>
                 </tr>
                 <tr>
                   <td><code>addCbType</code></td>

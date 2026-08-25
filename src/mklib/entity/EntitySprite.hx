@@ -61,6 +61,40 @@ class EntitySprite extends FlxSprite {
 	}
 
 	/**
+	 * Liest den Wert eines benutzerdefinierten LDtk-Feldes (`fieldInstances`) aus.
+	 *
+	 * @param identifier Der Bezeichner des Feldes in LDtk (z. B. "image", "speed").
+	 * @return Der Wert des Feldes oder `null`, falls nicht vorhanden.
+	 */
+	public function getField(identifier:String):Dynamic {
+		if (_entity != null && _entity.json != null && _entity.json.fieldInstances != null) {
+			for (inst in _entity.json.fieldInstances) {
+				if (inst.__identifier == identifier) {
+					return inst.__value;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert.
+	 *
+	 * @param identifier Der Bezeichner des Feldes in LDtk.
+	 * @return `true`, wenn das Feld vorhanden ist, andernfalls `false`.
+	 */
+	public function hasField(identifier:String):Bool {
+		if (_entity != null && _entity.json != null && _entity.json.fieldInstances != null) {
+			for (inst in _entity.json.fieldInstances) {
+				if (inst.__identifier == identifier) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`),
 	 * falls der Entity in LDtk ein Tile zugewiesen ist. Setzt zudem das Flag `hasGraphic`.
 	 *
