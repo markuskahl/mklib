@@ -51,6 +51,7 @@ class EntityNapeSprite extends FlxNapeSprite {
 		super(entity.pixelX, entity.pixelY);
 
 		createRectangularBody(entity.width, entity.height);
+		body.allowRotation = false;
 
 		if (FlxG.state != null && Std.isOfType(FlxG.state, State)) {
 			state = cast FlxG.state;
@@ -70,11 +71,9 @@ class EntityNapeSprite extends FlxNapeSprite {
 			visible = getField("visible");
 		}
 
-		if (hasField("Tag") || hasField("Tags")) {
-			addCbType();
+		if (hasField("Tag")) {
+			addCbType(getField("Tag"));
 		}
-
-		body.allowRotation = false;
 
 		if (hasField("allowMovement")) {
 			body.allowMovement = getField("allowMovement");
