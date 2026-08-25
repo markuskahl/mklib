@@ -28,8 +28,8 @@ Die vollständige interaktive Dokumentation inklusive Live-A*-Pathfinding-Simula
 | `mklib.layer` | `TileLayer` | `levelName`, `layerName`, `state` | `new`, `render` |
 | `mklib.layer` | `EntityLayer` | `layerName`, `packageName`, `state` | `new`, `addEntities` |
 | `mklib.layer` | `EntityLayerSource<T>` | `identifier`, `getAllUntyped` | – |
-| `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state` | `new` |
-| `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `body` | `new`, `addCbType`, `updateShapePosition` |
+| `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic` | `new`, `getGraphicPath` |
+| `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic`, `body` | `new`, `getGraphicPath`, `addCbType`, `updateShapePosition` |
 | `mklib.physic` | `Listener` | – | `addCollisionBeginListener`, `addCollisionEndListener`, `addCollisionOngoingListener`, `addSensorBeginListener`, `addSensorEndListener`, `addSensorOngoingListener`, `addSensorBeginListenerANY`, `addSensorEndListenerANY`, `addSensorOngoingListenerANY` |
 | `mklib.tools` | `Tags` | – | `get`, `exist` |
 | `mklib.path` | `NavGrid` | `width`, `height`, `gridSize`, `data` | `new`, `isInBounds`, `getIndex`, `get`, `set`, `isWalkable`, `isAreaWalkable`, `setArea`, `setEntity`, `worldToGridX`, `worldToGridY`, `gridToWorldX`, `gridToWorldY`, `clear`, `clone`, `toString` |

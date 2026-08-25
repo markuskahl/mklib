@@ -17,13 +17,16 @@ Erbt von `flixel.FlxSprite`. Position (`pixelX`, `pixelY`), Abmessungen (`width`
 | `_entity` | `ldtk.Entity` | `public` | Die zugrundeliegende LDtk-Entity-Instanz mit allen Rohdaten, Feldern und Koordinaten. |
 | `iid` | `String` | `public` | Die weltweit eindeutige Instanz-ID (IID) der Entity aus dem LDtk-Projekt. |
 | `state` | `mklib.state.State` | `public` | Referenz auf den aktuellen `mklib.state.State`, sofern dieser aktiv ist. |
+| `graphicPath` | `Null<String>` | `public` | Der aufgelöste Pfad zur Grafikdatei (beginnend mit `assets/`, z. B. `assets/tilesets/Fire.png`), falls ein Tile zugewiesen ist, sonst `null`. |
+| `hasGraphic` | `Bool` | `public` | Gibt an, ob der Entity in LDtk eine gültige Grafikdatei zugewiesen ist (`true`), andernfalls `false`. |
 | *Ererbte Felder* | `Float`, `Bool` etc. | `public` | Alle Standardfelder von `flixel.FlxSprite` (`x`, `y`, `width`, `height`, `velocity`, `animation`, `angle` etc.). |
 
 ### Methoden (Methods)
 
 | Methode | Signatur | Rückgabewert | Beschreibung |
 | :--- | :--- | :--- | :--- |
-| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntitySprite`, setzt Position (`pixelX`, `pixelY`), `width`, `height`, `iid` und bindet den aktuellen `State`. |
+| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntitySprite`, setzt Position (`pixelX`, `pixelY`), `width`, `height`, `iid`, bindet den aktuellen `State` und initialisiert `graphicPath` sowie `hasGraphic`. |
+| `getGraphicPath` | `()` | `Null<String>` | Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`), falls ein Tile in LDtk definiert ist, und setzt `hasGraphic`. |
 
 ### Beispiel: Animierte Feuer-Dekoration (`Fire.hx`)
 
@@ -39,7 +42,10 @@ class Fire extends EntitySprite {
     public function new(entity:ldtk.Entity) {
         super(entity);
 
-        loadGraphic("assets/tilesets/Fire.png", true, 16, 16);
+        if (hasGraphic) {
+            loadGraphic(graphicPath, true, 16, 16);
+        }
+
         animation.add("burn", [0, 1, 2, 3], 12);
         animation.play("burn");
     }
@@ -59,6 +65,8 @@ Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur
 | `_entity` | `ldtk.Entity` | `public` | Die zugrundeliegende LDtk-Entity-Instanz mit Rohdaten und Feldern. |
 | `iid` | `String` | `public` | Die eindeutige Instanz-ID (IID) der Entity aus LDtk. |
 | `state` | `mklib.state.State` | `public` | Referenz auf den aktuellen `mklib.state.State`. |
+| `graphicPath` | `Null<String>` | `public` | Der aufgelöste Pfad zur Grafikdatei (beginnend mit `assets/`, z. B. `assets/tilesets/Platform.png`), falls ein Tile zugewiesen ist, sonst `null`. |
+| `hasGraphic` | `Bool` | `public` | Gibt an, ob der Entity in LDtk eine gültige Grafikdatei zugewiesen ist (`true`), andernfalls `false`. |
 | `body` | `nape.phys.Body` | `public` | *(Ererbt von FlxNapeSprite)* Der physikalische Nape-Körper der Entity. |
 | *Ererbte Felder* | `Float`, `Bool` etc. | `public` | Alle Standardfelder von `flixel.addons.nape.FlxNapeSprite` und `flixel.FlxSprite`. |
 
@@ -66,7 +74,8 @@ Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur
 
 | Methode | Signatur | Rückgabewert | Beschreibung |
 | :--- | :--- | :--- | :--- |
-| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntityNapeSprite`, initialisiert `_entity`, `iid`, Position und den `state`. |
+| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntityNapeSprite`, initialisiert `_entity`, `iid`, Position, den `state`, `graphicPath` und `hasGraphic`. |
+| `getGraphicPath` | `()` | `Null<String>` | Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`), falls ein Tile in LDtk definiert ist. |
 | `addCbType` | `(name:String = null)` | `Void` | Weist dem Nape-Physikkörper (`body`) CbType-Tags zu. Ist `name == null`, werden die Entity-Felder `Tag` bzw. `Tags` aus LDtk automatisch ausgelesen. Setzt zudem `body.userData.instance = this`. |
 | `updateShapePosition` | `()` | `Void` | Positioniert den Nape-Körper im Mittelpunkt der LDtk-Entity (`pixelX + width/2`, `pixelY + height/2`), um die Nape-Schwerpunktsausrichtung auszugleichen. |
 
