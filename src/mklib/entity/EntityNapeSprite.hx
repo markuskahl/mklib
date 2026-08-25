@@ -6,12 +6,34 @@ import mklib.state.State;
 import flixel.FlxG;
 import flixel.addons.nape.FlxNapeSprite;
 
+/**
+ * Erweiterte Entity-Klasse mit integriertem Nape-Physikkörper (`FlxNapeSprite`).
+ *
+ * Ermöglicht das automatische Auslesen von Tags/Kollisionstypen (`CbType`) direkt aus den
+ * LDtk-Feldern (`Tag` oder `Tags`) sowie die exakte Zentrierung von Nape-Shapes auf Basis der LDtk-Entity-Maße.
+ */
 class EntityNapeSprite extends FlxNapeSprite
 {
+    /**
+     * Die zugrundeliegende LDtk-Entity-Instanz mit Rohdaten und Feldern.
+     */
     public var _entity:ldtk.Entity;
+
+    /**
+     * Die weltweit eindeutige Instanz-ID (IID) der Entity aus LDtk.
+     */
     public var iid:String;
+
+    /**
+     * Referenz auf den aktuellen `mklib.state.State`, sofern aktiv.
+     */
     public var state:State;
 
+    /**
+     * Erstellt eine neue Instanz von `EntityNapeSprite` anhand einer LDtk-Entity.
+     *
+     * @param entity Die aus dem LDtk-Level geladene Entity-Definition.
+     */
     public function new(entity:ldtk.Entity)
     {
         iid = entity.iid;
@@ -24,6 +46,17 @@ class EntityNapeSprite extends FlxNapeSprite
         }
     }
 
+    /**
+     * Weist dem Nape-Physikkörper (`body`) die entsprechenden `CbType`-Tags zu.
+     *
+     * - Wird `name` übergeben, wird gezielt dieser Tag hinzugefügt.
+     * - Bleibt `name` leer (`null`), werden die Entity-Felder `Tag` bzw. `Tags` aus den LDtk-JSON-Daten
+     *   ausgewertet und alle übereinstimmenden CbTypes registriert.
+     *
+     * Zudem wird `body.userData.instance` auf diese Instanz gesetzt.
+     *
+     * @param name Optionaler Name des spezifischen Tags (Standard: `null`, automatisches Auslesen).
+     */
     public function addCbType(name:String = null):Void
     {
         if (body == null)
@@ -75,6 +108,11 @@ class EntityNapeSprite extends FlxNapeSprite
         body.userData.instance = this;
     }
 
+    /**
+     * Positioniert den Nape-Körper im Mittelpunkt der LDtk-Entity-Dimensionen.
+     * Hilfreich nach dem Erstellen von Nape-Shapes, da Nape-Körper standardmäßig
+     * ihren Ursprung im Schwerpunkt/Mittelpunkt haben.
+     */
     public function updateShapePosition():Void
     {
         if (body != null && _entity != null)

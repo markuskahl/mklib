@@ -7,12 +7,43 @@ import nape.callbacks.CbType;
 import flixel.FlxG;
 import flixel.FlxState;
 
+/**
+ * Generischer Basis-Game-State für HaxeFlixel-Projekte mit LDtk- und Nape-Integration.
+ *
+ * Verwaltet:
+ * - Das LDtk-Projekt und das typisierte Level-Datenobjekt (`data`).
+ * - Die automatische Initialisierung des Nape-Physikraums (`napeInit`).
+ * - Die Konvertierung von LDtk-Tags (Enum `"Tags"`) in Nape-`CbType`-Objekte.
+ *
+ * @param TLevel Der Typ des LDtk-Levels (z. B. `Data.Data_Level`).
+ */
 class State<TLevel = Dynamic> extends FlxState {
+	/**
+	 * Die geladene LDtk-Projektinstanz.
+	 */
 	public var project:ldtk.Project;
+
+	/**
+	 * Eine Map von Tag-Namen (aus dem LDtk-Enum "Tags") auf die entsprechenden Nape-`CbType`-Instanzen.
+	 */
 	public var tags:Map<String, CbType> = new Map();
+
+	/**
+	 * Der Name des aktuell aktiven Levels (z. B. "Level_0").
+	 */
 	public var levelName:String;
+
+	/**
+	 * Die typisierten Leveldaten aus dem LDtk-Projekt.
+	 */
 	public var data:TLevel;
 
+	/**
+	 * Erstellt einen neuen State und lädt das angegebene Level aus dem LDtk-Projekt.
+	 *
+	 * @param LevelName Der Name des zu ladenden LDtk-Levels (Standard: `"Level_0"`).
+	 * @param projectInstance Optionale LDtk-Projektinstanz (falls `null`, wird versucht, die globale Klasse `"Data"` zu instanziieren).
+	 */
 	public function new(LevelName:String = "Level_0", ?projectInstance:ldtk.Project) {
 		super();
 		this.levelName = LevelName;
@@ -39,6 +70,10 @@ class State<TLevel = Dynamic> extends FlxState {
 		super.create();
 	}
 
+	/**
+	 * Liest das Enum `"Tags"` aus der LDtk-Projektdefinition aus und erzeugt
+	 * für jeden Wert einen entsprechenden Nape-`CbType` in der `tags`-Map.
+	 */
 	public function addCbTypes():Void {
 		if (project == null) {
 			return;
@@ -52,6 +87,13 @@ class State<TLevel = Dynamic> extends FlxState {
 		}
 	}
 
+	/**
+	 * Initialisiert den Nape-Physikraum (`FlxNapeSpace`) mit einer Gravitation
+	 * und registriert automatisch alle LDtk-Tags als CbTypes.
+	 *
+	 * @param gx Gravitation in X-Richtung (Standard meist 0).
+	 * @param gy Gravitation in Y-Richtung (z. B. 300 für Platformer-Schwerkraft nach unten).
+	 */
 	public function napeInit(gx:Int, gy:Int):Void {
 		FlxNapeSpace.init();
 		FlxNapeSpace.space.gravity.set(Vec2.weak(gx, gy));

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mklib – Dokumentation & API-Referenz</title>
+  <meta name="description" content="Offizielle Dokumentation und API-Referenz für mklib – HaxeFlixel, LDtk und Nape 2D Game Library.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Glow Backgrounds -->
+  <div class="bg-decorations">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="icon-btn mobile-menu-btn" aria-label="Menü öffnen">☰</button>
+      <a href="#overview" class="logo-group">
+        <div class="logo-badge">mk</div>
+        <div>
+          <span class="logo-title">mklib</span>
+          <span class="logo-version">v1.0.1</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Search Input -->
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="docs-search" class="search-input" placeholder="Dokumentation durchsuchen..." autocomplete="off">
+    </div>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <button id="theme-toggle" class="icon-btn" title="Thema wechseln">☀️</button>
+      <a href="https://github.com/markuskahl/mklib" target="_blank" rel="noopener noreferrer" class="github-link">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- App Layout Container -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div>
+          <div class="nav-section-title">Einführung</div>
+          <ul class="nav-list">
+            <li class="nav-item active"><a href="#overview"><span class="nav-icon">✨</span> Übersicht</a></li>
+            <li class="nav-item"><a href="#getting-started"><span class="nav-icon">🚀</span> Schnellstart</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-section-title">Kern-Module</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="#state"><span class="nav-icon">🎮</span> State Management</a></li>
+            <li class="nav-item"><a href="#layers"><span class="nav-icon">🧱</span> Layer System</a></li>
+            <li class="nav-item"><a href="#entities"><span class="nav-icon">👾</span> Entities & Sprites</a></li>
+            <li class="nav-item"><a href="#physics"><span class="nav-icon">⚡</span> Physik & Sensoren</a></li>
+            <li class="nav-item"><a href="#pathfinding"><span class="nav-icon">🧭</span> Pathfinding & A*</a></li>
+            <li class="nav-item"><a href="#tools-math"><span class="nav-icon">🛠️</span> Tools & Mathe</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content-wrapper">
+      <div class="main-content">
+
+        <!-- ===================================================================
+             SECTION: OVERVIEW (#overview)
+             =================================================================== -->
+        <section id="overview" class="doc-section active">
+          <h1>mklib <span class="hero-gradient-text">Dokumentation</span></h1>
+          <p class="section-desc">
+            Eine performante, moderne Haxe-Bibliothek zur nahtlosen Verbindung von <strong>HaxeFlixel</strong>, dem <strong>LDtk Level-Editor</strong> und der <strong>Nape 2D Physik-Engine</strong>.
+          </p>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">🗺️</div>
+              <h3>LDtk Integration</h3>
+              <p>Automatische Kachelebenen-Darstellung und dynamische Reflection-Instanziierung von Spielfiguren.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>Nape Physik & Tags</h3>
+              <p>Einfaches Registrieren von Kollisions- und Sensor-Events via lesbaren Tag-Namen aus LDtk-Enums.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🧭</div>
+              <h3>A* Pathfinding</h3>
+              <p>2D-Wegfindung mit 4- und 8-Wege-Bewegung, Weltkoordinaten und Einheiten beliebiger Kachelgröße.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📱</div>
+              <h3>Responsive Skalierung</h3>
+              <p>Automatische Berechnung idealer Spielauflösungen für moderne Breitbild-Displays ohne Verzerrung.</p>
+            </div>
+          </div>
+
+          <h2>Minimalbeispiel</h2>
+          <p>Ein vollständiger Spielzustand mit automatischer Physik-, Layer- und Pathfinding-Initialisierung:</p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> flixel.FlxG;
+<span class="hl-keyword">import</span> mklib.state.State;
+<span class="hl-keyword">import</span> mklib.layer.TileLayer;
+<span class="hl-keyword">import</span> mklib.layer.EntityLayer;
+<span class="hl-keyword">import</span> mklib.path.NavGridBuilder;
+<span class="hl-keyword">import</span> mklib.path.NavGrid;
+
+<span class="hl-keyword">class</span> <span class="hl-type">PlayState</span> <span class="hl-keyword">extends</span> <span class="hl-type">State</span>&lt;Data.Data_Level&gt; {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> tileLayer:<span class="hl-type">TileLayer</span>;
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> entityLayer:<span class="hl-type">EntityLayer</span>;
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> navGrid:<span class="hl-type">NavGrid</span>;
+
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">create</span>():<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.create();
+
+        <span class="hl-comment">// 1. Nape-Physikraum mit Schwerkraft initialisieren</span>
+        napeInit(<span class="hl-num">0</span>, <span class="hl-num">300</span>);
+
+        <span class="hl-comment">// 2. Kachelebene aus LDtk rendern</span>
+        tileLayer = <span class="hl-keyword">new</span> <span class="hl-type">TileLayer</span>(data.l_Tiles.identifier);
+        add(tileLayer);
+
+        <span class="hl-comment">// 3. Entities im Package "entities.*" automatisch instanziieren</span>
+        entityLayer = <span class="hl-keyword">new</span> <span class="hl-type">EntityLayer</span>(data.l_Entities);
+        add(entityLayer);
+
+        <span class="hl-comment">// 4. A*-NavGrid automatisch aus Leveldaten bauen</span>
+        navGrid = <span class="hl-type">NavGridBuilder</span>.autoBuild(data);
+    }
+}</code></pre>
+          </div>
+
+          <div class="section-nav-footer">
+            <span></span>
+            <a href="#getting-started" class="nav-page-btn">Schnellstart →</a>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             SECTION: GETTING STARTED (#getting-started)
+             =================================================================== -->
+        <section id="getting-started" class="doc-section">
+          <h1>🚀 Schnellstart & Einrichtung</h1>
+          <p class="section-desc">Schritt-für-Schritt-Anleitung zur Installation und Einbindung in dein HaxeFlixel-Projekt.</p>
+
+          <h2>1. Abhängigkeiten in Project.xml</h2>
+          <p>Füge <code>mklib</code> und die benötigten Bibliotheken zu deiner <code>Project.xml</code> hinzu:</p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">XML</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code>&lt;haxelib name="openfl" /&gt;
+&lt;haxelib name="flixel" /&gt;
+&lt;haxelib name="flixel-addons" /&gt;
+&lt;haxelib name="nape-haxe4" /&gt;
+&lt;haxelib name="ldtk-haxe-api" /&gt;
+&lt;haxelib name="deepnightLibs" /&gt;
+&lt;haxelib name="mklib" /&gt;</code></pre>
+          </div>
+
+          <h2>2. LDtk Makro-Setup (Data.hx)</h2>
+          <p>Erstelle die Datei <code>source/Data.hx</code>. Das Makro analysiert deine <code>map.ldtk</code>-Datei zur Compile-Zeit:</p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">private</span> <span class="hl-keyword">typedef</span> _Tmp = haxe.macro.MacroType&lt;[ ldtk.Project.build(<span class="hl-string">"assets/data/map.ldtk"</span>) ]&gt;;</code></pre>
+          </div>
+
+          <h2>3. Spielstart in Main.hx</h2>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> flixel.FlxGame;
+<span class="hl-keyword">import</span> openfl.display.Sprite;
+
+<span class="hl-keyword">class</span> <span class="hl-type">Main</span> <span class="hl-keyword">extends</span> <span class="hl-type">Sprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>() {
+        <span class="hl-keyword">super</span>();
+        addChild(<span class="hl-keyword">new</span> <span class="hl-type">FlxGame</span>(<span class="hl-num">320</span>, <span class="hl-num">180</span>, PlayState, <span class="hl-num">60</span>, <span class="hl-num">60</span>, <span class="hl-keyword">true</span>, <span class="hl-keyword">false</span>));
+    }
+}</code></pre>
+          </div>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">💡</div>
+            <div>
+              <strong>Tipp:</strong> Versehe deine Entity-Klassen stets mit der Annotation <code>@:keep</code>, damit der Haxe-Compiler sie bei optimierten Release-Builds (DCE) nicht verwirft.
+            </div>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#overview" class="nav-page-btn">← Übersicht</a>
+            <a href="#state" class="nav-page-btn">State Management →</a>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             SECTION: STATE (#state)
+             =================================================================== -->
+        <section id="state" class="doc-section">
+          <h1>🎮 State Management (<code>mklib.state.State</code>)</h1>
+          <p class="section-desc">Die generische Basisklasse für Spielzustände mit automatischer LDtk- und Nape-Anbindung.</p>
+
+          <h2>Eigenschaften</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Eigenschaft</th>
+                  <th>Typ</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>project</code></td>
+                  <td><code>ldtk.Project</code></td>
+                  <td>Die geladene LDtk-Projektinstanz.</td>
+                </tr>
+                <tr>
+                  <td><code>data</code></td>
+                  <td><code>TLevel</code></td>
+                  <td>Die typisierten Leveldaten des aktiven Levels (z. B. <code>data.l_Tiles</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>levelName</code></td>
+                  <td><code>String</code></td>
+                  <td>Der Name des aktuell geladenen Levels (z. B. "Level_0").</td>
+                </tr>
+                <tr>
+                  <td><code>tags</code></td>
+                  <td><code>Map&lt;String, CbType&gt;</code></td>
+                  <td>Registrierte Kollisionstags aus dem LDtk-Enum "Tags".</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>Wichtige Methoden</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(LevelName:String = "Level_0", ?projectInstance:ldtk.Project)</code></td>
+                  <td>Erstellt den State und lädt das angegebene Level aus dem LDtk-Projekt.</td>
+                </tr>
+                <tr>
+                  <td><code>napeInit</code></td>
+                  <td><code>(gx:Int, gy:Int):Void</code></td>
+                  <td>Startet <code>FlxNapeSpace</code>, setzt die Gravitation und lädt CbTypes.</td>
+                </tr>
+                <tr>
+                  <td><code>addCbTypes</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Liest das LDtk-Enum "Tags" aus und registriert CbTypes.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#getting-started" class="nav-page-btn">← Schnellstart</a>
+            <a href="#layers" class="nav-page-btn">Layer System →</a>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             SECTION: LAYERS (#layers)
+             =================================================================== -->
+        <section id="layers" class="doc-section">
+          <h1>🧱 Layer System (<code>mklib.layer.*</code>)</h1>
+          <p class="section-desc">Verwaltung und Darstellung von Kachel- und Entity-Ebenen aus LDtk.</p>
+
+          <h2>TileLayer</h2>
+          <p>Rendert LDtk-Kachelebenen (<code>Layer_Tiles</code> / <code>Layer_AutoLayer</code>) direkt in eine <code>FlxSpriteGroup</code>:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">var</span> tileLayer = <span class="hl-keyword">new</span> <span class="hl-type">TileLayer</span>(data.l_Tiles.identifier);
+add(tileLayer);
+
+<span class="hl-comment">// Bei Bedarf zur Laufzeit neu rendern:</span>
+tileLayer.render();</code></pre>
+          </div>
+
+          <h2>EntityLayer & Reflection-Mechanismus</h2>
+          <p><code>EntityLayer</code> durchsucht zur Laufzeit das angegebene Package (Standard: <code>"entities"</code>) nach Klassen, deren Name dem Entity-Identifier in LDtk entspricht:</p>
+          <ul>
+            <li>LDtk Entity <code>Hero</code> → instanziiert <code>entities.Hero</code></li>
+            <li>LDtk Entity <code>Platform</code> → instanziiert <code>entities.Platform</code></li>
+          </ul>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-comment">// Instanziiert alle Entities aus data.l_Entities im Package "entities":</span>
+<span class="hl-keyword">var</span> entityLayer = <span class="hl-keyword">new</span> <span class="hl-type">EntityLayer</span>(data.l_Entities, <span class="hl-string">"entities"</span>);
+add(entityLayer);</code></pre>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#state" class="nav-page-btn">← State Management</a>
+            <a href="#entities" class="nav-page-btn">Entities & Sprites →</a>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             SECTION: ENTITIES (#entities)
+             =================================================================== -->
+        <section id="entities" class="doc-section">
+          <h1>👾 Entities & Sprites (<code>mklib.entity.*</code>)</h1>
+          <p class="section-desc">Basisklassen für visuelle und physikalische Spielobjekte.</p>
+
+          <h2>EntitySprite vs. EntityNapeSprite</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h3>EntitySprite</h3>
+              <p>Erbt von <code>FlxSprite</code>. Ideal für rein grafische Objekte ohne Physik (Partikel, Dekorationen, einfache Items).</p>
+            </div>
+            <div class="feature-card">
+              <h3>EntityNapeSprite</h3>
+              <p>Erbt von <code>FlxNapeSprite</code>. Unterstützt Physik, Shapes, automatisches Tag-Mapping (<code>addCbType</code>) und Zentrierung.</p>
+            </div>
+          </div>
+
+          <h2>Code-Beispiel: Physikalische Plattform</h2>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span> entities;
+
+<span class="hl-keyword">import</span> mklib.entity.EntityNapeSprite;
+<span class="hl-keyword">import</span> flixel.util.FlxColor;
+<span class="hl-keyword">import</span> ldtk.Entity;
+
+@:keep
+<span class="hl-keyword">class</span> <span class="hl-type">Platform</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntityNapeSprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:<span class="hl-type">Entity</span>) {
+        <span class="hl-keyword">super</span>(entity);
+
+        makeGraphic(entity.width, entity.height, FlxColor.RED);
+        createRectangularBody(entity.width, entity.height);
+        body.allowMovement = <span class="hl-keyword">false</span>;
+
+        <span class="hl-comment">// Nape-Körper im Mittelpunkt der LDtk-Entity zentrieren:</span>
+        updateShapePosition();
+
+        <span class="hl-comment">// Tags automatisch aus LDtk-Feldern ("Tag" / "Tags") übernehmen:</span>
+        addCbType();
+    }
+}</code></pre>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#layers" class="nav-page-btn">← Layer System</a>
+            <a href="#physics" class="nav-page-btn">Physik & Sensoren →</a>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             SECTION: PHYSICS (#physics)
+             =================================================================== -->
+        <section id="physics" class="doc-section">
+          <h1>⚡ Physik & Sensoren (<code>mklib.physic.*</code>)</h1>
+          <p class="section-desc">Einfache Registrierung von Kollisionen und Sensor-Überlappungen ohne manuelle CbType-Verwaltung.</p>
+
+          <h2>Kollisionen vs. Sensoren</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Ereignis-Typ</th>
+                  <th>Physischer Stoß?</th>
+                  <th>Einsatzbereich</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>COLLISION</strong></td>
+                  <td>Ja (Körper prallen ab / liegen auf)</td>
+                  <td>Wände, Plattformen, Spielfiguren, Kisten</td>
+                </tr>
+                <tr>
+                  <td><strong>SENSOR</strong></td>
+                  <td>Nein (Durchdringung erlaubt)</td>
+                  <td>Münzen, Power-ups, Trigger-Zonen, Stacheln</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>Verfügbare Listener-Methoden</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Ereignis</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>addCollisionBeginListener(t1, t2, fn)</code></td>
+                  <td>Kollision Beginn</td>
+                  <td>Wird beim ersten Kontakt zweier Tags aufgerufen.</td>
+                </tr>
+                <tr>
+                  <td><code>addCollisionEndListener(t1, t2, fn)</code></td>
+                  <td>Kollision Ende</td>
+                  <td>Wird aufgerufen, sobald der Kontakt abreißt.</td>
+                </tr>
+                <tr>
+                  <td><code>addSensorBeginListener(t1, t2, fn)</code></td>
+                  <td>Sensor Beginn</td>
+                  <td>Sensor-Überlappung zwischen zwei Tags beginnt.</td>
+                </tr>
+                <tr>
+                  <td><code>addSensorBeginListenerANY(tag, fn)</code></td>
+                  <td>Sensor Beliebig</td>
+                  <td>Tag überlappt mit irgendeinem anderen Körper.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>Code-Beispiel: Münz-Trigger</h2>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> mklib.physic.Listener;
+<span class="hl-keyword">import</span> nape.callbacks.InteractionCallback;
+
+<span class="hl-comment">// Registriert Sensor-Event zwischen "Player" und "Coin":</span>
+<span class="hl-type">Listener</span>.addSensorBeginListener(<span class="hl-string">"Player"</span>, <span class="hl-string">"Coin"</span>, <span class="hl-keyword">function</span>(cb:<span class="hl-type">InteractionCallback</span>) {
+    <span class="hl-keyword">var</span> coin:Coin = <span class="hl-keyword">cast</span> cb.int2.userData.instance;
+    <span class="hl-keyword">if</span> (coin != <span class="hl-keyword">null</span>) {
+        coin.kill();
+        trace(<span class="hl-string">"Münze aufgesammelt!"</span>);
+    }
+});</code></pre>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#entities" class="nav-page-btn">← Entities & Sprites</a>
+            <a href="#pathfinding" class="nav-page-btn">Pathfinding & A* →</a>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             SECTION: PATHFINDING (#pathfinding)
+             =================================================================== -->
+        <section id="pathfinding" class="doc-section">
+          <h1>🧭 Pathfinding & A* (<code>mklib.path.*</code>)</h1>
+          <p class="section-desc">Performante 2D A*-Wegfindung für 4- und 8-Wege-Bewegung sowie Multi-Tile-Einheiten.</p>
+
+          <!-- Interactive Live Demo -->
+          <div class="simulator-card">
+            <div class="simulator-header">
+              <h3>⚡ Interaktiver Live-A*-Simulator</h3>
+              <div class="sim-controls">
+                <label class="sim-switch-label">
+                  <input type="checkbox" id="sim-diagonal"> Diagonale (8-Wege)
+                </label>
+                <label class="sim-switch-label">
+                  Größe:
+                  <select id="sim-span" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px;">
+                    <option value="1">1x1 Kachel</option>
+                    <option value="2">2x2 Kacheln</option>
+                  </select>
+                </label>
+                <button id="sim-maze" class="sim-btn">🎲 Zufallswände</button>
+                <button id="sim-clear" class="sim-btn">🗑️ Leeren</button>
+              </div>
+            </div>
+
+            <div class="canvas-container">
+              <canvas id="astar-canvas"></canvas>
+            </div>
+
+            <div class="sim-legend">
+              <div class="legend-item"><div class="legend-color" style="background: #10b981;"></div> Start (S) ziehen</div>
+              <div class="legend-item"><div class="legend-color" style="background: #f43f5e;"></div> Ziel (Z) ziehen</div>
+              <div class="legend-item"><div class="legend-color" style="background: #334155;"></div> Klick & Ziehen = Wand zeichnen/löschen</div>
+              <div class="legend-item"><div class="legend-color" style="background: #38bdf8;"></div> Gefundener A*-Pfad</div>
+            </div>
+          </div>
+
+          <h2>NavGridBuilder (Raster aus LDtk erzeugen)</h2>
+          <p>Erzeugt das Navigationsraster automatisch aus beliebigen LDtk-Layern:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-comment">// Automatischer Scan aller Layer des Levels:</span>
+<span class="hl-keyword">var</span> navGrid = <span class="hl-type">NavGridBuilder</span>.autoBuild(data);
+
+<span class="hl-comment">// Pfad direkt in Pixel-Weltkoordinaten finden:</span>
+<span class="hl-keyword">var</span> path = <span class="hl-type">AStar</span>.findWorldPath(navGrid, player.x, player.y, targetX, targetY, <span class="hl-num">1</span>, <span class="hl-num">1</span>, <span class="hl-keyword">true</span>);</code></pre>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#physics" class="nav-page-btn">← Physik & Sensoren</a>
+            <a href="#tools-math" class="nav-page-btn">Tools & Mathe →</a>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             SECTION: TOOLS & MATH (#tools-math)
+             =================================================================== -->
+        <section id="tools-math" class="doc-section">
+          <h1>🛠️ Tools & Mathematik (<code>mklib.tools.*</code> & <code>mklib.math.*</code>)</h1>
+          <p class="section-desc">Hilfsklassen für responsive Auflösungen und mathematische Berechnungen.</p>
+
+          <h2>AspectRatio</h2>
+          <p>Berechnet anhand der Bildschirmauflösung automatisch die optimale Spielbreite für eine feste vertikale Design-Höhe:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">var</span> ar = <span class="hl-keyword">new</span> <span class="hl-type">AspectRatio</span>();
+trace(<span class="hl-string">'Optimale Auflösung: ${ar.width} x ${ar.height}'</span>);
+
+addChild(<span class="hl-keyword">new</span> <span class="hl-type">FlxGame</span>(ar.width, ar.height, PlayState));</code></pre>
+          </div>
+
+          <h2>MathTool</h2>
+          <p>Hilfsfunktion zur Rundung von Gleitkommazahlen auf feste Nachkommastellen:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">var</span> rounded = <span class="hl-type">MathTool</span>.floatFix(<span class="hl-num">3.14159265</span>, <span class="hl-num">2</span>); <span class="hl-comment">// Ergibt 3.14</span></code></pre>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#pathfinding" class="nav-page-btn">← Pathfinding & A*</a>
+            <a href="#overview" class="nav-page-btn">Zurück zur Übersicht ↺</a>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

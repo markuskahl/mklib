@@ -8,21 +8,41 @@ import ldtk.Layer_Tiles;
 import ldtk.Layer_AutoLayer;
 
 /**
- * Builder zum komfortablen Zusammenführen beliebiger LDtk-Layer (IntGrid, Tiles, Entities)
- * in ein einheitliches 1D-NavGrid für Pathfinding.
+ * Fluent Builder zum komfortablen Zusammenführen beliebiger LDtk-Layer (IntGrid, Tiles, AutoLayers, Entities)
+ * in ein einheitliches `NavGrid` für Pathfinding (z. B. A*).
  */
 class NavGridBuilder
 {
+	/**
+	 * Das aktuell aufgebaute `NavGrid`.
+	 */
 	public var grid(default, null):NavGrid;
+
+	/**
+	 * Das zugrundeliegende LDtk-Level-Objekt (falls per `fromLevel` initialisiert).
+	 */
 	private var level:Dynamic;
 
+	/**
+	 * Erstellt einen neuen `NavGridBuilder` mit expliziten Abmessungen.
+	 *
+	 * @param width Breite in Grid-Zellen.
+	 * @param height Höhe in Grid-Zellen.
+	 * @param gridSize Kantenlänge einer Zelle in Pixeln (Standard: 16).
+	 * @param defaultValue Standardwert für freie Zellen (Standard: 0).
+	 */
 	public function new(width:Int, height:Int, gridSize:Int = 16, defaultValue:Int = 0)
 	{
 		grid = new NavGrid(width, height, gridSize, defaultValue);
 	}
 
 	/**
-	 * Erstellt einen neuen Builder anhand eines LDtk-Level-Objekts.
+	 * Erstellt einen neuen Builder anhand eines LDtk-Level-Objekts (z. B. `data.l_Level_0`).
+	 * Liest automatisch `cWid`, `cHei` und `gridSize` aus dem Level aus.
+	 *
+	 * @param levelObj Das LDtk-Level-Objekt.
+	 * @param defaultGridSize Fallback-Kantenlänge in Pixeln (Standard: 16).
+	 * @return Eine neue `NavGridBuilder`-Instanz.
 	 */
 	public static function fromLevel(levelObj:Dynamic, defaultGridSize:Int = 16):NavGridBuilder
 	{
@@ -58,7 +78,11 @@ class NavGridBuilder
 
 	/**
 	 * Fügt ein IntGrid-Layer als Hindernis hinzu.
-	 * Wenn kein isSolid-Prädikat übergeben wird, gilt jeder Wert != 0 als solide (1).
+	 *
+	 * @param layer Das LDtk-IntGrid-Layer-Objekt.
+	 * @param isSolid Optionales Prädikat: Gibt zurück, ob ein gegebener IntGrid-Wert als solide/blockiert gilt.
+	 *                (Standard: Jeder Wert `!= 0` gilt als blockiert).
+	 * @return Der Builder für Methodenverkettung (Fluent Interface).
 	 */
 	public function addIntGrid(layer:Dynamic, ?isSolid:(value:Int) -> Bool):NavGridBuilder
 	{
@@ -94,7 +118,11 @@ class NavGridBuilder
 
 	/**
 	 * Fügt ein Tile- oder AutoLayer-Layer als Hindernis hinzu.
-	 * Markiert alle Positionen mit einem Tile als blockiert.
+	 *
+	 * @param layer Das LDtk-Tile- oder AutoLayer-Objekt.
+	 * @param isSolid Optionales Prädikat zur Filterung nach `tileId`.
+	 *                (Standard: Jedes vorhandene Tile gilt als blockiert).
+	 * @return Der Builder für Methodenverkettung (Fluent Interface).
 	 */
 	public function addTileLayer(layer:Dynamic, ?isSolid:(tileId:Int) -> Bool):NavGridBuilder
 	{
@@ -132,8 +160,11 @@ class NavGridBuilder
 	}
 
 	/**
-	 * Fügt ein Entity-Layer hinzu und blockiert die von Entities belegten Zellen.
-	 * Über `filter` kann gesteuert werden, welche Entities als solide Hindernisse gelten.
+	 * Fügt ein Entity-Layer hinzu und blockiert die von Entities belegten Rasterzellen.
+	 *
+	 * @param layer Das LDtk-Entity-Layer-Objekt oder ein Array von Entities.
+	 * @param filter Optionales Prädikat: Bestimmt, ob eine Entity als Hindernis blockieren soll (Standard: alle).
+	 * @return Der Builder für Methodenverkettung (Fluent Interface).
 	 */
 	public function addEntityLayer(layer:Dynamic, ?filter:(entity:ldtk.Entity) -> Bool):NavGridBuilder
 	{
@@ -172,7 +203,12 @@ class NavGridBuilder
 	}
 
 	/**
-	 * Versucht, einen Layer anhand seines Namens aus dem Level aufzulösen und hinzuzufügen.
+	 * Löst einen Layer anhand seines Namens aus dem übergebenen Level auf und fügt ihn dem Raster hinzu.
+	 * Erkennt automatisch, ob es sich um IntGrid, Tiles/AutoLayer oder Entities handelt.
+	 *
+	 * @param layerName Der Name des Layers im Level (z. B. "Collisions", "SolidEntities").
+	 * @param isSolidEntity Optionales Prädikat für Entities.
+	 * @return Der Builder für Methodenverkettung (Fluent Interface).
 	 */
 	public function addLayerByName(layerName:String, ?isSolidEntity:(entity:ldtk.Entity) -> Bool):NavGridBuilder
 	{
@@ -211,7 +247,12 @@ class NavGridBuilder
 	}
 
 	/**
-	 * Scannt automatisch alle bekannten Layer eines Levels und generiert das NavGrid.
+	 * Scannt automatisch alle bekannten Layer eines LDtk-Levels und baut das fertige `NavGrid`.
+	 *
+	 * @param levelObj Das LDtk-Level-Objekt (z. B. `data`).
+	 * @param isSolidEntity Optionaler Filter für solide Entities.
+	 * @param defaultGridSize Fallback-Kantenlänge in Pixeln (Standard: 16).
+	 * @return Das fertig zusammengestellte `NavGrid`.
 	 */
 	public static function autoBuild(levelObj:Dynamic, ?isSolidEntity:(entity:ldtk.Entity) -> Bool, defaultGridSize:Int = 16):NavGrid
 	{
@@ -247,7 +288,9 @@ class NavGridBuilder
 	}
 
 	/**
-	 * Schließt die Konfiguration ab und gibt das NavGrid zurück.
+	 * Schließt die Konfiguration ab und liefert die fertige `NavGrid`-Instanz zurück.
+	 *
+	 * @return Das konfigurierte `NavGrid`.
 	 */
 	public function build():NavGrid
 	{

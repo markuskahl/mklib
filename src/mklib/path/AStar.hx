@@ -3,24 +3,46 @@ package mklib.path;
 import flixel.math.FlxPoint;
 
 /**
- * Repräsentiert einen Punkt im Grid.
+ * Repräsentiert eine diskrete 2D-Koordinate (X, Y) innerhalb eines Rasters (`NavGrid`).
  */
 class GridPoint
 {
+	/**
+	 * Die X-Koordinate im Grid (Spalte).
+	 */
 	public var x:Int;
+
+	/**
+	 * Die Y-Koordinate im Grid (Zeile).
+	 */
 	public var y:Int;
 
+	/**
+	 * Erstellt einen neuen Rasterpunkt.
+	 *
+	 * @param x Die X-Rasterkoordinate.
+	 * @param y Die Y-Rasterkoordinate.
+	 */
 	public function new(x:Int, y:Int)
 	{
 		this.x = x;
 		this.y = y;
 	}
 
+	/**
+	 * Prüft, ob dieser Punkt identisch mit einem anderen `GridPoint` ist.
+	 *
+	 * @param other Der zu vergleichende Punkt.
+	 * @return `true`, wenn beide Punkte dieselben Koordinaten besitzen, sonst `false`.
+	 */
 	public inline function equals(other:GridPoint):Bool
 	{
 		return other != null && this.x == other.x && this.y == other.y;
 	}
 
+	/**
+	 * Gibt eine formatierte String-Darstellung im Format "(x, y)" zurück.
+	 */
 	public function toString():String
 	{
 		return '($x, $y)';
@@ -213,7 +235,18 @@ class AStar
 	}
 
 	/**
-	 * Findet den Pfad und gibt ihn direkt als Flixel-Weltkoordinaten (FlxPoint) zurück.
+	 * Findet den kürzesten Pfad und gibt ihn direkt als Flixel-Weltkoordinaten (`FlxPoint`) zurück.
+	 *
+	 * @param grid Das Navigationsraster.
+	 * @param startWorldX Startposition X in Pixeln/Weltkoordinaten.
+	 * @param startWorldY Startposition Y in Pixeln/Weltkoordinaten.
+	 * @param goalWorldX Zielposition X in Pixeln/Weltkoordinaten.
+	 * @param goalWorldY Zielposition Y in Pixeln/Weltkoordinaten.
+	 * @param agentSpanX Breite der Einheit in Grid-Zellen (Standard: 1).
+	 * @param agentSpanY Höhe der Einheit in Grid-Zellen (Standard: 1).
+	 * @param allowDiagonal Ob diagonale Bewegungen erlaubt sind (Standard: false).
+	 * @param centered Wenn `true`, zentriert die Rückgabepunkte im Mittelpunkt der Zelle (Standard: true).
+	 * @return Ein Array von `FlxPoint`-Weltkoordinaten.
 	 */
 	public static function findWorldPath(grid:NavGrid, startWorldX:Float, startWorldY:Float, goalWorldX:Float, goalWorldY:Float,
 			agentSpanX:Int = 1, agentSpanY:Int = 1, allowDiagonal:Bool = false, centered:Bool = true):Array<FlxPoint>
@@ -240,7 +273,16 @@ class AStar
 	}
 
 	/**
-	 * Heuristik-Funktion (Manhattan für 4-Wege, Octile für 8-Wege).
+	 * Berechnet den heuristischen Distanzwert zwischen zwei Rasterpunkten.
+	 *
+	 * Verwendet Manhattan-Distanz für 4-Wege-Bewegung und Octile-Distanz für 8-Wege-Bewegung.
+	 *
+	 * @param x1 Start-X.
+	 * @param y1 Start-Y.
+	 * @param x2 Ziel-X.
+	 * @param y2 Ziel-Y.
+	 * @param allowDiagonal Ob diagonale Pfadsuche aktiviert ist.
+	 * @return Die geschätzten Kosten bis zum Ziel.
 	 */
 	private static inline function heuristic(x1:Int, y1:Int, x2:Int, y2:Int, allowDiagonal:Bool):Float
 	{
@@ -259,7 +301,10 @@ class AStar
 	}
 
 	/**
-	 * Rekonstruiert den Pfad vom Start- zum Zielknoten.
+	 * Rekonstruiert den Pfad rückwärts vom Zielknoten bis zum Startknoten.
+	 *
+	 * @param node Der erreichte Zielknoten.
+	 * @return Eine geordnete Liste von `GridPoint` vom Start bis zum Ziel.
 	 */
 	private static function reconstructPath(node:AStarNode):Array<GridPoint>
 	{
