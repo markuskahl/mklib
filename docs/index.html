@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>mklib – Dokumentation & API-Referenz</title>
-  <meta name="description" content="Offizielle Dokumentation und API-Referenz für mklib – HaxeFlixel, LDtk und Nape 2D Game Library.">
+  <title>mklib – Vollständige Dokumentation & API-Referenz</title>
+  <meta name="description" content="Lückenlose Dokumentation und API-Referenz für mklib – Jede Klasse, Methode und Eigenschaft für HaxeFlixel, LDtk und Nape 2D.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
@@ -33,7 +33,7 @@
     <!-- Search Input -->
     <div class="header-search">
       <span class="search-icon">🔍</span>
-      <input type="text" id="docs-search" class="search-input" placeholder="Dokumentation durchsuchen..." autocomplete="off">
+      <input type="text" id="docs-search" class="search-input" placeholder="Klasse, Methode oder Feld suchen..." autocomplete="off">
     </div>
 
     <!-- Header Actions -->
@@ -54,20 +54,20 @@
         <div>
           <div class="nav-section-title">Einführung</div>
           <ul class="nav-list">
-            <li class="nav-item active"><a href="#overview"><span class="nav-icon">✨</span> Übersicht</a></li>
+            <li class="nav-item active"><a href="#overview"><span class="nav-icon">✨</span> Übersicht & API-Matrix</a></li>
             <li class="nav-item"><a href="#getting-started"><span class="nav-icon">🚀</span> Schnellstart</a></li>
           </ul>
         </div>
 
         <div>
-          <div class="nav-section-title">Kern-Module</div>
+          <div class="nav-section-title">Kern-Module & Klassen</div>
           <ul class="nav-list">
             <li class="nav-item"><a href="#state"><span class="nav-icon">🎮</span> State Management</a></li>
             <li class="nav-item"><a href="#layers"><span class="nav-icon">🧱</span> Layer System</a></li>
             <li class="nav-item"><a href="#entities"><span class="nav-icon">👾</span> Entities & Sprites</a></li>
             <li class="nav-item"><a href="#physics"><span class="nav-icon">⚡</span> Physik & Sensoren</a></li>
             <li class="nav-item"><a href="#pathfinding"><span class="nav-icon">🧭</span> Pathfinding & A*</a></li>
-            <li class="nav-item"><a href="#tools-math"><span class="nav-icon">🛠️</span> Tools & Mathe</a></li>
+            <li class="nav-item"><a href="#tools-math"><span class="nav-icon">🛠️</span> Tools & Mathematik</a></li>
           </ul>
         </div>
       </nav>
@@ -81,37 +81,152 @@
              SECTION: OVERVIEW (#overview)
              =================================================================== -->
         <section id="overview" class="doc-section active">
-          <h1>mklib <span class="hero-gradient-text">Dokumentation</span></h1>
+          <h1>mklib <span class="hero-gradient-text">API-Dokumentation</span></h1>
           <p class="section-desc">
-            Eine performante, moderne Haxe-Bibliothek zur nahtlosen Verbindung von <strong>HaxeFlixel</strong>, dem <strong>LDtk Level-Editor</strong> und der <strong>Nape 2D Physik-Engine</strong>.
+            Vollständige, lückenlose Referenz aller Klassen, Eigenschaften und Methoden der <strong>mklib</strong>-Bibliothek für <strong>HaxeFlixel</strong>, den <strong>LDtk Level-Editor</strong> und <strong>Nape 2D</strong>.
           </p>
 
           <div class="feature-grid">
             <div class="feature-card">
               <div class="feature-icon">🗺️</div>
               <h3>LDtk Integration</h3>
-              <p>Automatische Kachelebenen-Darstellung und dynamische Reflection-Instanziierung von Spielfiguren.</p>
+              <p>Automatische Kachelebenen-Darstellung (<code>TileLayer</code>) und dynamische Reflection-Instanziierung (<code>EntityLayer</code>).</p>
             </div>
             <div class="feature-card">
               <div class="feature-icon">⚡</div>
               <h3>Nape Physik & Tags</h3>
-              <p>Einfaches Registrieren von Kollisions- und Sensor-Events via lesbaren Tag-Namen aus LDtk-Enums.</p>
+              <p>9 spezialisierte Kollisions- und Sensor-Listener (<code>Listener</code>) mit lesbaren String-Tags (<code>Tags</code>).</p>
             </div>
             <div class="feature-card">
               <div class="feature-icon">🧭</div>
               <h3>A* Pathfinding</h3>
-              <p>2D-Wegfindung mit 4- und 8-Wege-Bewegung, Weltkoordinaten und Einheiten beliebiger Kachelgröße.</p>
+              <p>Performantes 2D-Wegfindungsraster (<code>NavGrid</code>, <code>NavGridBuilder</code>, <code>AStar</code>) mit Multi-Tile-Support.</p>
             </div>
             <div class="feature-card">
               <div class="feature-icon">📱</div>
               <h3>Responsive Skalierung</h3>
-              <p>Automatische Berechnung idealer Spielauflösungen für moderne Breitbild-Displays ohne Verzerrung.</p>
+              <p>Dynamische Spielauflösung für Breitbild-Displays (<code>AspectRatio</code>) und mathematische Helfer (<code>MathTool</code>).</p>
             </div>
           </div>
 
-          <h2>Minimalbeispiel</h2>
-          <p>Ein vollständiger Spielzustand mit automatischer Physik-, Layer- und Pathfinding-Initialisierung:</p>
+          <h2>🏛️ Vollständige Klassen- & API-Matrix</h2>
+          <p>Alle in der Bibliothek enthaltenen Typen im Überblick:</p>
 
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Modul / Paket</th>
+                  <th>Klasse / Typ</th>
+                  <th>Eigenschaften</th>
+                  <th>Methoden</th>
+                  <th>Kapitel</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>mklib.state</code></td>
+                  <td><strong><code>State&lt;TLevel&gt;</code></strong></td>
+                  <td><code>project</code>, <code>tags</code>, <code>levelName</code>, <code>data</code></td>
+                  <td><code>new</code>, <code>create</code>, <code>napeInit</code>, <code>addCbTypes</code>, <code>update</code></td>
+                  <td><a href="#state">State →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.layer</code></td>
+                  <td><strong><code>TileLayer</code></strong></td>
+                  <td><code>levelName</code>, <code>layerName</code>, <code>state</code></td>
+                  <td><code>new</code>, <code>render</code></td>
+                  <td><a href="#layers">Layer →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.layer</code></td>
+                  <td><strong><code>EntityLayer</code></strong></td>
+                  <td><code>layerName</code>, <code>packageName</code>, <code>state</code></td>
+                  <td><code>new</code>, <code>addEntities</code></td>
+                  <td><a href="#layers">Layer →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.layer</code></td>
+                  <td><strong><code>EntityLayerSource&lt;T&gt;</code></strong></td>
+                  <td><code>identifier</code>, <code>getAllUntyped</code></td>
+                  <td>–</td>
+                  <td><a href="#layers">Layer →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.entity</code></td>
+                  <td><strong><code>EntitySprite</code></strong></td>
+                  <td><code>_entity</code>, <code>iid</code>, <code>state</code></td>
+                  <td><code>new</code></td>
+                  <td><a href="#entities">Entities →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.entity</code></td>
+                  <td><strong><code>EntityNapeSprite</code></strong></td>
+                  <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>body</code></td>
+                  <td><code>new</code>, <code>addCbType</code>, <code>updateShapePosition</code></td>
+                  <td><a href="#entities">Entities →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.physic</code></td>
+                  <td><strong><code>Listener</code></strong></td>
+                  <td>–</td>
+                  <td>9 Listener für Kollisionen und Sensoren</td>
+                  <td><a href="#physics">Physik →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.tools</code></td>
+                  <td><strong><code>Tags</code></strong></td>
+                  <td>–</td>
+                  <td><code>get</code>, <code>exist</code></td>
+                  <td><a href="#physics">Physik →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.path</code></td>
+                  <td><strong><code>NavGrid</code></strong></td>
+                  <td><code>width</code>, <code>height</code>, <code>gridSize</code>, <code>data</code></td>
+                  <td>12 Methoden zur Rasterverwaltung & Koordinatenumrechnung</td>
+                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.path</code></td>
+                  <td><strong><code>NavGridBuilder</code></strong></td>
+                  <td><code>grid</code>, <code>level</code></td>
+                  <td><code>new</code>, <code>fromLevel</code>, <code>addIntGrid</code>, <code>addTileLayer</code>, <code>addEntityLayer</code>, <code>addLayerByName</code>, <code>autoBuild</code>, <code>build</code></td>
+                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.path</code></td>
+                  <td><strong><code>AStar</code></strong></td>
+                  <td><code>SQRT2</code></td>
+                  <td><code>findPath</code>, <code>findWorldPath</code>, <code>heuristic</code>, <code>reconstructPath</code></td>
+                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.path</code></td>
+                  <td><strong><code>GridPoint</code></strong></td>
+                  <td><code>x</code>, <code>y</code></td>
+                  <td><code>new</code>, <code>equals</code>, <code>toString</code></td>
+                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.tools</code></td>
+                  <td><strong><code>AspectRatio</code></strong></td>
+                  <td><code>width</code>, <code>height</code>, <code>isDefault</code>, <code>screenRatio</code></td>
+                  <td><code>new</code>, <code>calc</code>, <code>isInRange</code></td>
+                  <td><a href="#tools-math">Tools →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.math</code></td>
+                  <td><strong><code>MathTool</code></strong></td>
+                  <td>–</td>
+                  <td><code>floatFix</code></td>
+                  <td><a href="#tools-math">Tools →</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>Minimalbeispiel</h2>
           <div class="code-box">
             <div class="code-header">
               <span class="code-lang-badge">Haxe</span>
@@ -182,7 +297,7 @@
           </div>
 
           <h2>2. LDtk Makro-Setup (Data.hx)</h2>
-          <p>Erstelle die Datei <code>source/Data.hx</code>. Das Makro analysiert deine <code>map.ldtk</code>-Datei zur Compile-Zeit:</p>
+          <p>Erstelle die Datei <code>source/Data.hx</code>. Das Makro analysiert deine <code>map.ldtk</code>-Datei zur Compile-Zeit und erzeugt typisierte Klassen:</p>
 
           <div class="code-box">
             <div class="code-header">
@@ -191,6 +306,10 @@
             </div>
             <pre><code><span class="hl-keyword">package</span>;
 
+<span class="hl-comment">/**
+ * LDtk-Makro-Kompilierung: Liest zur Compile-Zeit die Datei "assets/data/map.ldtk"
+ * ein und generiert typisierte Klassen und Enums für alle Level, Layer und Entities.
+ */</span>
 <span class="hl-keyword">private</span> <span class="hl-keyword">typedef</span> _Tmp = haxe.macro.MacroType&lt;[ ldtk.Project.build(<span class="hl-string">"assets/data/map.ldtk"</span>) ]&gt;;</code></pre>
           </div>
 
@@ -205,6 +324,9 @@
 <span class="hl-keyword">import</span> flixel.FlxGame;
 <span class="hl-keyword">import</span> openfl.display.Sprite;
 
+<span class="hl-comment">/**
+ * Haupteinstiegspunkt der Anwendung.
+ */</span>
 <span class="hl-keyword">class</span> <span class="hl-type">Main</span> <span class="hl-keyword">extends</span> <span class="hl-type">Sprite</span> {
     <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>() {
         <span class="hl-keyword">super</span>();
@@ -216,7 +338,7 @@
           <div class="callout callout-tip">
             <div class="callout-icon">💡</div>
             <div>
-              <strong>Tipp:</strong> Versehe deine Entity-Klassen stets mit der Annotation <code>@:keep</code>, damit der Haxe-Compiler sie bei optimierten Release-Builds (DCE) nicht verwirft.
+              <strong>Tipp zur Dead-Code-Elimination (DCE):</strong> Versehe deine dynamisch geladenen Entity-Klassen stets mit der Annotation <code>@:keep</code>, damit der Haxe-Compiler sie bei Release-Builds nicht wegoptimiert.
             </div>
           </div>
 
@@ -231,15 +353,24 @@
              =================================================================== -->
         <section id="state" class="doc-section">
           <h1>🎮 State Management (<code>mklib.state.State</code>)</h1>
-          <p class="section-desc">Die generische Basisklasse für Spielzustände mit automatischer LDtk- und Nape-Anbindung.</p>
+          <p class="section-desc">Die generische Basisklasse für HaxeFlixel-Spielzustände mit automatischer LDtk- und Nape-Anbindung.</p>
 
-          <h2>Eigenschaften</h2>
+          <h2>Klassensignatur</h2>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe Signature</span>
+            </div>
+            <pre><code><span class="hl-keyword">class</span> <span class="hl-type">State</span>&lt;TLevel = Dynamic&gt; <span class="hl-keyword">extends</span> flixel.<span class="hl-type">FlxState</span></code></pre>
+          </div>
+
+          <h2>Eigenschaften (Properties)</h2>
           <div class="api-table-wrapper">
             <table class="api-table">
               <thead>
                 <tr>
                   <th>Eigenschaft</th>
                   <th>Typ</th>
+                  <th>Modifizierer</th>
                   <th>Beschreibung</th>
                 </tr>
               </thead>
@@ -247,34 +378,39 @@
                 <tr>
                   <td><code>project</code></td>
                   <td><code>ldtk.Project</code></td>
-                  <td>Die geladene LDtk-Projektinstanz.</td>
+                  <td><code>public</code></td>
+                  <td>Die geladene LDtk-Projektinstanz (automatisch via Reflection aus <code>Data</code> oder per Parameter).</td>
                 </tr>
                 <tr>
-                  <td><code>data</code></td>
-                  <td><code>TLevel</code></td>
-                  <td>Die typisierten Leveldaten des aktiven Levels (z. B. <code>data.l_Tiles</code>).</td>
+                  <td><code>tags</code></td>
+                  <td><code>Map&lt;String, nape.callbacks.CbType&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Map aller registrierten Nape-CbTypes, aufgelöst aus dem LDtk-Enum <code>"Tags"</code>.</td>
                 </tr>
                 <tr>
                   <td><code>levelName</code></td>
                   <td><code>String</code></td>
-                  <td>Der Name des aktuell geladenen Levels (z. B. "Level_0").</td>
+                  <td><code>public</code></td>
+                  <td>Der Name des aktuell aktiven LDtk-Levels (z. B. <code>"Level_0"</code>).</td>
                 </tr>
                 <tr>
-                  <td><code>tags</code></td>
-                  <td><code>Map&lt;String, CbType&gt;</code></td>
-                  <td>Registrierte Kollisionstags aus dem LDtk-Enum "Tags".</td>
+                  <td><code>data</code></td>
+                  <td><code>TLevel</code></td>
+                  <td><code>public</code></td>
+                  <td>Die typisierten Leveldaten des geladenen Levels (z. B. <code>data.l_Tiles</code>, <code>data.l_Entities</code>).</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <h2>Wichtige Methoden</h2>
+          <h2>Methoden (Methods)</h2>
           <div class="api-table-wrapper">
             <table class="api-table">
               <thead>
                 <tr>
                   <th>Methode</th>
                   <th>Signatur</th>
+                  <th>Rückgabe</th>
                   <th>Beschreibung</th>
                 </tr>
               </thead>
@@ -282,17 +418,32 @@
                 <tr>
                   <td><code>new</code></td>
                   <td><code>(LevelName:String = "Level_0", ?projectInstance:ldtk.Project)</code></td>
-                  <td>Erstellt den State und lädt das angegebene Level aus dem LDtk-Projekt.</td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt den State, bindet das LDtk-Projekt und lädt das angegebene Level in <code>data</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>create</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Initialisiert den Spielzustand (ruft <code>super.create()</code> auf).</td>
                 </tr>
                 <tr>
                   <td><code>napeInit</code></td>
                   <td><code>(gx:Int, gy:Int):Void</code></td>
-                  <td>Startet <code>FlxNapeSpace</code>, setzt die Gravitation und lädt CbTypes.</td>
+                  <td><code>Void</code></td>
+                  <td>Initialisiert <code>FlxNapeSpace</code>, setzt die globale Schwerkraft und ruft automatisch <code>addCbTypes()</code> auf.</td>
                 </tr>
                 <tr>
                   <td><code>addCbTypes</code></td>
                   <td><code>():Void</code></td>
-                  <td>Liest das LDtk-Enum "Tags" aus und registriert CbTypes.</td>
+                  <td><code>Void</code></td>
+                  <td>Liest das LDtk-Enum <code>"Tags"</code> aus der Projektdefinition aus und füllt die <code>tags</code>-Map mit <code>CbType</code>-Instanzen.</td>
+                </tr>
+                <tr>
+                  <td><code>update</code></td>
+                  <td><code>(elapsed:Float):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Frame-Update-Schleife. Regelt u. a. die automatische Sichtbarkeit des Mauszeigers (Windows vs. HTML5).</td>
                 </tr>
               </tbody>
             </table>
@@ -311,35 +462,161 @@
           <h1>🧱 Layer System (<code>mklib.layer.*</code>)</h1>
           <p class="section-desc">Verwaltung und Darstellung von Kachel- und Entity-Ebenen aus LDtk.</p>
 
-          <h2>TileLayer</h2>
-          <p>Rendert LDtk-Kachelebenen (<code>Layer_Tiles</code> / <code>Layer_AutoLayer</code>) direkt in eine <code>FlxSpriteGroup</code>:</p>
-          <div class="code-box">
-            <div class="code-header">
-              <span class="code-lang-badge">Haxe</span>
-              <button class="copy-btn">📋 Kopieren</button>
-            </div>
-            <pre><code><span class="hl-keyword">var</span> tileLayer = <span class="hl-keyword">new</span> <span class="hl-type">TileLayer</span>(data.l_Tiles.identifier);
-add(tileLayer);
+          <h2>1. <code>TileLayer</code> (<code>mklib.layer.TileLayer</code>)</h2>
+          <p>Erbt von <code>FlxSpriteGroup</code> und rendert statische (<code>Layer_Tiles</code>) oder automatische Kachelebenen (<code>Layer_AutoLayer</code>).</p>
 
-<span class="hl-comment">// Bei Bedarf zur Laufzeit neu rendern:</span>
-tileLayer.render();</code></pre>
+          <h3>Eigenschaften</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Eigenschaft</th>
+                  <th>Typ</th>
+                  <th>Modifizierer</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>levelName</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Der Name des geladenen LDtk-Levels (z. B. <code>"Level_0"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>layerName</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Der Bezeichner des LDtk-Tile-Layers (z. B. <code>"Tiles"</code>, <code>"Background"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>state</code></td>
+                  <td><code>mklib.state.State</code></td>
+                  <td><code>public</code></td>
+                  <td>Referenz auf den aktiven `State`.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <h2>EntityLayer & Reflection-Mechanismus</h2>
-          <p><code>EntityLayer</code> durchsucht zur Laufzeit das angegebene Package (Standard: <code>"entities"</code>) nach Klassen, deren Name dem Entity-Identifier in LDtk entspricht:</p>
-          <ul>
-            <li>LDtk Entity <code>Hero</code> → instanziiert <code>entities.Hero</code></li>
-            <li>LDtk Entity <code>Platform</code> → instanziiert <code>entities.Platform</code></li>
-          </ul>
+          <h3>Methoden</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(LayerName:String)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt den <code>TileLayer</code>, bindet State/Level und führt direkt <code>render()</code> aus.</td>
+                </tr>
+                <tr>
+                  <td><code>render</code></td>
+                  <td><code>():FlxSpriteGroup</code></td>
+                  <td><code>FlxSpriteGroup</code></td>
+                  <td>Leert die Gruppe und zeichnet die Kacheln anhand von <code>state.data</code> neu. Gibt <code>this</code> zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          <div class="code-box">
-            <div class="code-header">
-              <span class="code-lang-badge">Haxe</span>
-              <button class="copy-btn">📋 Kopieren</button>
-            </div>
-            <pre><code><span class="hl-comment">// Instanziiert alle Entities aus data.l_Entities im Package "entities":</span>
-<span class="hl-keyword">var</span> entityLayer = <span class="hl-keyword">new</span> <span class="hl-type">EntityLayer</span>(data.l_Entities, <span class="hl-string">"entities"</span>);
-add(entityLayer);</code></pre>
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>EntityLayer</code> & <code>EntityLayerSource</code></h2>
+          <p>Erbt von <code>FlxSpriteGroup</code> und instanziiert automatisch alle LDtk-Entities via Reflection.</p>
+
+          <h3>Typedef: <code>EntityLayerSource&lt;T = Dynamic&gt;</code></h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Feld</th>
+                  <th>Typ</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>identifier</code></td>
+                  <td><code>String</code></td>
+                  <td>Der Bezeichner des Layers in LDtk (z. B. <code>"Entities"</code>, <code>"Actors"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>getAllUntyped</code></td>
+                  <td><code>() -&gt; Array&lt;T&gt;</code></td>
+                  <td>Gibt alle im Layer platzierten Entities als Array zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Eigenschaften von <code>EntityLayer</code></h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Eigenschaft</th>
+                  <th>Typ</th>
+                  <th>Modifizierer</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>layerName</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Der LDtk-Layer-Bezeichner.</td>
+                </tr>
+                <tr>
+                  <td><code>packageName</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Das Haxe-Package zur Klassensuche (Standard: <code>"entities"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>state</code></td>
+                  <td><code>mklib.state.State&lt;Dynamic&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Referenz auf den aktiven `State`.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methoden von <code>EntityLayer</code></h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(layer:EntityLayerSource&lt;Dynamic&gt;, packageName:String = "entities")</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt den Layer, liest alle Entities aus und ruft <code>addEntities()</code> auf.</td>
+                </tr>
+                <tr>
+                  <td><code>addEntities</code></td>
+                  <td><code>(entities:Array&lt;ldtk.Entity&gt;):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Instanziiert dynamisch passende Klassen (<code>packageName.EntityIdentifier</code>) und fügt sie der Gruppe hinzu.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="section-nav-footer">
@@ -355,46 +632,142 @@ add(entityLayer);</code></pre>
           <h1>👾 Entities & Sprites (<code>mklib.entity.*</code>)</h1>
           <p class="section-desc">Basisklassen für visuelle und physikalische Spielobjekte.</p>
 
-          <h2>EntitySprite vs. EntityNapeSprite</h2>
-          <div class="feature-grid">
-            <div class="feature-card">
-              <h3>EntitySprite</h3>
-              <p>Erbt von <code>FlxSprite</code>. Ideal für rein grafische Objekte ohne Physik (Partikel, Dekorationen, einfache Items).</p>
-            </div>
-            <div class="feature-card">
-              <h3>EntityNapeSprite</h3>
-              <p>Erbt von <code>FlxNapeSprite</code>. Unterstützt Physik, Shapes, automatisches Tag-Mapping (<code>addCbType</code>) und Zentrierung.</p>
-            </div>
+          <h2>1. <code>EntitySprite</code> (<code>mklib.entity.EntitySprite</code>)</h2>
+          <p>Basisklasse für rein visuelle Entities ohne Physik. Erbt von <code>flixel.FlxSprite</code>.</p>
+
+          <h3>Eigenschaften</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Eigenschaft</th>
+                  <th>Typ</th>
+                  <th>Modifizierer</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>_entity</code></td>
+                  <td><code>ldtk.Entity</code></td>
+                  <td><code>public</code></td>
+                  <td>Die originale LDtk-Entity-Definition inklusive benutzerdefinierter Felder.</td>
+                </tr>
+                <tr>
+                  <td><code>iid</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Die weltweit eindeutige Instanz-ID der Entity aus LDtk.</td>
+                </tr>
+                <tr>
+                  <td><code>state</code></td>
+                  <td><code>mklib.state.State</code></td>
+                  <td><code>public</code></td>
+                  <td>Referenz auf den aktuellen `State`.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <h2>Code-Beispiel: Physikalische Plattform</h2>
-          <div class="code-box">
-            <div class="code-header">
-              <span class="code-lang-badge">Haxe</span>
-              <button class="copy-btn">📋 Kopieren</button>
-            </div>
-            <pre><code><span class="hl-keyword">package</span> entities;
+          <h3>Methoden</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(entity:ldtk.Entity)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt das Sprite, setzt <code>x = entity.pixelX</code>, <code>y = entity.pixelY</code>, <code>width</code>, <code>height</code> und <code>iid</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-<span class="hl-keyword">import</span> mklib.entity.EntityNapeSprite;
-<span class="hl-keyword">import</span> flixel.util.FlxColor;
-<span class="hl-keyword">import</span> ldtk.Entity;
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
 
-@:keep
-<span class="hl-keyword">class</span> <span class="hl-type">Platform</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntityNapeSprite</span> {
-    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:<span class="hl-type">Entity</span>) {
-        <span class="hl-keyword">super</span>(entity);
+          <h2>2. <code>EntityNapeSprite</code> (<code>mklib.entity.EntityNapeSprite</code>)</h2>
+          <p>Erweiterte Basisklasse für Nape-Physik-Objekte. Erbt von <code>flixel.addons.nape.FlxNapeSprite</code>.</p>
 
-        makeGraphic(entity.width, entity.height, FlxColor.RED);
-        createRectangularBody(entity.width, entity.height);
-        body.allowMovement = <span class="hl-keyword">false</span>;
+          <h3>Eigenschaften</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Eigenschaft</th>
+                  <th>Typ</th>
+                  <th>Modifizierer</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>_entity</code></td>
+                  <td><code>ldtk.Entity</code></td>
+                  <td><code>public</code></td>
+                  <td>Die zugrundeliegende LDtk-Entity mit allen Feldern.</td>
+                </tr>
+                <tr>
+                  <td><code>iid</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Die eindeutige LDtk-Instanz-ID.</td>
+                </tr>
+                <tr>
+                  <td><code>state</code></td>
+                  <td><code>mklib.state.State</code></td>
+                  <td><code>public</code></td>
+                  <td>Referenz auf den aktiven `State`.</td>
+                </tr>
+                <tr>
+                  <td><code>body</code></td>
+                  <td><code>nape.phys.Body</code></td>
+                  <td><code>public</code></td>
+                  <td>*(Ererbt)* Der physikalische Nape-Körper.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-        <span class="hl-comment">// Nape-Körper im Mittelpunkt der LDtk-Entity zentrieren:</span>
-        updateShapePosition();
-
-        <span class="hl-comment">// Tags automatisch aus LDtk-Feldern ("Tag" / "Tags") übernehmen:</span>
-        addCbType();
-    }
-}</code></pre>
+          <h3>Methoden</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(entity:ldtk.Entity)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt das Nape-Sprite und synchronisiert Position, Entity und State.</td>
+                </tr>
+                <tr>
+                  <td><code>addCbType</code></td>
+                  <td><code>(name:String = null):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Weist dem Nape-Körper Tags zu. Liest bei <code>name == null</code> automatisch die LDtk-Felder <code>"Tag"</code> oder <code>"Tags"</code> aus. Setzt <code>body.userData.instance = this</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>updateShapePosition</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Zentriert den Nape-Körper im Mittelpunkt der LDtk-Entity (<code>pixelX + width/2, pixelY + height/2</code>).</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="section-nav-footer">
@@ -407,86 +780,128 @@ add(entityLayer);</code></pre>
              SECTION: PHYSICS (#physics)
              =================================================================== -->
         <section id="physics" class="doc-section">
-          <h1>⚡ Physik & Sensoren (<code>mklib.physic.*</code>)</h1>
+          <h1>⚡ Physik & Sensoren (<code>mklib.physic.*</code> & <code>mklib.tools.Tags</code>)</h1>
           <p class="section-desc">Einfache Registrierung von Kollisionen und Sensor-Überlappungen ohne manuelle CbType-Verwaltung.</p>
 
-          <h2>Kollisionen vs. Sensoren</h2>
-          <div class="api-table-wrapper">
-            <table class="api-table">
-              <thead>
-                <tr>
-                  <th>Ereignis-Typ</th>
-                  <th>Physischer Stoß?</th>
-                  <th>Einsatzbereich</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>COLLISION</strong></td>
-                  <td>Ja (Körper prallen ab / liegen auf)</td>
-                  <td>Wände, Plattformen, Spielfiguren, Kisten</td>
-                </tr>
-                <tr>
-                  <td><strong>SENSOR</strong></td>
-                  <td>Nein (Durchdringung erlaubt)</td>
-                  <td>Münzen, Power-ups, Trigger-Zonen, Stacheln</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <h2>1. <code>Tags</code> (<code>mklib.tools.Tags</code>)</h2>
+          <p>Statische Hilfsklasse zum Abfragen von <code>CbType</code>-Objekten aus dem aktuellen `State`.</p>
 
-          <h2>Verfügbare Listener-Methoden</h2>
           <div class="api-table-wrapper">
             <table class="api-table">
               <thead>
                 <tr>
                   <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>get</code></td>
+                  <td><code>(tag:String):nape.callbacks.CbType</code></td>
+                  <td><code>CbType</code></td>
+                  <td>Gibt den registrierten <code>CbType</code> für einen Tag-Namen zurück (oder <code>null</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>exist</code></td>
+                  <td><code>(tag:String):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob der Tag im aktuellen State registriert ist.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>Listener</code> (<code>mklib.physic.Listener</code>)</h2>
+          <p>Statische Methoden zur Registrierung aller Kollisions- und Sensor-Events.</p>
+
+          <h3>Physische Kollisionen (<code>InteractionType.COLLISION</code>)</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
                   <th>Ereignis</th>
                   <th>Beschreibung</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>addCollisionBeginListener(t1, t2, fn)</code></td>
-                  <td>Kollision Beginn</td>
-                  <td>Wird beim ersten Kontakt zweier Tags aufgerufen.</td>
+                  <td><code>addCollisionBeginListener</code></td>
+                  <td><code>(t1:String, t2:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.BEGIN</code></td>
+                  <td>Wird aufgerufen, sobald sich zwei Körper mit <code>t1</code> und <code>t2</code> berühren.</td>
                 </tr>
                 <tr>
-                  <td><code>addCollisionEndListener(t1, t2, fn)</code></td>
-                  <td>Kollision Ende</td>
-                  <td>Wird aufgerufen, sobald der Kontakt abreißt.</td>
+                  <td><code>addCollisionEndListener</code></td>
+                  <td><code>(t1:String, t2:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.END</code></td>
+                  <td>Wird aufgerufen, sobald der Kontakt zwischen <code>t1</code> und <code>t2</code> abreißt.</td>
                 </tr>
                 <tr>
-                  <td><code>addSensorBeginListener(t1, t2, fn)</code></td>
-                  <td>Sensor Beginn</td>
-                  <td>Sensor-Überlappung zwischen zwei Tags beginnt.</td>
-                </tr>
-                <tr>
-                  <td><code>addSensorBeginListenerANY(tag, fn)</code></td>
-                  <td>Sensor Beliebig</td>
-                  <td>Tag überlappt mit irgendeinem anderen Körper.</td>
+                  <td><code>addCollisionOngoingListener</code></td>
+                  <td><code>(t1:String, t2:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.ONGOING</code></td>
+                  <td>Wird in jedem Physik-Tick aufgerufen, solange <code>t1</code> und <code>t2</code> in Kontakt stehen.</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <h2>Code-Beispiel: Münz-Trigger</h2>
-          <div class="code-box">
-            <div class="code-header">
-              <span class="code-lang-badge">Haxe</span>
-              <button class="copy-btn">📋 Kopieren</button>
-            </div>
-            <pre><code><span class="hl-keyword">import</span> mklib.physic.Listener;
-<span class="hl-keyword">import</span> nape.callbacks.InteractionCallback;
-
-<span class="hl-comment">// Registriert Sensor-Event zwischen "Player" und "Coin":</span>
-<span class="hl-type">Listener</span>.addSensorBeginListener(<span class="hl-string">"Player"</span>, <span class="hl-string">"Coin"</span>, <span class="hl-keyword">function</span>(cb:<span class="hl-type">InteractionCallback</span>) {
-    <span class="hl-keyword">var</span> coin:Coin = <span class="hl-keyword">cast</span> cb.int2.userData.instance;
-    <span class="hl-keyword">if</span> (coin != <span class="hl-keyword">null</span>) {
-        coin.kill();
-        trace(<span class="hl-string">"Münze aufgesammelt!"</span>);
-    }
-});</code></pre>
+          <h3>Sensor-Überlappungen (<code>InteractionType.SENSOR</code>)</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Ereignis</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>addSensorBeginListener</code></td>
+                  <td><code>(t1:String, t2:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.BEGIN</code></td>
+                  <td>Überlappung zwischen <code>t1</code> und <code>t2</code> beginnt.</td>
+                </tr>
+                <tr>
+                  <td><code>addSensorEndListener</code></td>
+                  <td><code>(t1:String, t2:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.END</code></td>
+                  <td>Überlappung zwischen <code>t1</code> und <code>t2</code> endet.</td>
+                </tr>
+                <tr>
+                  <td><code>addSensorOngoingListener</code></td>
+                  <td><code>(t1:String, t2:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.ONGOING</code></td>
+                  <td>Überlappung zwischen <code>t1</code> und <code>t2</code> dauert an.</td>
+                </tr>
+                <tr>
+                  <td><code>addSensorBeginListenerANY</code></td>
+                  <td><code>(t1:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.BEGIN</code></td>
+                  <td><code>t1</code> überlappt mit beliebigem anderen Körper (<code>CbType.ANY_BODY</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>addSensorEndListenerANY</code></td>
+                  <td><code>(t1:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.END</code></td>
+                  <td><code>t1</code> verlässt Überlappung mit beliebigem anderen Körper.</td>
+                </tr>
+                <tr>
+                  <td><code>addSensorOngoingListenerANY</code></td>
+                  <td><code>(t1:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.ONGOING</code></td>
+                  <td><code>t1</code> überlappt andauernd mit beliebigem anderen Körper.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="section-nav-footer">
@@ -529,23 +944,306 @@ add(entityLayer);</code></pre>
             <div class="sim-legend">
               <div class="legend-item"><div class="legend-color" style="background: #10b981;"></div> Start (S) ziehen</div>
               <div class="legend-item"><div class="legend-color" style="background: #f43f5e;"></div> Ziel (Z) ziehen</div>
-              <div class="legend-item"><div class="legend-color" style="background: #334155;"></div> Klick & Ziehen = Wand zeichnen/löschen</div>
+              <div class="legend-item"><div class="legend-color" style="background: #334155;"></div> Klick &amp; Ziehen = Wand zeichnen/löschen</div>
               <div class="legend-item"><div class="legend-color" style="background: #38bdf8;"></div> Gefundener A*-Pfad</div>
             </div>
           </div>
 
-          <h2>NavGridBuilder (Raster aus LDtk erzeugen)</h2>
-          <p>Erzeugt das Navigationsraster automatisch aus beliebigen LDtk-Layern:</p>
-          <div class="code-box">
-            <div class="code-header">
-              <span class="code-lang-badge">Haxe</span>
-              <button class="copy-btn">📋 Kopieren</button>
-            </div>
-            <pre><code><span class="hl-comment">// Automatischer Scan aller Layer des Levels:</span>
-<span class="hl-keyword">var</span> navGrid = <span class="hl-type">NavGridBuilder</span>.autoBuild(data);
+          <h2>1. <code>NavGrid</code> (<code>mklib.path.NavGrid</code>)</h2>
+          <p>Speichert das 2D-Raster in einem flachen 1D-Array (<code>0 = frei</code>, <code>1 = blockiert</code>).</p>
 
-<span class="hl-comment">// Pfad direkt in Pixel-Weltkoordinaten finden:</span>
-<span class="hl-keyword">var</span> path = <span class="hl-type">AStar</span>.findWorldPath(navGrid, player.x, player.y, targetX, targetY, <span class="hl-num">1</span>, <span class="hl-num">1</span>, <span class="hl-keyword">true</span>);</code></pre>
+          <h3>Eigenschaften</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Eigenschaft</th>
+                  <th>Typ</th>
+                  <th>Modifizierer</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>width</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public (default, null)</code></td>
+                  <td>Breite des Rasters in Zellen (Spalten).</td>
+                </tr>
+                <tr>
+                  <td><code>height</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public (default, null)</code></td>
+                  <td>Höhe des Rasters in Zellen (Zeilen).</td>
+                </tr>
+                <tr>
+                  <td><code>gridSize</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public (default, null)</code></td>
+                  <td>Kantenlänge einer Zelle in Pixeln (z. B. <code>16</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>data</code></td>
+                  <td><code>Array&lt;Int&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Lineares 1D-Array aller Zellen (Größe <code>width * height</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methoden</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(w:Int, h:Int, gridSize:Int = 16, defaultValue:Int = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt ein neues NavGrid.</td>
+                </tr>
+                <tr>
+                  <td><code>isInBounds</code></td>
+                  <td><code>(cx:Int, cy:Int):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob <code>(cx, cy)</code> innerhalb der Map-Grenzen liegt.</td>
+                </tr>
+                <tr>
+                  <td><code>getIndex</code></td>
+                  <td><code>(cx:Int, cy:Int):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Berechnet <code>(cy * width) + cx</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>get</code></td>
+                  <td><code>(cx:Int, cy:Int):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Gibt den Zellwert zurück (oder <code>1</code> außerhalb).</td>
+                </tr>
+                <tr>
+                  <td><code>set</code></td>
+                  <td><code>(cx:Int, cy:Int, value:Int):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Setzt den Wert einer Zelle.</td>
+                </tr>
+                <tr>
+                  <td><code>isWalkable</code></td>
+                  <td><code>(cx:Int, cy:Int):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob eine Zelle frei ist (<code>value == 0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>isAreaWalkable</code></td>
+                  <td><code>(cx:Int, cy:Int, spanX:Int = 1, spanY:Int = 1):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft einen ganzen Bereich für Multi-Tile-Einheiten.</td>
+                </tr>
+                <tr>
+                  <td><code>setArea</code></td>
+                  <td><code>(cx:Int, cy:Int, spanX:Int, spanY:Int, value:Int = 1):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Setzt einen rechteckigen Bereich auf <code>value</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>setEntity</code></td>
+                  <td><code>(entity:ldtk.Entity, value:Int = 1):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Blockiert die Fläche einer LDtk-Entity anhand ihrer Pixelmaße.</td>
+                </tr>
+                <tr>
+                  <td><code>worldToGridX</code></td>
+                  <td><code>(worldX:Float):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Konvertiert Pixel-X in Raster-X.</td>
+                </tr>
+                <tr>
+                  <td><code>worldToGridY</code></td>
+                  <td><code>(worldY:Float):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Konvertiert Pixel-Y in Raster-Y.</td>
+                </tr>
+                <tr>
+                  <td><code>gridToWorldX</code></td>
+                  <td><code>(cx:Int, centered:Bool = false):Float</code></td>
+                  <td><code>Float</code></td>
+                  <td>Konvertiert Raster-X in Pixel-X (optional mit Zentrierung).</td>
+                </tr>
+                <tr>
+                  <td><code>gridToWorldY</code></td>
+                  <td><code>(cy:Int, centered:Bool = false):Float</code></td>
+                  <td><code>Float</code></td>
+                  <td>Konvertiert Raster-Y in Pixel-Y (optional mit Zentrierung).</td>
+                </tr>
+                <tr>
+                  <td><code>clear</code></td>
+                  <td><code>(value:Int = 0):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Setzt alle Zellen auf <code>value</code> zurück.</td>
+                </tr>
+                <tr>
+                  <td><code>clone</code></td>
+                  <td><code>():NavGrid</code></td>
+                  <td><code>NavGrid</code></td>
+                  <td>Erstellt eine tiefe Kopie des Grids.</td>
+                </tr>
+                <tr>
+                  <td><code>toString</code></td>
+                  <td><code>():String</code></td>
+                  <td><code>String</code></td>
+                  <td>Gibt eine ASCII-Vorschau des Grids zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>NavGridBuilder</code> (<code>mklib.path.NavGridBuilder</code>)</h2>
+          <p>Fluent Builder zum automatischen Extrahieren von Hindernissen aus LDtk-Leveln.</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(w:Int, h:Int, gridSize:Int = 16, defaultValue:Int = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt einen Builder mit festen Maßen.</td>
+                </tr>
+                <tr>
+                  <td><code>fromLevel</code></td>
+                  <td><code>(levelObj:Dynamic, defaultGridSize:Int = 16)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Erstellt Builder aus LDtk-Levelobjekt.</td>
+                </tr>
+                <tr>
+                  <td><code>addIntGrid</code></td>
+                  <td><code>(layer:Dynamic, ?isSolid:(val:Int)-&gt;Bool)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Fügt IntGrid-Layer hinzu.</td>
+                </tr>
+                <tr>
+                  <td><code>addTileLayer</code></td>
+                  <td><code>(layer:Dynamic, ?isSolid:(tileId:Int)-&gt;Bool)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Fügt Tile- oder AutoLayer hinzu.</td>
+                </tr>
+                <tr>
+                  <td><code>addEntityLayer</code></td>
+                  <td><code>(layer:Dynamic, ?filter:(e:ldtk.Entity)-&gt;Bool)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Fügt Entity-Layer hinzu.</td>
+                </tr>
+                <tr>
+                  <td><code>addLayerByName</code></td>
+                  <td><code>(name:String, ?isSolidEntity:(e:ldtk.Entity)-&gt;Bool)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Löst Layer nach Name auf.</td>
+                </tr>
+                <tr>
+                  <td><code>autoBuild</code></td>
+                  <td><code>(levelObj:Dynamic, ?isSolidEntity:(e:ldtk.Entity)-&gt;Bool, defaultGridSize:Int = 16)</code></td>
+                  <td><code>NavGrid</code></td>
+                  <td>Scannt alle Layer automatisch und baut das Grid fertig.</td>
+                </tr>
+                <tr>
+                  <td><code>build</code></td>
+                  <td><code>():NavGrid</code></td>
+                  <td><code>NavGrid</code></td>
+                  <td>Liefert das konfigurierte `NavGrid` zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>3. <code>AStar</code> & <code>GridPoint</code> (<code>mklib.path.AStar</code>)</h2>
+          
+          <h3><code>GridPoint</code></h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>x</code></td>
+                  <td><code>Int</code> (Eigenschaft)</td>
+                  <td>Die X-Rasterkoordinate.</td>
+                </tr>
+                <tr>
+                  <td><code>y</code></td>
+                  <td><code>Int</code> (Eigenschaft)</td>
+                  <td>Die Y-Rasterkoordinate.</td>
+                </tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(x:Int, y:Int)</code> (Methode)</td>
+                  <td>Erstellt einen neuen Punkt.</td>
+                </tr>
+                <tr>
+                  <td><code>equals</code></td>
+                  <td><code>(other:GridPoint):Bool</code> (Methode)</td>
+                  <td>Prüft Koordinatengleichheit.</td>
+                </tr>
+                <tr>
+                  <td><code>toString</code></td>
+                  <td><code>():String</code> (Methode)</td>
+                  <td>Gibt <code>"(x, y)"</code> zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3><code>AStar</code></h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>SQRT2</code></td>
+                  <td><code>Float = 1.41421356237</code> (Konstante)</td>
+                  <td>Diagonale Schrittkosten.</td>
+                </tr>
+                <tr>
+                  <td><code>findPath</code></td>
+                  <td><code>(grid:NavGrid, startX:Int, startY:Int, goalX:Int, goalY:Int, agentSpanX:Int = 1, agentSpanY:Int = 1, allowDiagonal:Bool = false):Array&lt;GridPoint&gt;</code></td>
+                  <td>Pfadsuche in Rasterkoordinaten.</td>
+                </tr>
+                <tr>
+                  <td><code>findWorldPath</code></td>
+                  <td><code>(grid:NavGrid, startWorldX:Float, startWorldY:Float, goalWorldX:Float, goalWorldY:Float, agentSpanX:Int = 1, agentSpanY:Int = 1, allowDiagonal:Bool = false, centered:Bool = true):Array&lt;FlxPoint&gt;</code></td>
+                  <td>Pfadsuche direkt in Flixel-Weltkoordinaten (<code>FlxPoint</code>).</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="section-nav-footer">
@@ -561,27 +1259,107 @@ add(entityLayer);</code></pre>
           <h1>🛠️ Tools & Mathematik (<code>mklib.tools.*</code> & <code>mklib.math.*</code>)</h1>
           <p class="section-desc">Hilfsklassen für responsive Auflösungen und mathematische Berechnungen.</p>
 
-          <h2>AspectRatio</h2>
+          <h2>1. <code>AspectRatio</code> (<code>mklib.tools.AspectRatio</code>)</h2>
           <p>Berechnet anhand der Bildschirmauflösung automatisch die optimale Spielbreite für eine feste vertikale Design-Höhe:</p>
-          <div class="code-box">
-            <div class="code-header">
-              <span class="code-lang-badge">Haxe</span>
-              <button class="copy-btn">📋 Kopieren</button>
-            </div>
-            <pre><code><span class="hl-keyword">var</span> ar = <span class="hl-keyword">new</span> <span class="hl-type">AspectRatio</span>();
-trace(<span class="hl-string">'Optimale Auflösung: ${ar.width} x ${ar.height}'</span>);
 
-addChild(<span class="hl-keyword">new</span> <span class="hl-type">FlxGame</span>(ar.width, ar.height, PlayState));</code></pre>
+          <h3>Eigenschaften</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Eigenschaft</th>
+                  <th>Typ</th>
+                  <th>Modifizierer</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>width</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Die berechnete Spielbreite in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>height</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Die berechnete Spielhöhe in Pixeln (Standard: <code>180</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>isDefault</code></td>
+                  <td><code>Bool</code></td>
+                  <td><code>public</code></td>
+                  <td>Gibt an, ob die Fallback-Maße (<code>400x180</code>) verwendet wurden.</td>
+                </tr>
+                <tr>
+                  <td><code>screenRatio</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>private</code></td>
+                  <td>Das tatsächliche Seitenverhältnis des Displays.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <h2>MathTool</h2>
+          <h3>Methoden</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(?screenWidth:Float = 0, ?screenHeight:Float = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt die Instanz und berechnet sofort die Maße via <code>calc()</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>calc</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Führt die interne Berechnung von `width` und `height` durch.</td>
+                </tr>
+                <tr>
+                  <td><code>isInRange</code></td>
+                  <td><code>():Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob das Seitenverhältnis im Breitbildbereich (1.77 bis 2.22) liegt.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>MathTool</code> (<code>mklib.math.MathTool</code>)</h2>
           <p>Hilfsfunktion zur Rundung von Gleitkommazahlen auf feste Nachkommastellen:</p>
-          <div class="code-box">
-            <div class="code-header">
-              <span class="code-lang-badge">Haxe</span>
-              <button class="copy-btn">📋 Kopieren</button>
-            </div>
-            <pre><code><span class="hl-keyword">var</span> rounded = <span class="hl-type">MathTool</span>.floatFix(<span class="hl-num">3.14159265</span>, <span class="hl-num">2</span>); <span class="hl-comment">// Ergibt 3.14</span></code></pre>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>floatFix</code></td>
+                  <td><code>(v:Float, length:Int):Float</code></td>
+                  <td><code>Float</code></td>
+                  <td>Rundet <code>v</code> auf <code>length</code> Nachkommastellen (z. B. <code>MathTool.floatFix(3.1415, 2) == 3.14</code>).</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="section-nav-footer">

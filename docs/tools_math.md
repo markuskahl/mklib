@@ -1,33 +1,29 @@
 # Tools & Hilfsfunktionen (`mklib.tools.*` & `mklib.math.*`)
 
-Dieses Modul beinhaltet nützliche Helfer für Auflösungs- und Seitenverhältnisberechnungen sowie mathematische Rundungen.
+Dieses Modul beinhaltet Werkzeuge für dynamische Auflösungs- und Seitenverhältnisberechnungen sowie mathematische Rundungen.
 
 ---
 
 ## 📱 `AspectRatio` (`mklib.tools.AspectRatio`)
 
-Berechnet dynamisch die optimale interne Spielauflösung anhand des Bildschirms-Seitenverhältnisses. Dies ist besonders wertvoll für mobile Endgeräte und unterschiedliche Breitbild-Monitore (z. B. 16:9, 18:9, 19.5:9, 21:9), um schwarze Balken ("Letterboxing") zu vermeiden.
+Berechnet dynamisch die optimale interne Spielauflösung anhand des Bildschirms-Seitenverhältnisses. Dies ist besonders wertvoll für mobile Endgeräte und unterschiedliche Breitbild-Monitore (z. B. 16:9, 18:9, 19.5:9, 20:9, 21:9), um schwarze Balken ("Letterboxing") zu vermeiden.
 
-### Funktionsweise
+### Eigenschaften (Properties)
 
-- Hält eine feste vertikale Design-Höhe (Standard: `180` Pixel).
-- Passt die Design-Breite proportional an (`height * screenRatio`), sofern das Seitenverhältnis im Bereich von **1.77 bis 2.22** (16:9 bis ca. 20:9) liegt.
-- Fällt bei abweichenden Verhältnissen auf Standardmaße (`400x180`) zurück.
+| Eigenschaft | Typ | Modifizierer | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `width` | `Int` | `public` | Die berechnete Spielbreite in Pixeln (z. B. `320` bis `400`). |
+| `height` | `Int` | `public` | Die berechnete Spielhöhe in Pixeln (feste Design-Höhe, Standard: `180`). |
+| `isDefault` | `Bool` | `public` | Gibt an, ob auf die Standard-Fallback-Dimensionen (`400x180`) zurückgegriffen wurde, falls das Seitenverhältnis außerhalb des tolerierten Bereichs liegt. |
+| `screenRatio` | `Float` | `private` | Das tatsächliche Seitenverhältnis des Bildschirms (`screenWidth / screenHeight`). |
 
-### API-Definition
+### Methoden (Methods)
 
-```haxe
-package mklib.tools;
-
-class AspectRatio {
-    public var width:Int;
-    public var height:Int;
-    public var isDefault:Bool;
-
-    public function new(?screenWidth:Float = 0, ?screenHeight:Float = 0);
-    public function isInRange():Bool;
-}
-```
+| Methode | Signatur | Rückgabewert | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `new` | `(?screenWidth:Float = 0, ?screenHeight:Float = 0)` | `Void` | Erstellt eine neue `AspectRatio`-Instanz. Werden keine Dimensionen übergeben, wird die Bildschirmauflösung automatisch via `Capabilities.screenResolutionX / screenResolutionY` ermittelt (Fallback `1280x720`). Führt sofort `calc()` aus. |
+| `calc` | `()` | `Void` | *(Privat)* Führt die Berechnung von `width` und `height` auf Basis von `screenRatio` durch. |
+| `isInRange` | `()` | `Bool` | Prüft, ob das Seitenverhältnis im unterstützten Breitbildbereich liegt (zwischen `1.77` und `2.22`, gerundet mit `MathTool.floatFix`). Liefert `true` oder `false`. |
 
 ### Verwendung im Spiel-Einstiegspunkt (`Main.hx`)
 
@@ -55,11 +51,15 @@ class Main extends Sprite {
 
 ## 🔢 `MathTool` (`mklib.math.MathTool`)
 
-Stellt statische Hilfsfunktionen für mathematische Berechnungen und Formatierungen bereit.
+Stellt statische Hilfsfunktionen für mathematische Berechnungen bereit.
 
-### `floatFix(v:Float, length:Int):Float`
+### Methoden (Methods)
 
-Rundet eine Gleitkommazahl auf eine feste Anzahl von Nachkommastellen (z. B. zur Vermeidung von Rundungsfehlern bei Vergleichen oder Logging).
+| Methode | Signatur | Rückgabewert | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `floatFix` | `(v:Float, length:Int)` | `Float` | *(Inline, Statisch)* Rundet eine Gleitkommazahl `v` auf eine feste Anzahl von `length` Nachkommastellen. Ungültige Werte (`NaN`, unendlich) werden unverändert zurückgegeben. |
+
+### Code-Beispiel
 
 ```haxe
 import mklib.math.MathTool;

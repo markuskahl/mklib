@@ -59,9 +59,9 @@ class AspectRatio
 	}
 
 	/**
-	 * Führt die Berechnung von `width` und `height` auf Basis des Seitenverhältnisses durch.
+	 * Führt die interne Berechnung von `width` und `height` auf Basis des Seitenverhältnisses durch.
 	 */
-	private function calc()
+	private function calc():Void
 	{
 		var designWidth:Int = 400;
 		var designHeight:Int = 180;

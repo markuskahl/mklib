@@ -141,7 +141,7 @@ function initCodeCopy() {
 }
 
 /* ==========================================================================
-   Quick Search Filter
+   Quick Search Filter & Deep Search
    ========================================================================== */
 function initSearch() {
   const searchInput = document.getElementById('docs-search');
@@ -149,20 +149,52 @@ function initSearch() {
 
   searchInput.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase().trim();
+    const navItems = document.querySelectorAll('.nav-item');
+
     if (!query) {
-      document.querySelectorAll('.nav-item').forEach(item => item.style.display = '');
+      navItems.forEach(item => item.style.display = '');
+      document.querySelectorAll('.api-table tbody tr').forEach(row => row.style.display = '');
       return;
     }
 
-    document.querySelectorAll('.nav-item').forEach(item => {
-      const text = item.textContent.toLowerCase();
-      const href = item.querySelector('a')?.getAttribute('href') || '';
-      if (text.includes(query) || href.includes(query)) {
+    // Check which sections have matching content (class names, methods, properties)
+    const sectionMatchMap = new Map();
+    document.querySelectorAll('.doc-section').forEach(sec => {
+      const secText = sec.textContent.toLowerCase();
+      sectionMatchMap.set(sec.id, secText.includes(query));
+    });
+
+    navItems.forEach(item => {
+      const link = item.querySelector('a');
+      const href = link?.getAttribute('href') || '';
+      const secId = href.replace('#', '');
+      const itemText = item.textContent.toLowerCase();
+
+      if (itemText.includes(query) || href.includes(query) || sectionMatchMap.get(secId)) {
         item.style.display = '';
       } else {
         item.style.display = 'none';
       }
     });
+
+    // Also filter table rows within the active section
+    document.querySelectorAll('.api-table tbody tr').forEach(row => {
+      const rowText = row.textContent.toLowerCase();
+      if (!query || rowText.includes(query)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  });
+
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const firstVisible = document.querySelector('.nav-item:not([style*="display: none"]) a');
+      if (firstVisible) {
+        firstVisible.click();
+      }
+    }
   });
 }
 

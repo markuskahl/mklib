@@ -66,6 +66,9 @@ class State<TLevel = Dynamic> extends FlxState {
 		}
 	}
 
+	/**
+	 * Initialisiert den Spielzustand (`FlxState.create()`).
+	 */
 	override function create():Void {
 		super.create();
 	}
@@ -100,6 +103,11 @@ class State<TLevel = Dynamic> extends FlxState {
 		addCbTypes();
 	}
 
+	/**
+	 * Haupt-Update-Schleife des States. Steuert u. a. die Maussichtbarkeit je nach Zielplattform.
+	 *
+	 * @param elapsed Die vergangene Zeit seit dem letzten Frame in Sekunden.
+	 */
 	override function update(elapsed:Float) {
 		super.update(elapsed);
 		#if windows

@@ -50,20 +50,62 @@ class GridPoint
 }
 
 /**
- * Interner Knoten für die A*-Suche.
+ * Interner Knoten für den A*-Suchgraphen.
  */
 private class AStarNode
 {
+	/**
+	 * Die X-Rasterkoordinate des Knotens.
+	 */
 	public var x:Int;
+
+	/**
+	 * Die Y-Rasterkoordinate des Knotens.
+	 */
 	public var y:Int;
+
+	/**
+	 * Der lineare 1D-Array-Index im `NavGrid`.
+	 */
 	public var index:Int;
+
+	/**
+	 * Die tatsächlichen Bewegungskosten vom Startknoten bis zu diesem Knoten (G-Score).
+	 */
 	public var g:Float = 0;
+
+	/**
+	 * Die geschätzten heuristischen Restkosten von diesem Knoten bis zum Ziel (H-Score).
+	 */
 	public var h:Float = 0;
+
+	/**
+	 * Die Gesamtkosten (F-Score = `g + h`).
+	 */
 	public var f:Float = 0;
+
+	/**
+	 * Der Vorgängerknoten im optimalen Pfad.
+	 */
 	public var parent:AStarNode = null;
+
+	/**
+	 * Gibt an, ob sich der Knoten aktuell in der Open-List befindet.
+	 */
 	public var inOpen:Bool = false;
+
+	/**
+	 * Gibt an, ob der Knoten bereits abschließend untersucht wurde (Closed-Set).
+	 */
 	public var inClosed:Bool = false;
 
+	/**
+	 * Erstellt einen neuen A*-Suchknoten.
+	 *
+	 * @param x Die X-Rasterkoordinate.
+	 * @param y Die Y-Rasterkoordinate.
+	 * @param index Der 1D-Index im Raster.
+	 */
 	public function new(x:Int, y:Int, index:Int)
 	{
 		this.x = x;
@@ -78,6 +120,9 @@ private class AStarNode
  */
 class AStar
 {
+	/**
+	 * Konstante für die Quadratwurzel aus 2 (ca. 1.4142) zur Berechnung diagonaler Schrittkosten.
+	 */
 	private static inline var SQRT2:Float = 1.41421356237;
 
 	/**

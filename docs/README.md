@@ -4,37 +4,57 @@
 
 ---
 
-## 📚 Inhaltsverzeichnis
+## 📚 Inhaltsverzeichnis & Module
 
 1. [**Schnellstart & Einrichtung**](getting_started.md)
    - Installation & Haxelib-Abhängigkeiten
    - LDtk-Makro-Setup (`Data.hx`)
    - Erster `PlayState` und Spielstart
 2. [**State-Management (`mklib.state.State`)**](state.md)
-   - Automatische Level-Auflösung
-   - Nape-Physik-Initialisierung (`napeInit`)
-   - Tag- und CbType-Verwaltung
+   - Eigenschaften: `project`, `tags`, `levelName`, `data`
+   - Methoden: `new`, `create`, `napeInit`, `addCbTypes`, `update`
 3. [**Layer-System (`mklib.layer.*`)**](layers.md)
-   - `TileLayer`: Rendern von LDtk-Kachelebenen
-   - `EntityLayer`: Dynamische Instanziierung von Spielobjekten via Reflection
+   - `TileLayer`: Rendern von LDtk-Kachelebenen (`new`, `render`)
+   - `EntityLayer`: Dynamische Instanziierung von Spielobjekten via Reflection (`new`, `addEntities`)
+   - `EntityLayerSource<T>`: Typedef für Entity-Layer-Quellen
 4. [**Entities & Spielobjekte (`mklib.entity.*`)**](entities.md)
-   - `EntitySprite`: Basisklasse für visuelle Sprites
-   - `EntityNapeSprite`: Physikalische Körper, automatische LDtk-Tags und Form-Zentrierung
+   - `EntitySprite`: Basisklasse für visuelle Sprites (`_entity`, `iid`, `state`, `new`)
+   - `EntityNapeSprite`: Physikalische Körper, automatische LDtk-Tags und Form-Zentrierung (`addCbType`, `updateShapePosition`)
 5. [**Physik & Sensoren (`mklib.physic.*` & `mklib.tools.Tags`)**](physics.md)
-   - `Listener`: Kollisionen (`COLLISION`) und Sensoren (`SENSOR`)
-   - Ereignisse: `BEGIN`, `END`, `ONGOING` und `ANY_BODY`
-   - `Tags`: Zentraler Zugriff auf CbTypes
+   - `Listener`: 9 Methoden für Kollisionen (`COLLISION`) und Sensoren (`SENSOR`) mit `BEGIN`, `END`, `ONGOING`, `ANY_BODY`
+   - `Tags`: Zentraler Zugriff auf CbTypes (`get`, `exist`)
 6. [**Pathfinding & Navigation (`mklib.path.*`)**](pathfinding.md)
-   - `NavGrid`: 2D-Raster auf 1D-Array-Basis
+   - `NavGrid`: 2D-Raster auf 1D-Array-Basis (4 Eigenschaften, 12 Methoden)
    - `NavGridBuilder`: Automatisches Level-Scanning aus IntGrid, Tiles & Entities
-   - `AStar`: 4-Wege & 8-Wege Pfadsuche für Einheiten beliebiger Kachelgröße
+   - `AStar` & `GridPoint`: 4-Wege- & 8-Wege-Pfadsuche für Einheiten beliebiger Kachelgröße
 7. [**Tools & Mathematik (`mklib.tools.*` & `mklib.math.*`)**](tools_math.md)
-   - `AspectRatio`: Dynamische Bildschirmauflösung & Skalierung
+   - `AspectRatio`: Dynamische Bildschirmauflösung & Skalierung (`width`, `height`, `isDefault`, `isInRange`)
    - `MathTool`: Hilfsfunktionen zur Rundung (`floatFix`)
 
 ---
 
-## 🏗️ Architektur & Überblick
+## 🏛️ Vollständige API-Matrix
+
+| Modul / Paket | Klasse / Typ | Eigenschaften | Methoden |
+| :--- | :--- | :--- | :--- |
+| `mklib.state` | `State<TLevel>` | `project`, `tags`, `levelName`, `data` | `new`, `create`, `addCbTypes`, `napeInit`, `update` |
+| `mklib.layer` | `TileLayer` | `levelName`, `layerName`, `state` | `new`, `render` |
+| `mklib.layer` | `EntityLayer` | `layerName`, `packageName`, `state` | `new`, `addEntities` |
+| `mklib.layer` | `EntityLayerSource<T>` | `identifier`, `getAllUntyped` | – |
+| `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state` | `new` |
+| `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `body` | `new`, `addCbType`, `updateShapePosition` |
+| `mklib.physic` | `Listener` | – | `addCollisionBeginListener`, `addCollisionEndListener`, `addCollisionOngoingListener`, `addSensorBeginListener`, `addSensorEndListener`, `addSensorOngoingListener`, `addSensorBeginListenerANY`, `addSensorEndListenerANY`, `addSensorOngoingListenerANY` |
+| `mklib.tools` | `Tags` | – | `get`, `exist` |
+| `mklib.path` | `NavGrid` | `width`, `height`, `gridSize`, `data` | `new`, `isInBounds`, `getIndex`, `get`, `set`, `isWalkable`, `isAreaWalkable`, `setArea`, `setEntity`, `worldToGridX`, `worldToGridY`, `gridToWorldX`, `gridToWorldY`, `clear`, `clone`, `toString` |
+| `mklib.path` | `NavGridBuilder` | `grid`, `level` | `new`, `fromLevel`, `addIntGrid`, `addTileLayer`, `addEntityLayer`, `addLayerByName`, `autoBuild`, `build` |
+| `mklib.path` | `AStar` | `SQRT2` | `findPath`, `findWorldPath`, `heuristic`, `reconstructPath` |
+| `mklib.path` | `GridPoint` | `x`, `y` | `new`, `equals`, `toString` |
+| `mklib.tools` | `AspectRatio` | `width`, `height`, `isDefault`, `screenRatio` | `new`, `calc`, `isInRange` |
+| `mklib.math` | `MathTool` | – | `floatFix` |
+
+---
+
+## 🏗️ Architektur
 
 ```mermaid
 graph TD
@@ -52,43 +72,4 @@ graph TD
     NapeSpace --> Listener
     
     NavGrid --> AStar[mklib.path.AStar]
-```
-
----
-
-## 🚀 Minimalbeispiel
-
-```haxe
-package;
-
-import flixel.FlxG;
-import mklib.state.State;
-import mklib.layer.TileLayer;
-import mklib.layer.EntityLayer;
-import mklib.path.NavGridBuilder;
-import mklib.path.NavGrid;
-
-class PlayState extends State<Data.Data_Level> {
-    public var tileLayer:TileLayer;
-    public var entityLayer:EntityLayer;
-    public var navGrid:NavGrid;
-
-    override public function create() {
-        super.create();
-
-        // 1. Nape-Physik mit Schwerkraft initialisieren
-        napeInit(0, 300);
-
-        // 2. Kachelebene laden und zeichnen
-        tileLayer = new TileLayer(data.l_Tiles.identifier);
-        add(tileLayer);
-
-        // 3. Entities automatisch instanziieren (sucht in "entities.*")
-        entityLayer = new EntityLayer(data.l_Entities);
-        add(entityLayer);
-
-        // 4. Navigationsraster automatisch aus allen Layern des Levels erzeugen
-        navGrid = NavGridBuilder.autoBuild(data);
-    }
-}
 ```

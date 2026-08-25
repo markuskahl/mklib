@@ -4,26 +4,41 @@ Die Klasse `mklib.state.State<TLevel>` ist das Herzstück deiner Spielzustände 
 
 ---
 
-## 📋 Übersicht & Definition
+## 🎮 `State<TLevel>` (`mklib.state.State`)
 
+### Klassendefinition
 ```haxe
-package mklib.state;
-
-class State<TLevel = Dynamic> extends FlxState {
-    public var project:ldtk.Project;
-    public var tags:Map<String, nape.callbacks.CbType>;
-    public var levelName:String;
-    public var data:TLevel;
-
-    public function new(LevelName:String = "Level_0", ?projectInstance:ldtk.Project);
-    public function napeInit(gx:Int, gy:Int):Void;
-    public function addCbTypes():Void;
-}
+class State<TLevel = Dynamic> extends flixel.FlxState
 ```
+*Typparameter `TLevel`:* Der Typ der Leveldaten aus dem Macro `Data` (z. B. `Data.Data_Level`).
 
 ---
 
-## ⚙️ Funktionsweise
+### Eigenschaften (Properties)
+
+| Eigenschaft | Typ | Modifizierer | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `project` | `ldtk.Project` | `public` | Die geladene LDtk-Projektinstanz (wird aus `Data` oder per Argument bezogen). |
+| `tags` | `Map<String, nape.callbacks.CbType>` | `public` | Eine Map aller registrierten Kollisionstags aus dem LDtk-Enum `"Tags"` auf ihre Nape-`CbType`-Instanzen. |
+| `levelName` | `String` | `public` | Der Name des aktuell aktiven LDtk-Levels (z. B. `"Level_0"`). |
+| `data` | `TLevel` | `public` | Die typisierten Leveldaten des aktiven Levels (mit direktem Zugriff auf `l_Tiles`, `l_Entities` etc.). |
+| *Ererbte Felder* | `Float`, `Bool` etc. | `public` | Alle Standardeigenschaften von `flixel.FlxState` und `flixel.group.FlxGroup` (`members`, `length`, `subState`, `camera` etc.). |
+
+---
+
+### Methoden (Methods)
+
+| Methode | Signatur | Rückgabewert | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `new` | `(LevelName:String = "Level_0", ?projectInstance:ldtk.Project)` | `Void` | Erstellt einen neuen State, instanziiert das LDtk-Projekt (falls `projectInstance == null`, via Reflection aus `Data`) und lädt das angegebene Level in `data`. |
+| `create` | `()` | `Void` | Initialisiert den State (`FlxState.create()`). |
+| `napeInit` | `(gx:Int, gy:Int)` | `Void` | Initialisiert den Nape-Physikraum (`FlxNapeSpace.init()`), setzt die globale Schwerkraft auf `(gx, gy)` und ruft `addCbTypes()` auf. |
+| `addCbTypes` | `()` | `Void` | Liest das Enum `"Tags"` aus den JSON-Daten des LDtk-Projekts aus und erzeugt für jeden Wert einen `CbType` in der `tags`-Map. |
+| `update` | `(elapsed:Float)` | `Void` | Haupt-Update-Schleife des States. Schaltet zudem die Maus auf Windows sichtbar und auf HTML5 unsichtbar. |
+
+---
+
+## ⚙️ Funktionsweise im Detail
 
 ### 1. Typisierter Level-Zugriff (`data`)
 Beim Instanziieren des States wird das LDtk-Projekt aufgelöst. Wenn kein eigenes `projectInstance` übergeben wird, sucht `State` per Reflection nach der Standardklasse `Data`.
@@ -45,7 +60,7 @@ class PlayState extends State<Data.Data_Level> {
 ### 2. Nape-Physik initialisieren (`napeInit`)
 Die Methode `napeInit(gx, gy)` führt alle notwendigen Schritte zur Vorbereitung des Nape-Physikraums aus:
 - Startet `FlxNapeSpace.init()`
-- Setzt die globale Schwerkraft (z. B. `gx = 0, gy = 300`)
+- Setzt die globale Schwerkraft (z. B. `gx = 0, gy = 300` für Platformer)
 - Ruft intern `addCbTypes()` auf, um Kollisionstags zu registrieren
 
 ```haxe

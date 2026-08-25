@@ -1,30 +1,31 @@
 # Entities & Spielobjekte (`mklib.entity.*`)
 
-`mklib` bietet zwei Basisklassen für Spielobjekte, die aus LDtk geladen werden:
-1. **`EntitySprite`**: Für rein grafische Sprites ohne Physik (z. B. Partikel, Dekorationen, einfache Gegner).
-2. **`EntityNapeSprite`**: Für physikfähige Spielobjekte mit Nape-Physikkörpern, Formen und automatischen Tags.
+`mklib` stellt zwei spezialisierte Basisklassen für Spielobjekte bereit, die aus einem LDtk-Level instanziiert werden:
+1. **`EntitySprite`**: Für rein grafische Sprites ohne Physik (z. B. Partikel, Dekorationen, einfache Items).
+2. **`EntityNapeSprite`**: Für physikfähige Spielobjekte mit Nape-Physikkörpern, Formen, Schwerpunktszentrierung und automatischem Tag-Mapping.
 
 ---
 
-## 🎨 `EntitySprite`
+## 🎨 `EntitySprite` (`mklib.entity.EntitySprite`)
 
-Erbt von `flixel.FlxSprite`. Position (`pixelX`, `pixelY`), Abmessungen (`width`, `height`), Instanz-ID (`iid`) und der Bezug zum aktuellen `State` werden automatisch zugewiesen.
+Erbt von `flixel.FlxSprite`. Position (`pixelX`, `pixelY`), Abmessungen (`width`, `height`), Instanz-ID (`iid`) und der Bezug zum aktuellen `State` werden beim Erstellen automatisch synchronisiert.
 
-### API-Definition
+### Eigenschaften (Properties)
 
-```haxe
-package mklib.entity;
+| Eigenschaft | Typ | Modifizierer | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `_entity` | `ldtk.Entity` | `public` | Die zugrundeliegende LDtk-Entity-Instanz mit allen Rohdaten, Feldern und Koordinaten. |
+| `iid` | `String` | `public` | Die weltweit eindeutige Instanz-ID (IID) der Entity aus dem LDtk-Projekt. |
+| `state` | `mklib.state.State` | `public` | Referenz auf den aktuellen `mklib.state.State`, sofern dieser aktiv ist. |
+| *Ererbte Felder* | `Float`, `Bool` etc. | `public` | Alle Standardfelder von `flixel.FlxSprite` (`x`, `y`, `width`, `height`, `velocity`, `animation`, `angle` etc.). |
 
-class EntitySprite extends flixel.FlxSprite {
-    public var _entity:ldtk.Entity;
-    public var iid:String;
-    public var state:mklib.state.State;
+### Methoden (Methods)
 
-    public function new(entity:ldtk.Entity);
-}
-```
+| Methode | Signatur | Rückgabewert | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntitySprite`, setzt Position (`pixelX`, `pixelY`), `width`, `height`, `iid` und bindet den aktuellen `State`. |
 
-### Beispiel: Animierte Feuer-Dekoration
+### Beispiel: Animierte Feuer-Dekoration (`Fire.hx`)
 
 ```haxe
 package entities;
@@ -47,41 +48,45 @@ class Fire extends EntitySprite {
 
 ---
 
-## ⚡ `EntityNapeSprite`
+## ⚡ `EntityNapeSprite` (`mklib.entity.EntityNapeSprite`)
 
-Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur Integration mit LDtk-Feldern und -Tags.
+Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur nahtlosen Kopplung an LDtk-Felder, LDtk-Tags (`CbType`) und Nape-Schwerpunkte.
 
-### API-Definition
+### Eigenschaften (Properties)
 
-```haxe
-package mklib.entity;
+| Eigenschaft | Typ | Modifizierer | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `_entity` | `ldtk.Entity` | `public` | Die zugrundeliegende LDtk-Entity-Instanz mit Rohdaten und Feldern. |
+| `iid` | `String` | `public` | Die eindeutige Instanz-ID (IID) der Entity aus LDtk. |
+| `state` | `mklib.state.State` | `public` | Referenz auf den aktuellen `mklib.state.State`. |
+| `body` | `nape.phys.Body` | `public` | *(Ererbt von FlxNapeSprite)* Der physikalische Nape-Körper der Entity. |
+| *Ererbte Felder* | `Float`, `Bool` etc. | `public` | Alle Standardfelder von `flixel.addons.nape.FlxNapeSprite` und `flixel.FlxSprite`. |
 
-class EntityNapeSprite extends flixel.addons.nape.FlxNapeSprite {
-    public var _entity:ldtk.Entity;
-    public var iid:String;
-    public var state:mklib.state.State;
+### Methoden (Methods)
 
-    public function new(entity:ldtk.Entity);
-    public function addCbType(name:String = null):Void;
-    public function updateShapePosition():Void;
-}
-```
+| Methode | Signatur | Rückgabewert | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntityNapeSprite`, initialisiert `_entity`, `iid`, Position und den `state`. |
+| `addCbType` | `(name:String = null)` | `Void` | Weist dem Nape-Physikkörper (`body`) CbType-Tags zu. Ist `name == null`, werden die Entity-Felder `Tag` bzw. `Tags` aus LDtk automatisch ausgelesen. Setzt zudem `body.userData.instance = this`. |
+| `updateShapePosition` | `()` | `Void` | Positioniert den Nape-Körper im Mittelpunkt der LDtk-Entity (`pixelX + width/2`, `pixelY + height/2`), um die Nape-Schwerpunktsausrichtung auszugleichen. |
 
-### Wichtige Methoden im Detail
+### Detailerklärung der Methoden
 
-- **`addCbType(?name:String)`**:
-  - Wenn `name` angegeben ist: Fügt den spezifischen Tag (z. B. `"Solid"`) zum Nape-Körper hinzu.
-  - Wenn `name == null`: Durchsucht die LDtk-JSON-Felder der Entity nach einem Feld namens `Tag` oder `Tags` (Array oder Einzelfeld) und fügt alle passenden `CbType`-Instanzen automatisch hinzu.
-  - Setzt außerdem `body.userData.instance = this`, sodass in Kollisions-Callbacks direkt auf das Haxe-Objekt zugegriffen werden kann.
+#### `addCbType(name:String = null):Void`
+- **Parameter:** `name` *(optional, Standard: `null`)* – Der Name des spezifischen Tags (z. B. `"Player"` oder `"Solid"`).
+- **Verhalten:**
+  - Wird ein expliziter Name übergeben, wird geprüft, ob im aktuellen `State` ein entsprechender `CbType` existiert, und dieser dem `body.cbTypes`-Set hinzugefügt.
+  - Wird `null` übergeben, durchsucht die Methode die LDtk-JSON-Felder (`fieldInstances`) nach Feldern mit Bezeichner `Tag` oder `Tags`. Unterstützt sowohl Einzelfelder (String) als auch Arrays von Tags.
+  - Verknüpft `body.userData.instance = this`, sodass in allen Kollisions-Callbacks direkt auf die Haxe-Klasseninstanz zugegriffen werden kann.
 
-- **`updateShapePosition()`**:
-  - Setzt die Position des Nape-Körpers auf den Mittelpunkt der LDtk-Entity (`pixelX + width/2`, `pixelY + height/2`). Dies ist notwendig, da Nape-Körper standardmäßig im Schwerpunkt verankert sind.
+#### `updateShapePosition():Void`
+- Nape-Shapes besitzen ihren Ankerpunkt standardmäßig im geometrischen Schwerpunkt (Mittelpunkt). Da LDtk Koordinaten an der oberen linken Ecke ausrichtet, verschiebt `updateShapePosition()` die Position des Nape-Körpers exakt auf `(pixelX + width/2, pixelY + height/2)`.
 
 ---
 
-## 💡 Code-Beispiel: Plattform & Spieler mit Nape
+## 💡 Code-Beispiele
 
-### Statische Plattform (`Platform.hx`)
+### 1. Statische Plattform mit Kollision (`Platform.hx`)
 
 ```haxe
 package entities;
@@ -97,7 +102,7 @@ class Platform extends EntityNapeSprite {
 
         makeGraphic(entity.width, entity.height, FlxColor.RED);
         createRectangularBody(entity.width, entity.height);
-        body.allowMovement = false; // Statischer Körper
+        body.allowMovement = false; // Statischer Körper (fällt nicht herunter)
 
         // Form exakt auf LDtk-Koordinaten zentrieren
         updateShapePosition();
@@ -108,7 +113,7 @@ class Platform extends EntityNapeSprite {
 }
 ```
 
-### Dynamischer Spieler (`Hero.hx`)
+### 2. Dynamischer Spieler mit Physik & Steuerung (`Hero.hx`)
 
 ```haxe
 package entities;
@@ -125,10 +130,10 @@ class Hero extends EntityNapeSprite {
 
         makeGraphic(entity.width, entity.height, FlxColor.BLUE);
         createRectangularBody(entity.width, entity.height);
-        body.allowRotation = false;
+        body.allowRotation = false; // Rotation bei Kollisionen sperren
 
         updateShapePosition();
-        addCbType("Player"); // Explizit Tag "Player" zuweisen
+        addCbType("Player"); // Tag "Player" manuell zuweisen
     }
 
     override function update(elapsed:Float) {
@@ -143,7 +148,7 @@ class Hero extends EntityNapeSprite {
         }
 
         if (FlxG.keys.justPressed.SPACE) {
-            body.velocity.y = -200; // Sprung
+            body.velocity.y = -200; // Sprungimpuls nach oben
         }
     }
 }

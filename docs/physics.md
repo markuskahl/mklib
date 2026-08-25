@@ -1,6 +1,6 @@
 # Physik & Sensoren (`mklib.physic.*` & `mklib.tools.Tags`)
 
-Das Physikmodul von `mklib` vereinfacht die Arbeit mit der **Nape-Physik-Engine** drastisch. Es ermöglicht die Registrierung von Kollisions- und Sensor-Handlern anhand von lesbaren Tag-Namen anstelle manuell verwalteter `CbType`-Instanzen.
+Das Physikmodul von `mklib` vereinfacht die Arbeit mit der **Nape 2D Physik-Engine** drastisch. Es ermöglicht die Registrierung von Kollisions- und Sensor-Handlern anhand von lesbaren Tag-Namen anstelle manuell verwalteter `CbType`-Instanzen.
 
 ---
 
@@ -8,7 +8,18 @@ Das Physikmodul von `mklib` vereinfacht die Arbeit mit der **Nape-Physik-Engine*
 
 Die Klasse `Tags` bietet statische Hilfsfunktionen, um `CbType`-Objekte aus dem aktuellen `State` abzufragen:
 
+### Methoden (Methods)
+
+| Methode | Signatur | Rückgabewert | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `get` | `(tag:String)` | `nape.callbacks.CbType` | Gibt das registrierte `CbType`-Objekt für einen gegebenen Tag-Namen aus `state.tags` zurück. Liefert `null`, wenn der Tag nicht existiert oder kein `State` aktiv ist. |
+| `exist` | `(tag:String)` | `Bool` | Prüft, ob ein gegebener Tag-Name in der Tag-Map des aktuellen `State` registriert ist (`true` / `false`). |
+
+### Verwendung
+
 ```haxe
+import mklib.tools.Tags;
+
 // CbType für den Tag "Player" abrufen
 var playerCb:nape.callbacks.CbType = Tags.get("Player");
 
@@ -22,28 +33,30 @@ if (Tags.exist("Hazard")) {
 
 ## ⚡ Ereignis-Listener (`mklib.physic.Listener`)
 
-Die Klasse `mklib.physic.Listener` stellt statische Methoden bereit, um auf Kollisionen und Sensorüberlappungen zu reagieren.
+Die Klasse `mklib.physic.Listener` stellt statische Hilfsmethoden bereit, um Nape-Kollisionen und Sensorüberlappungen über lesbare Tag-Namen zu registrieren.
 
-### 1. Kollisionen (`InteractionType.COLLISION`)
-Physische Kontakte, bei denen Körper aneinander abprallen oder aufliegen.
+### Übersicht: Physische Kollisionen (`InteractionType.COLLISION`)
 
-| Methode | Beschreibung |
-| :--- | :--- |
-| `addCollisionBeginListener(tag1, tag2, handler)` | Wird aufgerufen, sobald sich zwei Körper mit `tag1` und `tag2` berühren. |
-| `addCollisionEndListener(tag1, tag2, handler)` | Wird aufgerufen, sobald der physische Kontakt endet. |
-| `addCollisionOngoingListener(tag1, tag2, handler)` | Wird in jedem Physik-Schritt aufgerufen, solange die Körper in Kontakt sind. |
+Physische Kontakte, bei denen Körper aneinander abprallen, stehen bleiben oder aufliegen.
 
-### 2. Sensoren (`InteractionType.SENSOR`)
-Überlappungen ohne physischen Widerstand (z. B. Trigger-Zonen, Münzen, Schadensflächen).
+| Methode | Signatur | Rückgabe | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `addCollisionBeginListener` | `(tag1:String, tag2:String, handler:InteractionCallback->Void)` | `Void` | Registriert ein `CbEvent.BEGIN`-Event für `COLLISION`. Wird aufgerufen, sobald sich zwei Körper mit `tag1` und `tag2` berühren. |
+| `addCollisionEndListener` | `(tag1:String, tag2:String, handler:InteractionCallback->Void)` | `Void` | Registriert ein `CbEvent.END`-Event für `COLLISION`. Wird aufgerufen, sobald der physische Kontakt zwischen `tag1` und `tag2` abreißt. |
+| `addCollisionOngoingListener` | `(tag1:String, tag2:String, handler:InteractionCallback->Void)` | `Void` | Registriert ein `CbEvent.ONGOING`-Event für `COLLISION`. Wird in jedem Physik-Tick aufgerufen, solange die Körper mit `tag1` und `tag2` in Kontakt stehen. |
 
-| Methode | Beschreibung |
-| :--- | :--- |
-| `addSensorBeginListener(tag1, tag2, handler)` | Überlappung zwischen `tag1` und `tag2` beginnt. |
-| `addSensorEndListener(tag1, tag2, handler)` | Überlappung zwischen `tag1` und `tag2` endet. |
-| `addSensorOngoingListener(tag1, tag2, handler)` | Überlappung zwischen `tag1` und `tag2` dauert an. |
-| `addSensorBeginListenerANY(tag1, handler)` | `tag1` überlappt mit **irgendeinem** anderen Nape-Körper. |
-| `addSensorEndListenerANY(tag1, handler)` | `tag1` beendet Überlappung mit **irgendeinem** anderen Nape-Körper. |
-| `addSensorOngoingListenerANY(tag1, handler)` | `tag1` überlappt andauernd mit **irgendeinem** anderen Nape-Körper. |
+### Übersicht: Sensoren (`InteractionType.SENSOR`)
+
+Überlappungen ohne physischen Widerstand (z. B. Trigger-Zonen, Münzen, Schadensflächen, Kontrollpunkte).
+
+| Methode | Signatur | Rückgabe | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `addSensorBeginListener` | `(tag1:String, tag2:String, handler:InteractionCallback->Void)` | `Void` | Registriert ein `CbEvent.BEGIN`-Event für `SENSOR`. Wird beim ersten Überlappen von `tag1` und `tag2` aufgerufen. |
+| `addSensorEndListener` | `(tag1:String, tag2:String, handler:InteractionCallback->Void)` | `Void` | Registriert ein `CbEvent.END`-Event für `SENSOR`. Wird beim Verlassen der Überlappung von `tag1` und `tag2` aufgerufen. |
+| `addSensorOngoingListener` | `(tag1:String, tag2:String, handler:InteractionCallback->Void)` | `Void` | Registriert ein `CbEvent.ONGOING`-Event für `SENSOR`. Wird in jedem Physik-Tick aufgerufen, solange sich `tag1` und `tag2` überlappen. |
+| `addSensorBeginListenerANY` | `(tag1:String, handler:InteractionCallback->Void)` | `Void` | Registriert ein `CbEvent.BEGIN`-Sensor-Event zwischen `tag1` und `CbType.ANY_BODY` (jedem beliebigen Nape-Körper). |
+| `addSensorEndListenerANY` | `(tag1:String, handler:InteractionCallback->Void)` | `Void` | Registriert ein `CbEvent.END`-Sensor-Event zwischen `tag1` und `CbType.ANY_BODY`. |
+| `addSensorOngoingListenerANY` | `(tag1:String, handler:InteractionCallback->Void)` | `Void` | Registriert ein `CbEvent.ONGOING`-Sensor-Event zwischen `tag1` und `CbType.ANY_BODY`. |
 
 ---
 
@@ -63,11 +76,14 @@ class PlayState extends State<Data.Data_Level> {
         super.create();
         napeInit(0, 300);
 
-        // Münzen einsammeln (Sensor-Event zwischen "Player" und "Coin")
+        // 1. Münzen einsammeln (Sensor-Event zwischen "Player" und "Coin")
         Listener.addSensorBeginListener("Player", "Coin", onCollectCoin);
 
-        // Stacheln berühren (Kollisions-Event zwischen "Player" und "Spikes")
+        // 2. Stacheln berühren (Kollisions-Event zwischen "Player" und "Spikes")
         Listener.addCollisionBeginListener("Player", "Spikes", onHitSpikes);
+
+        // 3. Sensor-Event mit beliebigem Körper
+        Listener.addSensorBeginListenerANY("Checkpoint", onTriggerCheckpoint);
     }
 
     private function onCollectCoin(cb:InteractionCallback):Void {
@@ -86,6 +102,10 @@ class PlayState extends State<Data.Data_Level> {
         if (player != null) {
             trace("Spieler hat Stacheln berührt - Schaden zufügen!");
         }
+    }
+
+    private function onTriggerCheckpoint(cb:InteractionCallback):Void {
+        trace("Ein Körper hat den Checkpoint betreten: " + cb.int2.castBody);
     }
 }
 ```

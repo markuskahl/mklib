@@ -20,12 +20,24 @@ Die vollständige interaktive Dokumentation inklusive Live-A*-Pathfinding-Simula
 
 ---
 
-## 📦 Features im Überblick
+## 🏛️ Vollständige API-Übersicht
 
-- **LDtk-Integration**: Kachelebenen (`TileLayer`) und automatische Entity-Instanziierung (`EntityLayer`) via Reflection.
-- **Nape-Physik**: Einfache Kollisions- und Sensor-Listener (`Listener.addCollisionBeginListener`, `Listener.addSensorBeginListener`) über Tag-Namen.
-- **Pathfinding**: A*-Wegfindung für 4- und 8-Wege-Bewegung mit automatischer Rastererstellung (`NavGridBuilder.autoBuild`) und Einheiten beliebiger Kachelgröße (`spanX` / `spanY`).
-- **Responsive Resolution**: Automatische Berechnung optimaler Auflösungen für Breitbild-Displays (`AspectRatio`).
+| Modul | Klasse / Typ | Eigenschaften | Methoden |
+| :--- | :--- | :--- | :--- |
+| `mklib.state` | `State<TLevel>` | `project`, `tags`, `levelName`, `data` | `new`, `create`, `addCbTypes`, `napeInit`, `update` |
+| `mklib.layer` | `TileLayer` | `levelName`, `layerName`, `state` | `new`, `render` |
+| `mklib.layer` | `EntityLayer` | `layerName`, `packageName`, `state` | `new`, `addEntities` |
+| `mklib.layer` | `EntityLayerSource<T>` | `identifier`, `getAllUntyped` | – |
+| `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state` | `new` |
+| `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `body` | `new`, `addCbType`, `updateShapePosition` |
+| `mklib.physic` | `Listener` | – | `addCollisionBeginListener`, `addCollisionEndListener`, `addCollisionOngoingListener`, `addSensorBeginListener`, `addSensorEndListener`, `addSensorOngoingListener`, `addSensorBeginListenerANY`, `addSensorEndListenerANY`, `addSensorOngoingListenerANY` |
+| `mklib.tools` | `Tags` | – | `get`, `exist` |
+| `mklib.path` | `NavGrid` | `width`, `height`, `gridSize`, `data` | `new`, `isInBounds`, `getIndex`, `get`, `set`, `isWalkable`, `isAreaWalkable`, `setArea`, `setEntity`, `worldToGridX`, `worldToGridY`, `gridToWorldX`, `gridToWorldY`, `clear`, `clone`, `toString` |
+| `mklib.path` | `NavGridBuilder` | `grid`, `level` | `new`, `fromLevel`, `addIntGrid`, `addTileLayer`, `addEntityLayer`, `addLayerByName`, `autoBuild`, `build` |
+| `mklib.path` | `AStar` | `SQRT2` | `findPath`, `findWorldPath`, `heuristic`, `reconstructPath` |
+| `mklib.path` | `GridPoint` | `x`, `y` | `new`, `equals`, `toString` |
+| `mklib.tools` | `AspectRatio` | `width`, `height`, `isDefault`, `screenRatio` | `new`, `calc`, `isInRange` |
+| `mklib.math` | `MathTool` | – | `floatFix` |
 
 ---
 
