@@ -9,7 +9,21 @@ import sys.FileSystem;
 import sys.io.File;
 #end
 
+/**
+ * Compile-Time-Makro zur automatischen Generierung einer typsicheren Animationsdatenbank.
+ *
+ * Liest alle `.json`-Animationsdateien aus einem angegebenen Ordner ein,
+ * bereinigt Bildpfade auf relative Projekt-Asset-Pfade und erzeugt zur Compile-Zeit
+ * ein `Map<String, SpriteSheetData>`-Literal.
+ */
 class AnimationBuilder {
+	/**
+	 * Scannt das angegebene Verzeichnis zur Compile-Zeit nach `.json`-Animationsdefinitionen
+	 * und gibt ein typisiertes `Map<String, SpriteSheetData>`-Objekt als Makro-Expression zurück.
+	 *
+	 * @param folderPath Pfad zum Animationsordner (z. B. `"assets/data/animations"`).
+	 * @return AST-Expression eines `Map<String, SpriteSheetData>`-Literals.
+	 */
 	public static macro function buildDatabase(folderPath:String):Expr {
 		#if macro
 		// Stellt sicher, dass vom Projekt-Root aus gesucht wird

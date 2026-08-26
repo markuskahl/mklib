@@ -30,6 +30,10 @@
 7. [**Tools & Mathematik (`mklib.tools.*` & `mklib.math.*`)**](tools_math.md)
    - `AspectRatio`: Dynamische Bildschirmauflösung & Skalierung (`width`, `height`, `isDefault`, `isInRange`)
    - `MathTool`: Hilfsfunktionen zur Rundung (`floatFix`)
+8. [**Animationssystem & Makros (`mklib.animation.*` & `mklib.macro.*`)**](animation.md)
+   - `AnimationBuilder`: Compile-Time-Makro zum Einlesen von JSON-Animationen (`buildDatabase`)
+   - `AnimationTypes`: Datenstrukturen (`FrameConfig`, `AnimationClip`, `SpriteSheetData`)
+   - `AnimationRegistry`: Globales Bereitstellungsmuster für Entity-Animationen
 
 ---
 
@@ -43,6 +47,10 @@
 | `mklib.layer` | `EntityLayerSource<T>` | `identifier`, `getAllUntyped` | – |
 | `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic` | `new`, `getGraphicPath`, `getField`, `hasField` |
 | `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic`, `body` | `new`, `getGraphicPath`, `getField`, `hasField`, `sensorEnabled`, `addCbType`, `updateShapePosition` |
+| `mklib.animation` | `FrameConfig` | `width`, `height`, `spacing`, `margin` | – |
+| `mklib.animation` | `AnimationClip` | `name`, `fps`, `loop`, `flipX`, `flipY`, `frames` | – |
+| `mklib.animation` | `SpriteSheetData` | `imagePath`, `config`, `animations`, `defaultAnimation` | – |
+| `mklib.macro` | `AnimationBuilder` | – | `buildDatabase` |
 | `mklib.physic` | `Listener` | – | `addCollisionBeginListener`, `addCollisionEndListener`, `addCollisionOngoingListener`, `addSensorBeginListener`, `addSensorEndListener`, `addSensorOngoingListener`, `addSensorBeginListenerANY`, `addSensorEndListenerANY`, `addSensorOngoingListenerANY` |
 | `mklib.tools` | `Tags` | – | `get`, `exist` |
 | `mklib.path` | `NavGrid` | `width`, `height`, `gridSize`, `data` | `new`, `isInBounds`, `getIndex`, `get`, `set`, `isWalkable`, `isAreaWalkable`, `setArea`, `setEntity`, `worldToGridX`, `worldToGridY`, `gridToWorldX`, `gridToWorldY`, `clear`, `clone`, `toString` |
@@ -66,6 +74,10 @@ graph TD
     
     EntityLayer --> EntitySprite[mklib.entity.EntitySprite]
     EntityLayer --> EntityNapeSprite[mklib.entity.EntityNapeSprite]
+    
+    AnimJSON[assets/data/animations/*.json] -->|Compile-Time Macro| AnimMacro[mklib.macro.AnimationBuilder]
+    AnimMacro --> AnimReg[AnimationRegistry.db]
+    AnimReg --> EntitySprite
     
     State --> NapeSpace[Nape FlxNapeSpace]
     EntityNapeSprite --> Listener[mklib.physic.Listener]

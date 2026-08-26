@@ -14,6 +14,7 @@ Die vollständige interaktive Dokumentation inklusive Live-A*-Pathfinding-Simula
 - [**State-Management (`mklib.state.State`)**](docs/state.md)
 - [**Layer-System (`TileLayer` & `EntityLayer`)**](docs/layers.md)
 - [**Entities & Spielobjekte (`EntitySprite` & `EntityNapeSprite`)**](docs/entities.md)
+- [**Animationssystem & Makros (`AnimationBuilder` & `AnimationTypes`)**](docs/animation.md)
 - [**Physik & Sensoren (`Listener` & `Tags`)**](docs/physics.md)
 - [**Pathfinding & Navigation (`NavGrid`, `NavGridBuilder`, `AStar`)**](docs/pathfinding.md)
 - [**Tools & Mathematik (`AspectRatio` & `MathTool`)**](docs/tools_math.md)
@@ -30,6 +31,10 @@ Die vollständige interaktive Dokumentation inklusive Live-A*-Pathfinding-Simula
 | `mklib.layer` | `EntityLayerSource<T>` | `identifier`, `getAllUntyped` | – |
 | `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic` | `new`, `getGraphicPath`, `getField`, `hasField` |
 | `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic`, `body` | `new`, `getGraphicPath`, `getField`, `hasField`, `sensorEnabled`, `addCbType`, `updateShapePosition` |
+| `mklib.animation` | `FrameConfig` | `width`, `height`, `spacing`, `margin` | – |
+| `mklib.animation` | `AnimationClip` | `name`, `fps`, `loop`, `flipX`, `flipY`, `frames` | – |
+| `mklib.animation` | `SpriteSheetData` | `imagePath`, `config`, `animations`, `defaultAnimation` | – |
+| `mklib.macro` | `AnimationBuilder` | – | `buildDatabase` |
 | `mklib.physic` | `Listener` | – | `addCollisionBeginListener`, `addCollisionEndListener`, `addCollisionOngoingListener`, `addSensorBeginListener`, `addSensorEndListener`, `addSensorOngoingListener`, `addSensorBeginListenerANY`, `addSensorEndListenerANY`, `addSensorOngoingListenerANY` |
 | `mklib.tools` | `Tags` | – | `get`, `exist` |
 | `mklib.path` | `NavGrid` | `width`, `height`, `gridSize`, `data` | `new`, `isInBounds`, `getIndex`, `get`, `set`, `isWalkable`, `isAreaWalkable`, `setArea`, `setEntity`, `worldToGridX`, `worldToGridY`, `gridToWorldX`, `gridToWorldY`, `clear`, `clone`, `toString` |

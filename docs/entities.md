@@ -30,13 +30,16 @@ Erbt von `flixel.FlxSprite`. Position (`pixelX`, `pixelY`), Abmessungen (`width`
 | `getField` | `(identifier:String)` | `Dynamic` | Liest den Wert eines benutzerdefinierten LDtk-Feldes (`fieldInstances`) aus oder `null`. |
 | `hasField` | `(identifier:String)` | `Bool` | Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert. |
 
-### Beispiel: Animierte Feuer-Dekoration (`Fire.hx`)
+### Beispiel: Animierte Feuer-Dekoration (`Fire.hx`) mit `AnimationRegistry`
 
 ```haxe
 package entities;
 
 import flixel.FlxG;
 import mklib.entity.EntitySprite;
+import mklib.animation.AnimationTypes.SpriteSheetData;
+import mklib.animation.AnimationTypes.AnimationClip;
+import AnimationRegistry;
 import ldtk.Entity;
 
 @:keep
@@ -44,12 +47,14 @@ class Fire extends EntitySprite {
     public function new(entity:ldtk.Entity) {
         super(entity);
 
-        if (hasGraphic) {
-            loadGraphic(graphicPath, true, 16, 16);
+        // Animationsdaten aus der Compile-Time-Registry abrufen
+        var spritesheetData:SpriteSheetData = AnimationRegistry.db.get(getField("Animations"));
+        if (spritesheetData != null) {
+            for (clip in spritesheetData.animations) {
+                animation.add(clip.name, clip.frames, clip.fps, clip.loop, clip.flipX, clip.flipY);
+            }
+            animation.play(spritesheetData.defaultAnimation);
         }
-
-        animation.add("burn", [0, 1, 2, 3], 12);
-        animation.play("burn");
     }
 }
 ```
