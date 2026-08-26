@@ -143,7 +143,7 @@
                   <td><code>mklib.layer</code></td>
                   <td><strong><code>EntityLayer</code></strong></td>
                   <td><code>layerName</code>, <code>packageName</code>, <code>state</code></td>
-                  <td><code>new</code>, <code>addEntities</code></td>
+                  <td><code>new</code>, <code>addEntities</code>, <code>isNapeEntity</code></td>
                   <td><a href="#layers">Layer →</a></td>
                 </tr>
                 <tr>
@@ -628,7 +628,13 @@
                   <td><code>addEntities</code></td>
                   <td><code>(entities:Array&lt;ldtk.Entity&gt;):Void</code></td>
                   <td><code>Void</code></td>
-                  <td>Instanziiert dynamisch passende Klassen (<code>packageName.EntityIdentifier</code>) und fügt sie der Gruppe hinzu.</td>
+                  <td>Instanziiert dynamisch passende Klassen (<code>packageName.EntityIdentifier</code>) oder nutzt Fallback auf <code>EntityNapeSprite</code> / <code>EntitySprite</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>isNapeEntity</code></td>
+                  <td><code>(entity:ldtk.Entity):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob eine Entity Nape-Physikeigenschaften (Felder wie <code>Tag</code>, <code>sensorEnabled</code> oder LDtk-Tags) aufweist.</td>
                 </tr>
               </tbody>
             </table>

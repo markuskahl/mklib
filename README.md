@@ -27,7 +27,7 @@ Die vollständige interaktive Dokumentation inklusive Live-A*-Pathfinding-Simula
 | :--- | :--- | :--- | :--- |
 | `mklib.state` | `State<TLevel>` | `project`, `tags`, `levelName`, `data` | `new`, `create`, `addCbTypes`, `napeInit`, `update` |
 | `mklib.layer` | `TileLayer` | `levelName`, `layerName`, `state` | `new`, `render` |
-| `mklib.layer` | `EntityLayer` | `layerName`, `packageName`, `state` | `new`, `addEntities` |
+| `mklib.layer` | `EntityLayer` | `layerName`, `packageName`, `state` | `new`, `addEntities`, `isNapeEntity` |
 | `mklib.layer` | `EntityLayerSource<T>` | `identifier`, `getAllUntyped` | – |
 | `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic` | `new`, `getGraphicPath`, `getField`, `hasField`, `initAnimation` |
 | `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic`, `body` | `new`, `getGraphicPath`, `getField`, `hasField`, `sensorEnabled`, `addCbType`, `updateShapePosition`, `initAnimation` |

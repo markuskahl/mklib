@@ -2,6 +2,8 @@ package mklib.layer;
 
 import ldtk.Entity;
 import mklib.state.State;
+import mklib.entity.EntitySprite;
+import mklib.entity.EntityNapeSprite;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.FlxG;
@@ -26,9 +28,10 @@ typedef EntityLayerSource<T = Dynamic> = {
  *
  * Durchsucht zur Laufzeit via Reflection das angegebene Package (Standard: `"entities"`) nach Klassen,
  * deren Name dem Entity-Identifier in LDtk entspricht (z. B. Entity `Hero` -> `entities.Hero`).
+ * Falls keine spezifische Klasse definiert ist, wird automatisch eine passende Instanz von
+ * `EntityNapeSprite` (bei vorhandener Nape-Physik/Tags/Feldern) oder `EntitySprite` erzeugt.
  */
-class EntityLayer extends FlxSpriteGroup
-{
+class EntityLayer extends FlxSpriteGroup {
 	/**
 	 * Der Bezeichner des LDtk-Layers.
 	 */
@@ -50,21 +53,17 @@ class EntityLayer extends FlxSpriteGroup
 	 * @param layer Die LDtk-Entity-Layer-Quelle (z. B. `data.l_Entities`).
 	 * @param packageName Das Package mit den Entity-Klassendefinitionen (Standard: `"entities"`).
 	 */
-	public function new(layer:EntityLayerSource<Dynamic>, packageName:String = "entities")
-	{
+	public function new(layer:EntityLayerSource<Dynamic>, packageName:String = "entities") {
 		super();
 		this.packageName = packageName;
-		if (FlxG.state != null && Std.isOfType(FlxG.state, State))
-		{
+		if (FlxG.state != null && Std.isOfType(FlxG.state, State)) {
 			state = cast(FlxG.state, State);
 		}
 
-		if (layer != null)
-		{
+		if (layer != null) {
 			this.layerName = layer.identifier;
 			var untypedList:Array<Dynamic> = layer.getAllUntyped();
-			if (untypedList != null)
-			{
+			if (untypedList != null) {
 				var entityList:Array<ldtk.Entity> = [for (e in untypedList) cast e];
 				addEntities(entityList);
 			}
@@ -74,34 +73,60 @@ class EntityLayer extends FlxSpriteGroup
 	/**
 	 * Instanziiert dynamisch passende Klassen für die übergebenen LDtk-Entities und fügt sie dieser Gruppe hinzu.
 	 *
+	 * Existiert eine spezifische Klasse im Ziel-Package (z. B. `entities.Hero`), wird diese instanziiert.
+	 * Andernfalls wird geprüft, ob die Entity als `EntityNapeSprite` (Physik) oder `EntitySprite`
+	 * instanziiert werden soll.
+	 *
 	 * @param entities Ein Array von LDtk-Entity-Objekten.
 	 */
-	public function addEntities(entities:Array<ldtk.Entity>):Void
-	{
-		if (entities == null)
-		{
+	public function addEntities(entities:Array<ldtk.Entity>):Void {
+		if (entities == null) {
 			return;
 		}
 
-		for (i in 0...entities.length)
-		{
+		for (i in 0...entities.length) {
 			var entity:ldtk.Entity = entities[i];
 			var entityName:String = entity.identifier;
+			packageName = "entities.";
 
-			var targetClass:String = (packageName != null && packageName.length > 0) ? (packageName + "." + entityName) : entityName;
+			var targetClass:String = packageName + entityName;
 			var cls = Type.resolveClass(targetClass);
-			if (cls != null)
-			{
+			if (cls != null) {
 				var o:Dynamic = Type.createInstance(cls, [entity]);
-				if (Std.isOfType(o, FlxSprite))
-				{
+				if (Std.isOfType(o, FlxSprite)) {
 					add(cast o);
 				}
-			}
-			else
-			{
-				trace('Error: Class "' + targetClass + '" does not exist!');
+			} else {
+				if (isNapeEntity(entity)) {
+					add(new EntityNapeSprite(entity));
+				} else {
+					add(new EntitySprite(entity));
+				}
 			}
 		}
+	}
+
+	/**
+	 * Prüft, ob eine LDtk-Entity ein benutzerdefiniertes Feld "Tag" besitzt.
+	 *
+	 * @param entity Die zu prüfende LDtk-Entity.
+	 * @return `true`, wenn das Feld "Tag" vorhanden und nicht `null` ist, andernfalls `false`.
+	 */
+	public function hasTag(entity:ldtk.Entity):Bool {
+		if (entity != null && entity.json != null && entity.json.fieldInstances != null) {
+			for (inst in entity.json.fieldInstances) {
+				if (inst.__identifier == "Tag" && inst.__value != null) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Kompatibilitäts-Alias für `hasTag`.
+	 */
+	public inline function isNapeEntity(entity:ldtk.Entity):Bool {
+		return hasTag(entity);
 	}
 }

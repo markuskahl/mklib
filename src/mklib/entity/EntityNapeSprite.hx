@@ -70,7 +70,7 @@ class EntityNapeSprite extends FlxNapeSprite {
 			initAnimation(getField("Animations"));
 		}
 
-		if (hasField("sensorEnabled")) {
+		if (hasField("sensor")) {
 			sensorEnabled();
 		}
 
@@ -131,7 +131,7 @@ class EntityNapeSprite extends FlxNapeSprite {
 	 */
 	public function sensorEnabled(?enable:Null<Bool>):Void {
 		if (enable == null) {
-			var fieldVal = getField("sensorEnabled");
+			var fieldVal = getField("sensor");
 			enable = (fieldVal == true);
 		}
 

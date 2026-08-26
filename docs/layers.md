@@ -59,12 +59,11 @@ Struktureller Typ für LDtk-Entity-Layer-Quellen:
 | `state` | `mklib.state.State<Dynamic>` | `public` | Referenz auf den aktuellen `mklib.state.State`. |
 | *Ererbte Felder* | `Float`, `Array` etc. | `public` | Alle Eigenschaften von `flixel.group.FlxSpriteGroup` (`members`, `length`, `x`, `y` etc.). |
 
-### Methoden (Methods)
-
 | Methode | Signatur | Rückgabewert | Beschreibung |
 | :--- | :--- | :--- | :--- |
 | `new` | `(layer:EntityLayerSource<Dynamic>, packageName:String = "entities")` | `Void` | Erstellt einen neuen `EntityLayer`, setzt `packageName`, bindet den `state`, liest alle Entities aus `layer.getAllUntyped()` aus und ruft `addEntities()` auf. |
-| `addEntities` | `(entities:Array<ldtk.Entity>)` | `Void` | Durchläuft das Entity-Array, ermittelt für jede Entity per Reflection die passende Klasse (`packageName.EntityName`), instanziiert sie mit `[entity]` als Konstruktor-Argument und fügt sie dieser Gruppe hinzu (`add()`). |
+| `addEntities` | `(entities:Array<ldtk.Entity>)` | `Void` | Durchläuft das Entity-Array, ermittelt für jede Entity per Reflection die passende Klasse (`packageName.EntityName`), instanziiert sie mit `[entity]` als Konstruktor-Argument und fügt sie dieser Gruppe hinzu (`add()`). Existiert keine eigene Klasse, greift der automatische Fallback auf `EntityNapeSprite` oder `EntitySprite`. |
+| `isNapeEntity` | `(entity:ldtk.Entity)` | `Bool` | Prüft, ob eine Entity als Nape-Physikobjekt (`EntityNapeSprite`) oder als rein visuelles Sprite (`EntitySprite`) instanziiert werden soll (prüft Nape-Space, LDtk-Felder wie `Tag`/`Tags`/`sensorEnabled`/`allowMovement` sowie Tag-Definitionen). |
 
 ### Wie funktioniert das automatische Mapping?
 
@@ -73,7 +72,11 @@ Struktureller Typ für LDtk-Entity-Layer-Quellen:
 3. Zusammen mit dem `packageName` (Standard: `"entities"`) wird der vollqualifizierte Klassenname gebildet:
    - `Hero` -> `entities.Hero`
    - `Platform` -> `entities.Platform`
-4. Über `Type.resolveClass()` und `Type.createInstance(cls, [entity])` wird eine neue Instanz der Klasse erzeugt und der `FlxSpriteGroup` hinzugefügt.
+4. Über `Type.resolveClass()` wird geprüft, ob eine entsprechende Klasse existiert:
+   - **Spezifische Klasse gefunden:** Wird via `Type.createInstance(cls, [entity])` instanziiert und hinzugefügt.
+   - **Keine eigene Klasse gefunden (Automatischer Fallback):** `isNapeEntity(entity)` entscheidet:
+     - Bei vorhandenem Physikraum und physikalischen Feldern/Tags -> `EntityNapeSprite`.
+     - Andernfalls (rein visuelle Objekte) -> `EntitySprite`.
 
 ---
 
