@@ -115,16 +115,13 @@ class AnimationRegistry {
 
 ## 🎮 Entity-Integration (`source/entities/Fire.hx`)
 
-Entities können direkt auf `AnimationRegistry.db` zugreifen und ihre Animationen automatisch initialisieren:
+`EntitySprite` (und `EntityNapeSprite`) binden das Animationssystem automatisch ein: Wenn im LDtk-Level das Feld `"Animations"` gesetzt ist, werden die passenden Animationsclips aus der `AnimationRegistry` geladen und registriert:
 
 ```haxe
 package entities;
 
-import flixel.FlxG;
 import mklib.entity.EntitySprite;
-import mklib.animation.AnimationTypes.SpriteSheetData;
-import mklib.animation.AnimationTypes.AnimationClip;
-import AnimationRegistry;
+import ldtk.Entity;
 
 /**
  * Visuelle animierte Feuer-Dekoration, die von EntitySprite erbt.
@@ -133,25 +130,14 @@ import AnimationRegistry;
 class Fire extends EntitySprite {
     public function new(entity:ldtk.Entity) {
         super(entity);
-
-        // Animations-Identifier aus LDtk-Feld auslesen (z. B. "Fire")
-        var animKey:String = getField("Animations");
-        var spritesheetData:SpriteSheetData = AnimationRegistry.db.get(animKey);
-
-        if (spritesheetData != null) {
-            // Spritesheet mit Frame-Maßen laden
-            if (hasGraphic) {
-                loadGraphic(spritesheetData.imagePath, true, spritesheetData.config.width, spritesheetData.config.height);
-            }
-
-            // Alle definierten Animationen registrieren
-            for (clip in spritesheetData.animations) {
-                animation.add(clip.name, clip.frames, clip.fps, clip.loop, clip.flipX, clip.flipY);
-            }
-
-            // Standardanimation starten
-            animation.play(spritesheetData.defaultAnimation);
-        }
+        // Animationen werden automatisch über initAnimation() im Konstruktor von EntitySprite geladen!
     }
 }
+```
+
+Alternativ kann `initAnimation(?animKey:String)` jederzeit manuell aufgerufen werden:
+
+```haxe
+// Manuelles Laden / Wechseln der Animationen:
+initAnimation("Fire");
 ```

@@ -25,36 +25,26 @@ Erbt von `flixel.FlxSprite`. Position (`pixelX`, `pixelY`), Abmessungen (`width`
 
 | Methode | Signatur | Rückgabewert | Beschreibung |
 | :--- | :--- | :--- | :--- |
-| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntitySprite`, setzt Position (`pixelX`, `pixelY`), `width`, `height`, `iid`, bindet den aktuellen `State` und initialisiert `graphicPath` sowie `hasGraphic`. |
+| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntitySprite`, setzt Position (`pixelX`, `pixelY`), `width`, `height`, `iid`, bindet den aktuellen `State`, initialisiert `graphicPath` sowie `hasGraphic` und startet automatisch Animationen, falls das Feld `"Animations"` vorhanden ist. |
 | `getGraphicPath` | `()` | `Null<String>` | Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`), falls ein Tile in LDtk definiert ist, und setzt `hasGraphic`. |
 | `getField` | `(identifier:String)` | `Dynamic` | Liest den Wert eines benutzerdefinierten LDtk-Feldes (`fieldInstances`) aus oder `null`. |
 | `hasField` | `(identifier:String)` | `Bool` | Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert. |
+| `initAnimation` | `(?animKey:String)` | `Void` | Lädt und registriert alle Animationsclips aus `AnimationRegistry.db` und startet die Standardanimation. Falls `animKey` nicht angegeben wird, wird `getField("Animations")` verwendet. |
 
-### Beispiel: Animierte Feuer-Dekoration (`Fire.hx`) mit `AnimationRegistry`
+### Beispiel: Animierte Feuer-Dekoration (`Fire.hx`)
+
+Da `EntitySprite` das LDtk-Feld `"Animations"` automatisch über die `AnimationRegistry` auflöst und initialisiert, ist keine manuelle Animationslogik mehr nötig:
 
 ```haxe
 package entities;
 
-import flixel.FlxG;
 import mklib.entity.EntitySprite;
-import mklib.animation.AnimationTypes.SpriteSheetData;
-import mklib.animation.AnimationTypes.AnimationClip;
-import AnimationRegistry;
 import ldtk.Entity;
 
 @:keep
 class Fire extends EntitySprite {
     public function new(entity:ldtk.Entity) {
         super(entity);
-
-        // Animationsdaten aus der Compile-Time-Registry abrufen
-        var spritesheetData:SpriteSheetData = AnimationRegistry.db.get(getField("Animations"));
-        if (spritesheetData != null) {
-            for (clip in spritesheetData.animations) {
-                animation.add(clip.name, clip.frames, clip.fps, clip.loop, clip.flipX, clip.flipY);
-            }
-            animation.play(spritesheetData.defaultAnimation);
-        }
     }
 }
 ```

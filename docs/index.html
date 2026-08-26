@@ -157,14 +157,14 @@
                   <td><code>mklib.entity</code></td>
                   <td><strong><code>EntitySprite</code></strong></td>
                   <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code></td>
-                  <td><code>new</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code></td>
+                  <td><code>new</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>initAnimation</code></td>
                   <td><a href="#entities">Entities →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.entity</code></td>
                   <td><strong><code>EntityNapeSprite</code></strong></td>
                   <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code>, <code>body</code></td>
-                  <td><code>new</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>sensorEnabled</code>, <code>addCbType</code>, <code>updateShapePosition</code></td>
+                  <td><code>new</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>sensorEnabled</code>, <code>addCbType</code>, <code>updateShapePosition</code>, <code>initAnimation</code></td>
                   <td><a href="#entities">Entities →</a></td>
                 </tr>
                 <tr>
@@ -732,6 +732,12 @@
                   <td><code>Bool</code></td>
                   <td>Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert.</td>
                 </tr>
+                <tr>
+                  <td><code>initAnimation</code></td>
+                  <td><code>(?animKey:String):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Lädt alle Animationsclips aus <code>AnimationRegistry.db</code> und startet die Standardanimation.</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -846,6 +852,12 @@
                   <td><code>():Void</code></td>
                   <td><code>Void</code></td>
                   <td>Zentriert den Nape-Körper im Mittelpunkt der LDtk-Entity (<code>pixelX + width/2, pixelY + height/2</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>initAnimation</code></td>
+                  <td><code>(?animKey:String):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Lädt alle Animationsclips aus <code>AnimationRegistry.db</code> und startet die Standardanimation.</td>
                 </tr>
               </tbody>
             </table>
@@ -1101,25 +1113,15 @@
               <button class="copy-btn">📋 Kopieren</button>
             </div>
             <pre><code><span class="hl-keyword">package</span> entities;
-
-<span class="hl-keyword">import</span> flixel.FlxG;
+ 
 <span class="hl-keyword">import</span> mklib.entity.EntitySprite;
-<span class="hl-keyword">import</span> mklib.animation.AnimationTypes.SpriteSheetData;
-<span class="hl-keyword">import</span> mklib.animation.AnimationTypes.AnimationClip;
-<span class="hl-keyword">import</span> AnimationRegistry;
-
+<span class="hl-keyword">import</span> ldtk.Entity;
+ 
 <span class="hl-keyword">@:keep</span>
 <span class="hl-keyword">class</span> <span class="hl-type">Fire</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntitySprite</span> {
     <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:ldtk.<span class="hl-type">Entity</span>) {
         <span class="hl-keyword">super</span>(entity);
-
-        <span class="hl-keyword">var</span> spritesheetData:<span class="hl-type">SpriteSheetData</span> = <span class="hl-type">AnimationRegistry</span>.db.<span class="hl-func">get</span>(<span class="hl-func">getField</span>(<span class="hl-str">"Animations"</span>));
-        <span class="hl-keyword">if</span> (spritesheetData != <span class="hl-keyword">null</span>) {
-            <span class="hl-keyword">for</span> (clip <span class="hl-keyword">in</span> spritesheetData.animations) {
-                animation.<span class="hl-func">add</span>(clip.name, clip.frames, clip.fps, clip.loop, clip.flipX, clip.flipY);
-            }
-            animation.<span class="hl-func">play</span>(spritesheetData.defaultAnimation);
-        }
+        <span class="hl-comment">// Animationen werden automatisch geladen, wenn das Feld "Animations" vorhanden ist.</span>
     }
 }</code></pre>
           </div>

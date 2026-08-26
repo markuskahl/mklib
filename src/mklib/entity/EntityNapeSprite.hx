@@ -5,6 +5,9 @@ import mklib.tools.Tags;
 import mklib.state.State;
 import flixel.FlxG;
 import flixel.addons.nape.FlxNapeSprite;
+import mklib.animation.AnimationTypes.SpriteSheetData;
+import mklib.animation.AnimationTypes.AnimationClip;
+import AnimationRegistry;
 
 /**
  * Erweiterte Entity-Klasse mit integriertem Nape-Physikkörper (`FlxNapeSprite`).
@@ -59,10 +62,12 @@ class EntityNapeSprite extends FlxNapeSprite {
 
 		graphicPath = getGraphicPath();
 
-		trace(hasField("FireAnimation"));
-
 		if (hasGraphic) {
 			loadGraphic(graphicPath, true, _entity.tileInfos.w, _entity.tileInfos.h);
+		}
+
+		if (hasField("Animations")) {
+			initAnimation(getField("Animations"));
 		}
 
 		if (hasField("sensorEnabled")) {
@@ -228,6 +233,38 @@ class EntityNapeSprite extends FlxNapeSprite {
 	public function updateShapePosition():Void {
 		if (body != null && _entity != null) {
 			body.position.setxy(_entity.pixelX + (_entity.width / 2), _entity.pixelY + (_entity.height / 2));
+		}
+	}
+
+	/**
+	 * Initialisiert und startet Animationen aus der `AnimationRegistry` für diese Entity.
+	 *
+	 * @param animKey Name/Schlüssel der Animationsdefinition in `AnimationRegistry.db` (z. B. "Fire").
+	 *                Falls nicht angegeben, wird das LDtk-Feld `"Animations"` verwendet.
+	 */
+	public function initAnimation(?animKey:String):Void {
+		if (animKey == null) {
+			animKey = getField("Animations");
+		}
+		if (animKey == null) {
+			return;
+		}
+
+		if (AnimationRegistry.db != null && AnimationRegistry.db.exists(animKey)) {
+			var spritesheetData:SpriteSheetData = AnimationRegistry.db.get(animKey);
+			if (spritesheetData != null) {
+				if (graphic == null && spritesheetData.imagePath != null && spritesheetData.config != null) {
+					loadGraphic(spritesheetData.imagePath, true, spritesheetData.config.width, spritesheetData.config.height);
+				}
+				if (spritesheetData.animations != null) {
+					for (sprite in spritesheetData.animations) {
+						animation.add(sprite.name, sprite.frames, sprite.fps, sprite.loop, sprite.flipX, sprite.flipY);
+					}
+				}
+				if (spritesheetData.defaultAnimation != null) {
+					animation.play(spritesheetData.defaultAnimation);
+				}
+			}
 		}
 	}
 }

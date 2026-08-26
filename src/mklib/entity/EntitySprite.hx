@@ -2,7 +2,10 @@ package mklib.entity;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import mklib.animation.AnimationTypes.SpriteSheetData;
+import mklib.animation.AnimationTypes.AnimationClip;
 import mklib.state.State;
+import AnimationRegistry;
 
 /**
  * Basisklasse für visuelle Entities, die aus einem LDtk-Level geladen werden.
@@ -57,6 +60,10 @@ class EntitySprite extends FlxSprite {
 
 		if (hasGraphic) {
 			loadGraphic(graphicPath, true, _entity.tileInfos.w, _entity.tileInfos.h);
+		}
+
+		if (hasField("Animations")) {
+			initAnimation(getField("Animations"));
 		}
 	}
 
@@ -128,5 +135,37 @@ class EntitySprite extends FlxSprite {
 		}
 		hasGraphic = true;
 		return normalized;
+	}
+
+	/**
+	 * Initialisiert und startet Animationen aus der `AnimationRegistry` für diese Entity.
+	 *
+	 * @param animKey Name/Schlüssel der Animationsdefinition in `AnimationRegistry.db` (z. B. "Fire").
+	 *                Falls nicht angegeben, wird das LDtk-Feld `"Animations"` verwendet.
+	 */
+	public function initAnimation(?animKey:String):Void {
+		if (animKey == null) {
+			animKey = getField("Animations");
+		}
+		if (animKey == null) {
+			return;
+		}
+
+		if (AnimationRegistry.db != null && AnimationRegistry.db.exists(animKey)) {
+			var spritesheetData:SpriteSheetData = AnimationRegistry.db.get(animKey);
+			if (spritesheetData != null) {
+				if (graphic == null && spritesheetData.imagePath != null && spritesheetData.config != null) {
+					loadGraphic(spritesheetData.imagePath, true, spritesheetData.config.width, spritesheetData.config.height);
+				}
+				if (spritesheetData.animations != null) {
+					for (sprite in spritesheetData.animations) {
+						animation.add(sprite.name, sprite.frames, sprite.fps, sprite.loop, sprite.flipX, sprite.flipY);
+					}
+				}
+				if (spritesheetData.defaultAnimation != null) {
+					animation.play(spritesheetData.defaultAnimation);
+				}
+			}
+		}
 	}
 }
