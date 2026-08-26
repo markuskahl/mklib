@@ -13,7 +13,6 @@
 		"flixel-addons": "3.2.3",
 		"nape-haxe4": "2.0.22",
 		"openfl":"9.3.2",
-		"ldtk-haxe-api":"1.5.3-rc.1",
-		"deepnightLibs": "1.0.79"
+		"ldtk-haxe-api":"1.5.3-rc.1"
 	}
 }

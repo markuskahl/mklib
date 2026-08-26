@@ -13,7 +13,6 @@ In dieser Anleitung erfährst du, wie du **`mklib`** in dein HaxeFlixel-Projekt 
 - **`nape-haxe4`** (z. B. `2.0.22`)
 - **`openfl`** (z. B. `9.3.2`)
 - **`ldtk-haxe-api`** (z. B. `1.5.3-rc.1`)
-- **`deepnightLibs`** (z. B. `1.0.79`)
 
 In deiner `Project.xml`:
 
@@ -23,7 +22,6 @@ In deiner `Project.xml`:
 <haxelib name="flixel-addons" />
 <haxelib name="nape-haxe4" />
 <haxelib name="ldtk-haxe-api" />
-<haxelib name="deepnightLibs" />
 <haxelib name="mklib" />
 ```
 
