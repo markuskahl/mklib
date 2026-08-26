@@ -59,6 +59,8 @@ class EntityNapeSprite extends FlxNapeSprite {
 
 		graphicPath = getGraphicPath();
 
+		trace(hasField("FireAnimation"));
+
 		if (hasGraphic) {
 			loadGraphic(graphicPath, true, _entity.tileInfos.w, _entity.tileInfos.h);
 		}
