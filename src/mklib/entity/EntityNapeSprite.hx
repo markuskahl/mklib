@@ -71,11 +71,15 @@ class EntityNapeSprite extends FlxNapeSprite {
 		}
 
 		if (hasField("sensor")) {
-			sensorEnabled();
+			sensorEnabled(getField("sensor"));
 		}
 
 		if (hasField("visible")) {
 			visible = getField("visible");
+		}
+
+		if (hasField("alpha")) {
+			alpha = getField("alpha");
 		}
 
 		if (hasField("Tag")) {
