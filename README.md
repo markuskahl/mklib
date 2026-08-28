@@ -18,6 +18,7 @@ Die vollständige interaktive Dokumentation inklusive Live-A*-Pathfinding-Simula
 - [**Physik & Sensoren (`Listener` & `Tags`)**](docs/physics.md)
 - [**Pathfinding & Navigation (`NavGrid`, `NavGridBuilder`, `AStar`)**](docs/pathfinding.md)
 - [**GPU-Lighting-System (`LightingSystem`, `Light`, `PointLight`, `SpotLight`, `TorchLight`, `GlowLight`)**](docs/lighting.md)
+- [**Wasser-Reflexions- & Wellen-Shader (`WaterReflectionShader`, `WaterReflectionPlane`, `EntityWaterReflection`)**](docs/water_reflection.md)
 - [**Tools & Mathematik (`AspectRatio` & `MathTool`)**](docs/tools_math.md)
 
 ---
@@ -39,6 +40,10 @@ Die vollständige interaktive Dokumentation inklusive Live-A*-Pathfinding-Simula
 | `mklib.light` | `TorchLight` | `flickerSpeed`, `flickerIntensity`, `flickerRadius`, `flameJitter` | `new`, `update` |
 | `mklib.light` | `GlowLight` | `minRadius`, `maxRadius`, `minIntensity`, `maxIntensity`, `pulseSpeed` | `new`, `update` |
 | `mklib.light` | `DirectionalLight` | `directionAngle` | `new` |
+| `mklib.effect` | `WaterReflectionShader` | `data` | `new`, `update`, `setWaterLevel`, `syncWithCamera`, `setWaveParams`, `setWaterColor`, `setFoam`, `setFade`, `setMode` |
+| `mklib.effect` | `WaterReflectionPlane` | `shaderInstance`, `autoSyncCamera`, `targetCamera` | `new`, `update`, `setWaveParams`, `setFoam`, `destroy` |
+| `mklib.effect` | `EntityWaterReflection` | `target`, `shaderInstance`, `offsetX`, `offsetY`, `verticalScale` | `new`, `update`, `syncWithTarget`, `setWaveParams`, `destroy` |
+| `mklib.effect` | `WaterReflectionMode` | `VERTICAL_WATER_PLANE`, `HORIZONTAL_MIRROR`, `WAVE_DISTORTION_ONLY` | – |
 | `mklib.animation` | `FrameConfig` | `width`, `height`, `spacing`, `margin` | – |
 | `mklib.animation` | `AnimationClip` | `name`, `fps`, `loop`, `flipX`, `flipY`, `frames` | – |
 | `mklib.animation` | `SpriteSheetData` | `imagePath`, `config`, `animations`, `defaultAnimation` | – |
