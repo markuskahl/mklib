@@ -4,6 +4,8 @@ import ldtk.Entity;
 import mklib.state.State;
 import mklib.entity.EntitySprite;
 import mklib.entity.EntityNapeSprite;
+import mklib.save.SaveManager;
+import mklib.save.ISaveable;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.FlxG;
@@ -84,27 +86,44 @@ class EntityLayer extends FlxSpriteGroup {
 			return;
 		}
 
+		var activeLevelName:Null<String> = (state != null) ? state.levelName : null;
+
 		for (i in 0...entities.length) {
 			var entity:ldtk.Entity = entities[i];
+
+			// Prüfe, ob die Entity im Save-Zustand bereits als zerstört markiert ist
+			if (entity.iid != null && SaveManager.isEntityDestroyed(entity.iid, activeLevelName)) {
+				continue;
+			}
+
 			var entityName:String = entity.identifier;
 			packageName = "entities.";
 
+			var createdSprite:Null<FlxSprite> = null;
 			var targetClass:String = packageName + entityName;
 			var cls = Type.resolveClass(targetClass);
 			if (cls != null) {
 				trace(entity.identifier + " hat eine Klasse");
 				var o:Dynamic = Type.createInstance(cls, [entity]);
 				if (Std.isOfType(o, EntitySprite) || Std.isOfType(o, EntityNapeSprite)) {
-					add(cast o);
+					createdSprite = cast o;
+					add(createdSprite);
 				}
 			} else {
 				if (isNapeEntity(entity)) {
 					trace(entity.identifier + " hat keine Klasse, wird als NapeSprite hinzugefügt.");
-					add(new EntityNapeSprite(entity));
+					createdSprite = new EntityNapeSprite(entity);
+					add(createdSprite);
 				} else {
 					trace(entity.identifier + " hat keine Klasse, wird als Sprite hinzugefügt.");
-					add(new EntitySprite(entity));
+					createdSprite = new EntitySprite(entity);
+					add(createdSprite);
 				}
+			}
+
+			// Stellt eventuell vorhandene ISaveable-Zustandsdaten für diese Entity wieder her
+			if (createdSprite != null && Std.isOfType(createdSprite, ISaveable)) {
+				SaveManager.restoreEntity(createdSprite, activeLevelName);
 			}
 		}
 	}

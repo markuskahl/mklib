@@ -14,6 +14,7 @@ The complete interactive documentation, including a live A* pathfinding simulato
 - [**State Management (`mklib.state.State`)**](docs/state.md)
 - [**Layer System (`TileLayer` & `EntityLayer`)**](docs/layers.md)
 - [**Entities & Game Objects (`EntitySprite` & `EntityNapeSprite`)**](docs/entities.md)
+- [**Save & Persistence System (`SaveManager` & `ISaveable`)**](docs/save.md)
 - [**Animation System & Macros (`AnimationBuilder` & `AnimationTypes`)**](docs/animation.md)
 - [**Physics & Sensors (`Listener` & `Tags`)**](docs/physics.md)
 - [**Pathfinding & Navigation (`NavGrid`, `NavGridBuilder`, `AStar`)**](docs/pathfinding.md)
@@ -27,12 +28,15 @@ The complete interactive documentation, including a live A* pathfinding simulato
 
 | Module | Class / Type | Properties | Methods |
 | :--- | :--- | :--- | :--- |
-| `mklib.state` | `State<TLevel>` | `project`, `tags`, `levelName`, `data` | `new`, `create`, `addCbTypes`, `napeInit`, `update`, `destroy` |
+| `mklib.state` | `State<TLevel>` | `project`, `tags`, `levelName`, `data`, `autoPersistLevel` | `new`, `create`, `addCbTypes`, `napeInit`, `update`, `destroy` |
+| `mklib.save` | `SaveManager` | `config`, `playTime`, `globals`, `levelStates`, `lastCheckpointMeta`, `onSave`, `onLoad` | `update`, `saveCheckpoint`, `loadCheckpoint`, `hasCheckpoint`, `clearCheckpoint`, `getCheckpointMeta`, `getLevelState`, `captureLevel`, `restoreLevel`, `clearSession`, `markEntityDestroyed`, `isEntityDestroyed`, `setEntityData`, `getEntityData`, `captureEntity`, `restoreEntity`, `setGlobal`, `getGlobal`, `hasGlobal`, `removeGlobal`, `clearGlobals`, `obfuscateString`, `deobfuscateString` |
+| `mklib.save` | `ISaveable` |  | `saveState`, `loadState` |
+| `mklib.save` | `CheckpointMeta` / `SaveProfile` | `timestamp`, `dateFormatted`, `playTimeSeconds`, `levelName`, `customMeta` |  |
 | `mklib.layer` | `TileLayer` | `levelName`, `layerName`, `state` | `new`, `render` |
 | `mklib.layer` | `EntityLayer` | `layerName`, `packageName`, `state` | `new`, `addEntities`, `isNapeEntity` |
 | `mklib.layer` | `EntityLayerSource<T>` | `identifier`, `getAllUntyped` |  |
-| `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic` | `new`, `getGraphicPath`, `getField`, `hasField`, `initAnimation` |
-| `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic`, `body` | `new`, `getGraphicPath`, `getField`, `hasField`, `sensorEnabled`, `addCbType`, `updateShapePosition`, `initAnimation` |
+| `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic` | `new`, `getGraphicPath`, `getField`, `hasField`, `initAnimation`, `markDestroyed`, `isSaveDestroyed` |
+| `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic`, `body` | `new`, `getGraphicPath`, `getField`, `hasField`, `sensorEnabled`, `addCbType`, `updateShapePosition`, `initAnimation`, `markDestroyed`, `isSaveDestroyed` |
 | `mklib.light` | `LightingSystem` | `lights`, `ambientColor`, `ambientIntensity`, `autoCull`, `shadowsEnabled`, `shadowSteps`, `shadowSoftness`, `occluders`, `shaderInstance` | `new`, `addLight`, `removeLight`, `clearLights`, `addOccluder`, `addOccluders`, `addOccluderClass`, `removeOccluder`, `removeOccluderClass`, `clearOccluders`, `createPointLight`, `createSpotLight`, `createTorchLight`, `createGlowLight`, `createDirectionalLight`, `loadFromLevel`, `loadFromEntityLayer`, `fromEntity` |
 | `mklib.light` | `Light` | `x`, `y`, `radius`, `color`, `intensity`, `falloff`, `active`, `visible`, `target` | `new`, `follow`, `stopFollowing`, `setPosition`, `setColor`, `update`, `destroy` |
 | `mklib.light` | `PointLight` | `innerRadius` | `new` |

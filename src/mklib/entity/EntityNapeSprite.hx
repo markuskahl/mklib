@@ -7,6 +7,7 @@ import flixel.FlxG;
 import flixel.addons.nape.FlxNapeSprite;
 import mklib.animation.AnimationTypes.SpriteSheetData;
 import mklib.animation.AnimationTypes.AnimationClip;
+import mklib.save.SaveManager;
 import AnimationRegistry;
 
 /**
@@ -270,5 +271,32 @@ class EntityNapeSprite extends FlxNapeSprite {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Markiert diese Nape-Entity im `SaveManager` als zerstört/aufgesammelt,
+	 * sodass sie beim erneuten Betreten des Levels nicht mehr gespawnt wird.
+	 *
+	 * @param killSprite Falls `true` (Standard), wird sofort `kill()` aufgerufen.
+	 */
+	public function markDestroyed(killSprite:Bool = true):Void {
+		if (iid != null) {
+			var lvlName:Null<String> = (state != null) ? state.levelName : null;
+			SaveManager.markEntityDestroyed(iid, lvlName);
+		}
+		if (killSprite) {
+			kill();
+		}
+	}
+
+	/**
+	 * Prüft, ob diese Entity im aktuellen Save-Zustand als zerstört markiert ist.
+	 */
+	public function isSaveDestroyed():Bool {
+		if (iid == null) {
+			return false;
+		}
+		var lvlName:Null<String> = (state != null) ? state.levelName : null;
+		return SaveManager.isEntityDestroyed(iid, lvlName);
 	}
 }

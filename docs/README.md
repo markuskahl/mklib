@@ -27,31 +27,37 @@
    - Physics entities with Nape Body, Shapes & collision tags (`EntityNapeSprite`)
    - Auto-updating shape positions & sensor handling
 
-5. [**Animation System & Macros (`AnimationBuilder` & `AnimationTypes`)**](animation.md)
+5. [**Save & Persistence System (`SaveManager` & `ISaveable`)**](save.md)
+   - Single-slot & checkpoint persistence via `FlxSave`
+   - Multi-level session caching (Metroidvania/World-Map support)
+   - Entity IID destruction tracking & `ISaveable` interface
+   - Global key-value state & XOR/Base64 obfuscation
+
+6. [**Animation System & Macros (`AnimationBuilder` & `AnimationTypes`)**](animation.md)
    - Build-time compile-safe animation generation (`AnimationBuilder.buildDatabase`)
    - JSON animation configuration & spritesheets
    - `AnimationClip`, `FrameConfig`, and `SpriteSheetData` types
 
-6. [**Physics & Collision Sensors (`Listener` & `Tags`)**](physics.md)
+7. [**Physics & Collision Sensors (`Listener` & `Tags`)**](physics.md)
    - String-based collision types via LDtk enum `"Tags"`
    - Collision & sensor callbacks (`Listener.addCollisionBeginListener`, `Listener.addSensorBeginListener`, etc.)
 
-7. [**Pathfinding & Navigation (`NavGrid`, `NavGridBuilder`, `AStar`)**](pathfinding.md)
+8. [**Pathfinding & Navigation (`NavGrid`, `NavGridBuilder`, `AStar`)**](pathfinding.md)
    - 2D grid map with multi-tile sizing and diagonals (`NavGrid`)
    - Auto-building navigation grids from LDtk IntGrid and tile layers (`NavGridBuilder`)
    - Optimized A* algorithm with Euclidean/Manhattan heuristics (`AStar`)
 
-8. [**GPU Lighting System (`LightingSystem`, `Light`, etc.)**](lighting.md)
+9. [**GPU Lighting System (`LightingSystem`, `Light`, etc.)**](lighting.md)
    - GPU-accelerated 2D lighting with multi-pass shaders
    - Light types: Point, Spot, Torch (flicker), Glow (pulse), Directional
    - Raymarched soft shadows and occluders
 
-9. [**Water Reflection & Wave Shaders (`WaterReflectionShader`, `WaterReflectionPlane`, `EntityWaterReflection`)**](water_reflection.md)
-   - Dynamic real-time water wave & reflection shader
-   - Full water planes and per-entity reflection sprites
-   - Configurable wave amplitude, frequency, foam, and reflection fade
+10. [**Water Reflection & Wave Shaders (`WaterReflectionShader`, `WaterReflectionPlane`, `EntityWaterReflection`)**](water_reflection.md)
+    - Dynamic real-time water wave & reflection shader
+    - Full water planes and per-entity reflection sprites
+    - Configurable wave amplitude, frequency, foam, and reflection fade
 
-10. [**Tools & Math Utilities (`AspectRatio` & `MathTool`)**](tools_math.md)
+11. [**Tools & Math Utilities (`AspectRatio` & `MathTool`)**](tools_math.md)
     - Aspect ratio calculations & validation (`AspectRatio`)
     - High-precision float rounding & arithmetic fixes (`MathTool`)
 

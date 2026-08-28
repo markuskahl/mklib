@@ -6,6 +6,7 @@ import flixel.addons.nape.FlxNapeSpace;
 import nape.callbacks.CbType;
 import flixel.FlxG;
 import flixel.FlxState;
+import mklib.save.SaveManager;
 
 /**
  * Generischer Basis-Game-State für HaxeFlixel-Projekte mit LDtk- und Nape-Integration.
@@ -15,10 +16,17 @@ import flixel.FlxState;
  * - Die automatische Initialisierung des Nape-Physikraums (`napeInit`).
  * - Die Konvertierung von LDtk-Tags (Enum "Tags") in Nape-`CbType`-Objekte.
  * - Das automatische, saubere Aufräumen von Nape-Space, CbTypes und LDtk-Referenzen beim State-Wechsel.
+ * - Die optionale automatische Persistenz von Level-Zuständen und Spielzeit via `SaveManager`.
  *
  * @param TLevel Der Typ des LDtk-Levels (z. B. `Data.Data_Level`).
  */
 class State<TLevel = Dynamic> extends FlxState {
+	/**
+	 * Gibt an, ob der Zustand dieses Levels beim Betreten und Verlassen
+	 * automatisch im `SaveManager`-Session-Cache synchronisiert werden soll.
+	 */
+	public var autoPersistLevel:Bool = true;
+
 	/**
 	 * Die geladene LDtk-Projektinstanz.
 	 */
@@ -72,6 +80,9 @@ class State<TLevel = Dynamic> extends FlxState {
 	 */
 	override function create():Void {
 		super.create();
+		if (autoPersistLevel) {
+			SaveManager.restoreLevel(this);
+		}
 	}
 
 	/**
@@ -105,12 +116,15 @@ class State<TLevel = Dynamic> extends FlxState {
 	}
 
 	/**
-	 * Haupt-Update-Schleife des States. Steuert u. a. die Maussichtbarkeit je nach Zielplattform.
+	 * Haupt-Update-Schleife des States. Steuert u. a. die Maussichtbarkeit je nach Zielplattform
+	 * und aktualisiert die globale Spielzeit im `SaveManager`.
 	 *
 	 * @param elapsed Die vergangene Zeit seit dem letzten Frame in Sekunden.
 	 */
 	override function update(elapsed:Float) {
 		super.update(elapsed);
+		SaveManager.update(elapsed);
+
 		#if windows
 		FlxG.mouse.visible = true;
 		#end
@@ -122,9 +136,14 @@ class State<TLevel = Dynamic> extends FlxState {
 
 	/**
 	 * Räumt den State beim Wechsel sauber auf, um Speicherlecks zu verhindern.
-	 * Leert den Nape-Physikraum, Nape-Listener, CbTypes sowie LDtk-Referenzen.
+	 * Speichert vorher automatisch den Levelzustand im Session-Cache und
+	 * leert anschließend den Nape-Physikraum, Nape-Listener, CbTypes sowie LDtk-Referenzen.
 	 */
 	override function destroy():Void {
+		if (autoPersistLevel) {
+			SaveManager.captureLevel(this);
+		}
+
 		if (FlxNapeSpace.space != null) {
 			FlxNapeSpace.space.listeners.clear();
 			FlxNapeSpace.space.clear();
