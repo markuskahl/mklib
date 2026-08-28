@@ -1,24 +1,34 @@
 package mklib.light;
 
+import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
+import openfl.display.BitmapData;
+import openfl.display.BlendMode;
+import openfl.geom.Rectangle;
 import mklib.layer.EntityLayer.EntityLayerSource;
 import mklib.light.shader.LightingShader;
-import openfl.display.BlendMode;
 
 /**
- * Zentraler Manager und GPU-Shader-Renderer für dynamisches 2D-Licht in `mklib`.
+ * Zentraler Manager und GPU-Shader-Renderer für dynamisches 2D-Licht und Raycast-Schatten in `mklib`.
  *
  * Verwaltet Lichtquellen (`PointLight`, `SpotLight`, `TorchLight`, `GlowLight`, `DirectionalLight`),
  * führt Viewport-/Frustum-Culling durch und rendert das finale Licht hardwarebeschleunigt
  * über den `LightingShader` als Multi-Light-Overlay (Standardmäßig mit `BlendMode.MULTIPLY`).
  *
+ * Unterstützt dynamische 2D-Raymarching-Schatten (Occlusion Shadows), wobei Hindernisse wie
+ * `TileLayer`, `FlxSpriteGroup`, `FlxSprite`, `FlxTypedGroup` oder Klassen (z. B. `Wall`)
+ * als Occluder übergeben werden können.
+ *
  * Das Beleuchtungssystem wird üblicherweise wie ein `FlxSprite` zur Szene hinzugefügt:
  * ```haxe
- * var lighting = new LightingSystem(0xFF141424, 0.2);
+ * var lighting = new LightingSystem(0xFF141424, 0.2, [tileLayer]);
  * add(lighting);
  * ```
  *
@@ -54,6 +64,28 @@ class LightingSystem extends FlxSprite {
 	public var autoCull:Bool = true;
 
 	/**
+	 * Aktiviert oder deaktiviert die hardwarebeschleunigte 2D-Schattenberechnung via GPU-Raymarching.
+	 * Wird automatisch auf `true` gesetzt, wenn Occluder registriert werden.
+	 */
+	public var shadowsEnabled:Bool = false;
+
+	/**
+	 * Anzahl der Raymarching-Abtastschritte pro Lichtquelle im Fragment-Shader (Standard: 32).
+	 * Höhere Werte sorgen für feiner abgetastete Schatten bei langen Distanzen (4 bis 64).
+	 */
+	public var shadowSteps:Int = 32;
+
+	/**
+	 * Weichzeichnungsfaktor für weiche Schattenkanten / Halbschatten (Penumbra, Standard: 0.0 für harte Kanten).
+	 */
+	public var shadowSoftness:Float = 0.0;
+
+	/**
+	 * Liste aller registrierten Schattenwerfer (Instanzen von `FlxBasic`, `TileLayer`, `FlxSpriteGroup` oder Klassen).
+	 */
+	public var occluders:Array<Dynamic> = [];
+
+	/**
 	 * Die Instanz des GPU-Multi-Light-Shaders (`LightingShader`), der das Lichtbild berechnet.
 	 */
 	public var shaderInstance(default, null):LightingShader;
@@ -64,13 +96,19 @@ class LightingSystem extends FlxSprite {
 	private var _paramsBuffer:Array<Float> = [];
 	private var _spotBuffer:Array<Float> = [];
 
+	// Puffer für 2D-Schatten-Occlusion
+	private var _occlusionBitmap:BitmapData;
+	private var _dummyBitmap:BitmapData;
+	private var _occlusionRect:Rectangle = new Rectangle();
+
 	/**
 	 * Erstellt ein neues Beleuchtungssystem.
 	 *
 	 * @param ambientColor Die Grundfarbe der Dunkelheit / Umgebung (Standard: `0xFF141424`).
 	 * @param ambientIntensity Die Helligkeit des Umgebungslichts von `0.0` (stockdunkel) bis `1.0` (taghell, Standard: `0.2`).
+	 * @param occluders Optionale Liste von Schattenwerfern (`TileLayer`, `FlxSpriteGroup`, `FlxSprite`, Klassen etc.).
 	 */
-	public function new(ambientColor:FlxColor = 0xFF141424, ambientIntensity:Float = 0.2) {
+	public function new(ambientColor:FlxColor = 0xFF141424, ambientIntensity:Float = 0.2, ?occluders:Array<Dynamic>) {
 		super(0, 0);
 		this.ambientColor = ambientColor;
 		this.ambientIntensity = ambientIntensity;
@@ -84,6 +122,10 @@ class LightingSystem extends FlxSprite {
 		makeGraphic(FlxG.width > 0 ? FlxG.width : 320, FlxG.height > 0 ? FlxG.height : 180, FlxColor.WHITE);
 
 		initBuffers();
+
+		if (occluders != null) {
+			addOccluders(occluders);
+		}
 	}
 
 	/**
@@ -96,6 +138,91 @@ class LightingSystem extends FlxSprite {
 		_paramsBuffer = [for (i in 0...(MAX_LIGHTS * 4)) 0.0];
 		_spotBuffer = [for (i in 0...(MAX_LIGHTS * 4)) 0.0];
 	}
+
+	// =========================================================================
+	// Occluder- & Schatten-Verwaltung
+	// =========================================================================
+
+	/**
+	 * Fügt ein Hindernis / einen Schattenwerfer zum Beleuchtungssystem hinzu.
+	 *
+	 * Unterstützt:
+	 * - `TileLayer` / `FlxSpriteGroup`
+	 * - `FlxTypedGroup` / `FlxGroup`
+	 * - `FlxSprite` / `FlxObject`
+	 * - `Class<FlxBasic>` (z. B. `Wall`, `EntitySprite` – sucht automatisch alle Instanzen in der Szene)
+	 *
+	 * @param occluder Das hinzuzufügende Schattenhindernis.
+	 * @return Das übergebene Objekt (Fluent Interface).
+	 */
+	public function addOccluder(occluder:Dynamic):Dynamic {
+		if (occluder != null && occluders.indexOf(occluder) == -1) {
+			occluders.push(occluder);
+			shadowsEnabled = true;
+		}
+		return occluder;
+	}
+
+	/**
+	 * Fügt eine Liste von Schattenwerfern hinzu.
+	 *
+	 * @param list Liste von Hindernissen / Layern / Gruppen / Klassen.
+	 */
+	public function addOccluders(list:Array<Dynamic>):Void {
+		if (list != null) {
+			for (item in list) {
+				addOccluder(item);
+			}
+		}
+	}
+
+	/**
+	 * Registriert eine Klasse als Schattenwerfer (z. B. `Wall` oder `EntitySprite`).
+	 * Alle Instanzen dieser Klasse in `FlxG.state` werden automatisch für Schatten berücksichtigt.
+	 *
+	 * @param cl Die zu registrierende Klasse.
+	 */
+	public function addOccluderClass(cl:Class<FlxBasic>):Void {
+		if (cl != null && occluders.indexOf(cl) == -1) {
+			occluders.push(cl);
+			shadowsEnabled = true;
+		}
+	}
+
+	/**
+	 * Entfernt ein registriertes Hindernis aus der Schattenwerfer-Liste.
+	 *
+	 * @param occluder Das zu entfernende Objekt.
+	 * @return Das entfernte Objekt.
+	 */
+	public function removeOccluder(occluder:Dynamic):Dynamic {
+		if (occluder != null) {
+			occluders.remove(occluder);
+		}
+		return occluder;
+	}
+
+	/**
+	 * Entfernt eine registrierte Klasse aus der Schattenwerfer-Liste.
+	 *
+	 * @param cl Die zu entfernende Klasse.
+	 */
+	public function removeOccluderClass(cl:Class<FlxBasic>):Void {
+		if (cl != null) {
+			occluders.remove(cl);
+		}
+	}
+
+	/**
+	 * Leert die Liste aller registrierten Schattenwerfer.
+	 */
+	public function clearOccluders():Void {
+		occluders = [];
+	}
+
+	// =========================================================================
+	// Lichtquellen-Verwaltung
+	// =========================================================================
 
 	/**
 	 * Registriert eine existierende Lichtquelle im System.
@@ -256,9 +383,6 @@ class LightingSystem extends FlxSprite {
 	 * Parst eine LDtk-Entity und erzeugt anhand ihrer benutzerdefinierten Felder (`fieldInstances`)
 	 * die passende `Light`-Instanz (`PointLight`, `SpotLight`, `TorchLight`, `GlowLight` oder `DirectionalLight`).
 	 *
-	 * Unterstützt flexible Feldnamen (z. B. `radius`, `light_radius`, `color`, `intensity`, `spotAngle` etc.)
-	 * und konvertiert LDtk-Farbwerte und Offsets automatisch.
-	 *
 	 * @param entity Die aus LDtk geladene Entity-Definition (`ldtk.Entity`).
 	 * @return Die erzeugte `Light`-Instanz oder `null`, falls die Entity keine Lichtdefinition darstellt.
 	 */
@@ -267,7 +391,6 @@ class LightingSystem extends FlxSprite {
 			return null;
 		}
 
-		// Prüfen, ob Entity als Licht markiert ist
 		var identifier = entity.identifier;
 		var rawType:Null<String> = getEntityField(entity, "type");
 		if (rawType == null) {
@@ -285,7 +408,6 @@ class LightingSystem extends FlxSprite {
 
 		var lightType:LightType = LightType.fromString(rawType != null ? rawType : identifier, POINT);
 
-		// Basis-Felder extrahieren
 		var radius:Float = getFloatParam(entity, ["radius", "light_radius", "Radius"], 100.0);
 		var intensity:Float = getFloatParam(entity, ["intensity", "light_intensity", "Intensity"], 1.0);
 		var falloff:Float = getFloatParam(entity, ["falloff", "light_falloff", "Falloff"], 1.0);
@@ -337,11 +459,10 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Liest alle Licht-Entities aus einer LDtk-Entity-Layer-Quelle (z. B. `data.l_Lights` oder `data.l_Entities`)
-	 * aus, konvertiert sie automatisch in Lichtquellen und fügt sie diesem System hinzu.
+	 * Liest alle Licht-Entities aus einer LDtk-Entity-Layer-Quelle aus, konvertiert sie automatisch in Lichtquellen und fügt sie hinzu.
 	 *
 	 * @param layer Die LDtk-Layer-Quelle (`EntityLayerSource`).
-	 * @return Anzahl der erfolgreich geladenen und hinzugefügten Lichter.
+	 * @return Anzahl der erfolgreich geladenen Lichter.
 	 */
 	public function loadFromEntityLayer(layer:EntityLayerSource<Dynamic>):Int {
 		if (layer == null) {
@@ -364,11 +485,10 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Durchsucht alle Layer eines LDtk-Level-Objekts (alle Felder mit dem Präfix `l_`)
-	 * nach Licht-Entities und lädt diese automatisch in das Beleuchtungssystem.
+	 * Durchsucht alle Layer eines LDtk-Level-Objekts nach Licht-Entities und lädt diese automatisch.
 	 *
-	 * @param levelData Das LDtk-Level-Objekt (z. B. `state.data` bzw. `project.all_worlds...`).
-	 * @return Gesamtzahl der erfolgreich geladenen und registrierten Lichter.
+	 * @param levelData Das LDtk-Level-Objekt (z. B. `state.data`).
+	 * @return Gesamtzahl der geladenen Lichter.
 	 */
 	public function loadFromLevel(levelData:Dynamic):Int {
 		if (levelData == null) {
@@ -392,13 +512,6 @@ class LightingSystem extends FlxSprite {
 	// LDtk Hilfsfunktionen für Feld-Auslesung
 	// =========================================================================
 
-	/**
-	 * Liest den Rohwert eines benutzerdefinierten Feldes (Custom Property) aus den LDtk-JSON-Daten einer Entity aus.
-	 *
-	 * @param entity Die zu prüfende LDtk-Entity.
-	 * @param identifier Der Bezeichner des Felds (z. B. `"radius"`, `"color"`).
-	 * @return Der Wert des Feldes oder `null`, falls nicht vorhanden.
-	 */
 	private static function getEntityField(entity:ldtk.Entity, identifier:String):Dynamic {
 		if (entity != null && entity.json != null && entity.json.fieldInstances != null) {
 			for (inst in entity.json.fieldInstances) {
@@ -410,13 +523,6 @@ class LightingSystem extends FlxSprite {
 		return null;
 	}
 
-	/**
-	 * Prüft, ob eine LDtk-Entity ein bestimmtes Feld besitzt und dieses nicht `null` ist.
-	 *
-	 * @param entity Die zu prüfende LDtk-Entity.
-	 * @param identifier Der Bezeichner des Felds.
-	 * @return `true`, wenn das Feld mit einem gültigen Wert existiert, sonst `false`.
-	 */
 	private static function hasEntityField(entity:ldtk.Entity, identifier:String):Bool {
 		if (entity != null && entity.json != null && entity.json.fieldInstances != null) {
 			for (inst in entity.json.fieldInstances) {
@@ -428,15 +534,6 @@ class LightingSystem extends FlxSprite {
 		return false;
 	}
 
-	/**
-	 * Sucht eine Liste möglicher Feldnamen in einer LDtk-Entity nach einer Zahl (Float/Int) ab
-	 * und gibt den ersten gefundenen Wert zurück.
-	 *
-	 * @param entity Die LDtk-Entity.
-	 * @param keys Liste alternativer Feldnamen (z. B. `["radius", "light_radius"]`).
-	 * @param defaultValue Der Fallback-Standardwert, falls kein passendes Feld gefunden wird.
-	 * @return Der gefundene Float-Wert oder `defaultValue`.
-	 */
 	private static function getFloatParam(entity:ldtk.Entity, keys:Array<String>, defaultValue:Float):Float {
 		for (k in keys) {
 			var val = getEntityField(entity, k);
@@ -453,14 +550,6 @@ class LightingSystem extends FlxSprite {
 		return defaultValue;
 	}
 
-	/**
-	 * Sucht eine Liste möglicher Feldnamen in einer LDtk-Entity nach einem booleschen Wert ab.
-	 *
-	 * @param entity Die LDtk-Entity.
-	 * @param keys Liste alternativer Feldnamen (z. B. `["active", "enabled"]`).
-	 * @param defaultValue Der Fallback-Standardwert.
-	 * @return Der boolesche Wert oder `defaultValue`.
-	 */
 	private static function getBoolParam(entity:ldtk.Entity, keys:Array<String>, defaultValue:Bool):Bool {
 		for (k in keys) {
 			var val = getEntityField(entity, k);
@@ -474,22 +563,12 @@ class LightingSystem extends FlxSprite {
 		return defaultValue;
 	}
 
-	/**
-	 * Sucht eine Liste möglicher Feldnamen in einer LDtk-Entity nach einem Farbwert ab
-	 * und konvertiert Int-Farbwerte (0xRRGGBB bzw. 0xAARRGGBB) oder Hex-Strings (z. B. `"#FF9900"`).
-	 *
-	 * @param entity Die LDtk-Entity.
-	 * @param keys Liste alternativer Feldnamen (z. B. `["color", "light_color"]`).
-	 * @param defaultColor Die Fallback-Farbe als `FlxColor`.
-	 * @return Die ermittelte `FlxColor` oder `defaultColor`.
-	 */
 	private static function getColorParam(entity:ldtk.Entity, keys:Array<String>, defaultColor:FlxColor):FlxColor {
 		for (k in keys) {
 			var val = getEntityField(entity, k);
 			if (val != null) {
 				if (Std.isOfType(val, Int)) {
 					var intVal:Int = cast val;
-					// LDtk liefert Farben meist als 0xRRGGBB ohne Alpha-Kanal
 					if ((intVal & 0xFF000000) == 0) {
 						intVal |= 0xFF000000;
 					}
@@ -507,19 +586,145 @@ class LightingSystem extends FlxSprite {
 	}
 
 	// =========================================================================
+	// Occlusion-Map-Rasterisierung & Raycast-Vorbereitung
+	// =========================================================================
+
+	/**
+	 * Rendert alle registrierten Schattenwerfer (Tiles, Sprites, Gruppen, Klassen)
+	 * in den Occlusion-Bitmap-Puffer und übergibt die Textur an den GPU-Shader.
+	 */
+	private function updateOcclusionMap(cam:FlxCamera, camW:Int, camH:Int):Void {
+		if (_dummyBitmap == null) {
+			_dummyBitmap = new BitmapData(1, 1, true, 0x00000000);
+		}
+
+		if (!shadowsEnabled || occluders == null || occluders.length == 0) {
+			shaderInstance.data.u_shadowsEnabled.value = [0];
+			shaderInstance.data.u_shadowSteps.value = [shadowSteps];
+			shaderInstance.data.u_shadowSoftness.value = [shadowSoftness];
+			shaderInstance.data.u_occlusionTexture.input = _dummyBitmap;
+			return;
+		}
+
+		if (_occlusionBitmap == null || _occlusionBitmap.width != camW || _occlusionBitmap.height != camH) {
+			if (_occlusionBitmap != null) {
+				_occlusionBitmap.dispose();
+			}
+			_occlusionBitmap = new BitmapData(camW, camH, true, 0x00000000);
+		}
+
+		_occlusionBitmap.fillRect(_occlusionBitmap.rect, 0x00000000);
+
+		for (target in occluders) {
+			renderOccluder(target, cam, camW, camH);
+		}
+
+		shaderInstance.data.u_shadowsEnabled.value = [1];
+		shaderInstance.data.u_shadowSteps.value = [shadowSteps];
+		shaderInstance.data.u_shadowSoftness.value = [shadowSoftness];
+		shaderInstance.data.u_occlusionTexture.input = _occlusionBitmap;
+	}
+
+	/**
+	 * Rekursive Rasterisierung eines Schattenwerfer-Ziels in die Occlusion-Maske.
+	 */
+	private function renderOccluder(target:Dynamic, cam:FlxCamera, camW:Float, camH:Float):Void {
+		if (target == null) {
+			return;
+		}
+
+		// 1. Wenn eine Klasse übergeben wurde (z. B. Wall, EntitySprite)
+		if (Std.isOfType(target, Class)) {
+			var targetClass:Class<Dynamic> = cast target;
+			if (FlxG.state != null && FlxG.state.members != null) {
+				for (member in FlxG.state.members) {
+					if (member != null && Std.isOfType(member, targetClass)) {
+						renderOccluder(member, cam, camW, camH);
+					}
+				}
+			}
+			return;
+		}
+
+		// 2. TileLayer oder FlxSpriteGroup
+		if (Std.isOfType(target, FlxSpriteGroup)) {
+			var spriteGroup:FlxSpriteGroup = cast target;
+			if (spriteGroup.exists && spriteGroup.visible && spriteGroup.group != null) {
+				for (member in spriteGroup.group.members) {
+					if (member != null && member.exists && member.visible && member.alpha > 0.01) {
+						renderSpriteOcclusion(member, cam, camW, camH);
+					}
+				}
+			}
+			return;
+		}
+
+		// 3. Generische FlxTypedGroup oder FlxGroup
+		if (Std.isOfType(target, FlxTypedGroup)) {
+			var typedGroup:FlxTypedGroup<Dynamic> = cast target;
+			if (typedGroup.exists && typedGroup.visible && typedGroup.members != null) {
+				for (member in typedGroup.members) {
+					if (member != null) {
+						renderOccluder(member, cam, camW, camH);
+					}
+				}
+			}
+			return;
+		}
+
+		// 4. Einzelnes FlxSprite
+		if (Std.isOfType(target, FlxSprite)) {
+			var sprite:FlxSprite = cast target;
+			if (sprite.exists && sprite.visible && sprite.alpha > 0.01) {
+				renderSpriteOcclusion(sprite, cam, camW, camH);
+			}
+			return;
+		}
+
+		// 5. FlxObject (Bounding-Box)
+		if (Std.isOfType(target, FlxObject)) {
+			var obj:FlxObject = cast target;
+			if (obj.exists && obj.visible) {
+				var sx = (obj.x - cam.scroll.x * obj.scrollFactor.x) * cam.zoom;
+				var sy = (obj.y - cam.scroll.y * obj.scrollFactor.y) * cam.zoom;
+				var sw = obj.width * cam.zoom;
+				var sh = obj.height * cam.zoom;
+
+				if (sx + sw > 0 && sx < camW && sy + sh > 0 && sy < camH) {
+					_occlusionRect.setTo(sx, sy, sw, sh);
+					_occlusionBitmap.fillRect(_occlusionRect, 0xFFFFFFFF);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Zeichnet die Bounding-Box eines sichtbaren Sprites in die Occlusion-Maske.
+	 */
+	private inline function renderSpriteOcclusion(sprite:FlxSprite, cam:FlxCamera, camW:Float, camH:Float):Void {
+		var sx = (sprite.x - cam.scroll.x * sprite.scrollFactor.x) * cam.zoom;
+		var sy = (sprite.y - cam.scroll.y * sprite.scrollFactor.y) * cam.zoom;
+		var sw = sprite.width * cam.zoom;
+		var sh = sprite.height * cam.zoom;
+
+		if (sx + sw > 0 && sx < camW && sy + sh > 0 && sy < camH) {
+			_occlusionRect.setTo(sx, sy, sw, sh);
+			_occlusionBitmap.fillRect(_occlusionRect, 0xFFFFFFFF);
+		}
+	}
+
+	// =========================================================================
 	// Update- & Render-Schleife
 	// =========================================================================
 
 	/**
-	 * Aktualisiert das Beleuchtungssystem und ruft `update(elapsed)` für alle aktiven Lichter auf
-	 * (wichtig für Oszillationen bei `TorchLight` und `GlowLight` sowie Follow-Ziele).
+	 * Aktualisiert das Beleuchtungssystem und ruft `update(elapsed)` für alle aktiven Lichter auf.
 	 *
 	 * @param elapsed Vergangene Zeit seit dem letzten Frame in Sekunden.
 	 */
 	override public function update(elapsed:Float):Void {
 		super.update(elapsed);
 
-		// Alle aktiven Lichter aktualisieren
 		for (light in lights) {
 			if (light != null && light.active) {
 				light.update(elapsed);
@@ -530,9 +735,10 @@ class LightingSystem extends FlxSprite {
 	/**
 	 * Rendert das Beleuchtungs-Overlay:
 	 * 1. Passt die Grafikgröße dynamisch an die Kameraauflösung an.
-	 * 2. Ermittelt sichtbare Lichter via Frustum-Culling (`autoCull`).
-	 * 3. Befüllt die Shader-Uniform-Puffer (Positionen, Farben, Radien, Spot-Parameter).
-	 * 4. Führt den GPU-Draw-Call mit Multi-Light-Shader aus.
+	 * 2. Aktualisiert die Occlusion-Map und Raymarching-Uniforms für Schatten.
+	 * 3. Ermittelt sichtbare Lichter via Frustum-Culling (`autoCull`).
+	 * 4. Befüllt die Shader-Uniform-Puffer (Positionen, Farben, Radien, Spot-Parameter).
+	 * 5. Führt den GPU-Draw-Call mit Multi-Light-Shader aus.
 	 */
 	override public function draw():Void {
 		var cam:FlxCamera = (camera != null) ? camera : FlxG.camera;
@@ -540,12 +746,14 @@ class LightingSystem extends FlxSprite {
 			return;
 		}
 
-		// Grafikgröße an Kamera anpassen falls nötig
 		var camW = (cam.width > 0) ? cam.width : FlxG.width;
 		var camH = (cam.height > 0) ? cam.height : FlxG.height;
 		if (width != camW || height != camH) {
 			makeGraphic(camW, camH, FlxColor.WHITE);
 		}
+
+		// Occlusion-Map für 2D Raycast-Schatten vorbereiten
+		updateOcclusionMap(cam, camW, camH);
 
 		// Sichtbare Lichter ermitteln (Frustum Culling)
 		var camLeft = cam.scroll.x;
@@ -632,7 +840,18 @@ class LightingSystem extends FlxSprite {
 		_paramsBuffer = null;
 		_spotBuffer = null;
 		shaderInstance = null;
+
+		if (_occlusionBitmap != null) {
+			_occlusionBitmap.dispose();
+			_occlusionBitmap = null;
+		}
+		if (_dummyBitmap != null) {
+			_dummyBitmap.dispose();
+			_dummyBitmap = null;
+		}
+		_occlusionRect = null;
+		occluders = null;
+
 		super.destroy();
 	}
 }
-

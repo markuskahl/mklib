@@ -32,7 +32,7 @@ Die vollständige interaktive Dokumentation inklusive Live-A*-Pathfinding-Simula
 | `mklib.layer` | `EntityLayerSource<T>` | `identifier`, `getAllUntyped` | – |
 | `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic` | `new`, `getGraphicPath`, `getField`, `hasField`, `initAnimation` |
 | `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic`, `body` | `new`, `getGraphicPath`, `getField`, `hasField`, `sensorEnabled`, `addCbType`, `updateShapePosition`, `initAnimation` |
-| `mklib.light` | `LightingSystem` | `lights`, `ambientColor`, `ambientIntensity`, `autoCull`, `shaderInstance` | `new`, `addLight`, `removeLight`, `clearLights`, `createPointLight`, `createSpotLight`, `createTorchLight`, `createGlowLight`, `createDirectionalLight`, `loadFromLevel`, `loadFromEntityLayer`, `fromEntity` |
+| `mklib.light` | `LightingSystem` | `lights`, `ambientColor`, `ambientIntensity`, `autoCull`, `shadowsEnabled`, `shadowSteps`, `shadowSoftness`, `occluders`, `shaderInstance` | `new`, `addLight`, `removeLight`, `clearLights`, `addOccluder`, `addOccluders`, `addOccluderClass`, `removeOccluder`, `removeOccluderClass`, `clearOccluders`, `createPointLight`, `createSpotLight`, `createTorchLight`, `createGlowLight`, `createDirectionalLight`, `loadFromLevel`, `loadFromEntityLayer`, `fromEntity` |
 | `mklib.light` | `Light` | `x`, `y`, `radius`, `color`, `intensity`, `falloff`, `active`, `visible`, `target` | `new`, `follow`, `stopFollowing`, `setPosition`, `setColor`, `update`, `destroy` |
 | `mklib.light` | `PointLight` | `innerRadius` | `new` |
 | `mklib.light` | `SpotLight` | `angle`, `spotAngle`, `innerAngle` | `new`, `pointAt`, `lookAt` |

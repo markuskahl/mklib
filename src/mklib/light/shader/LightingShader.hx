@@ -7,7 +7,8 @@ import flixel.system.FlxAssets.FlxShader;
  *
  * Berechnet bis zu 32 dynamische Lichter gleichzeitig auf der GPU pro Render-Durchlauf.
  * Transformiert Fragment-Pixel automatisch anhand von Kamera-Scroll und Zoom in Weltkoordinaten
- * und unterstützt Dämpfungskurven, innere Helligkeitsradien sowie Scheinwerferkegel.
+ * und unterstützt Dämpfungskurven, innere Helligkeitsradien, Scheinwerferkegel sowie
+ * hardwarebeschleunigtes 2D-GPU-Raymarching für dynamische Schattenwürfe (Occlusion Shadows).
  */
 class LightingShader extends FlxShader {
 	@:glFragmentSource('
@@ -26,6 +27,12 @@ class LightingShader extends FlxShader {
 		uniform vec4 u_lightColor[MAX_LIGHTS];     // R, G, B, Intensität
 		uniform vec4 u_lightParams[MAX_LIGHTS];    // X: Radius, Y: Falloff-Exponent, Z: LightType, W: InnerParam
 		uniform vec4 u_lightSpot[MAX_LIGHTS];      // X: DirX, Y: DirY, Z: CosOuter, W: CosInner
+
+		// 2D Raycast / Shadow Casting Uniforms
+		uniform sampler2D u_occlusionTexture;      // Maskentextur der Hindernisse/Wände (Alpha > 0 = Hindernis)
+		uniform int u_shadowsEnabled;              // 1 = Schatten aktiv, 0 = Schatten deaktiviert
+		uniform int u_shadowSteps;                 // Anzahl der Raymarching-Abtastschritte (z. B. 24, 32)
+		uniform float u_shadowSoftness;            // Weichzeichnungsfaktor für Halbschatten (0.0 = harte Schatten)
 
 		void main() {
 			vec2 uv = openfl_TextureCoordv;
@@ -97,6 +104,46 @@ class LightingShader extends FlxShader {
 							spotAtt = smoothstep(0.0, 1.0, spotAtt);
 							att *= spotAtt;
 						}
+					}
+
+					// 2D Raymarching Schatten-Berechnung
+					if (u_shadowsEnabled == 1 && att > 0.001 && dist > 1.0) {
+						vec2 lightScreen = (lPos - u_camScroll) * u_camZoom;
+						vec2 lightUV = lightScreen / u_resolution;
+
+						float shadow = 1.0;
+						float steps = float(max(4, min(u_shadowSteps, 64)));
+						float stepSize = 1.0 / steps;
+
+						// Startpunkt mit kleinem Versatz zur Vermeidung von Selbstverschattung an der Lichtquelle
+						float startT = clamp(2.0 / max(dist * u_camZoom, 2.0), 0.01, 0.15);
+
+						for (int s = 1; s <= 64; s++) {
+							if (float(s) >= steps) {
+								break;
+							}
+							float t = startT + float(s) * stepSize * (1.0 - startT);
+							if (t >= 0.98) {
+								break;
+							}
+							vec2 sampleUV = mix(lightUV, uv, t);
+							if (sampleUV.x >= 0.0 && sampleUV.x <= 1.0 && sampleUV.y >= 0.0 && sampleUV.y <= 1.0) {
+								float occ = flixel_texture2D(u_occlusionTexture, sampleUV).a;
+								if (occ > 0.25) {
+									if (u_shadowSoftness > 0.01) {
+										float penumbra = clamp((1.0 - t) * (1.0 / u_shadowSoftness), 0.0, 1.0);
+										shadow = min(shadow, 1.0 - penumbra);
+										if (shadow <= 0.0) {
+											break;
+										}
+									} else {
+										shadow = 0.0;
+										break;
+									}
+								}
+							}
+						}
+						att *= shadow;
 					}
 
 					// Farb- und Intensitätsakkumulation

@@ -35,7 +35,7 @@
    - `AnimationTypes`: Datenstrukturen (`FrameConfig`, `AnimationClip`, `SpriteSheetData`)
    - `AnimationRegistry`: Globales Bereitstellungsmuster für Entity-Animationen
 9. [**GPU-Lighting-System (`mklib.light.*` & `mklib.light.shader.*`)**](lighting.md)
-   - `LightingSystem`: Hardwarebeschleunigter 2D-Shader-Renderer, Viewport-Culling und LDtk-Level-Import
+   - `LightingSystem`: Hardwarebeschleunigter 2D-Shader-Renderer, 2D-Raymarching-Schatten, Viewport-Culling und LDtk-Level-Import
    - `Light` (Basisklasse): Weltpositionen, Radius, Farbe, Intensität, Falloff und `follow(target)`
    - `PointLight`, `SpotLight`, `TorchLight`, `GlowLight`, `DirectionalLight`: Spezialisierte Lichtquellen
    - LDtk Custom Properties: Vollständige Konfiguration von Lichtern direkt im Level-Editor
@@ -52,7 +52,7 @@
 | `mklib.layer` | `EntityLayerSource<T>` | `identifier`, `getAllUntyped` | – |
 | `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic` | `new`, `getGraphicPath`, `getField`, `hasField`, `initAnimation` |
 | `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic`, `body` | `new`, `getGraphicPath`, `getField`, `hasField`, `sensorEnabled`, `addCbType`, `updateShapePosition`, `initAnimation` |
-| `mklib.light` | `LightingSystem` | `lights`, `ambientColor`, `ambientIntensity`, `autoCull`, `shaderInstance` | `new`, `addLight`, `removeLight`, `clearLights`, `createPointLight`, `createSpotLight`, `createTorchLight`, `createGlowLight`, `createDirectionalLight`, `loadFromLevel`, `loadFromEntityLayer`, `fromEntity` |
+| `mklib.light` | `LightingSystem` | `lights`, `ambientColor`, `ambientIntensity`, `autoCull`, `shadowsEnabled`, `shadowSteps`, `shadowSoftness`, `occluders`, `shaderInstance` | `new`, `addLight`, `removeLight`, `clearLights`, `addOccluder`, `addOccluders`, `addOccluderClass`, `removeOccluder`, `removeOccluderClass`, `clearOccluders`, `createPointLight`, `createSpotLight`, `createTorchLight`, `createGlowLight`, `createDirectionalLight`, `loadFromLevel`, `loadFromEntityLayer`, `fromEntity` |
 | `mklib.light` | `Light` | `x`, `y`, `radius`, `color`, `intensity`, `falloff`, `active`, `visible`, `target` | `new`, `follow`, `stopFollowing`, `setPosition`, `setColor`, `update`, `destroy` |
 | `mklib.light` | `PointLight` | `innerRadius` | `new` |
 | `mklib.light` | `SpotLight` | `angle`, `spotAngle`, `innerAngle` | `new`, `pointAt`, `lookAt` |

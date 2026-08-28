@@ -1,6 +1,6 @@
 # GPU-Shader-Lighting-System (`mklib.light.*`)
 
-Das **GPU-Shader-Lighting-System** von `mklib` bietet eine extrem performante, hardwarebeschleunigte 2D-Echtzeitbeleuchtung für HaxeFlixel. Es berechnet bis zu 32 dynamische Lichter gleichzeitig auf der GPU in einem einzigen Shader-Pass, unterstützt sanfte Dämpfungskurven, Lichtkegel und organisches Fackelflackern.
+Das **GPU-Shader-Lighting-System** von `mklib` bietet eine extrem performante, hardwarebeschleunigte 2D-Echtzeitbeleuchtung und **dynamische 2D-Raymarching-Schatten** für HaxeFlixel. Es berechnet bis zu 32 dynamische Lichter gleichzeitig auf der GPU in einem einzigen Shader-Pass, unterstützt sanfte Dämpfungskurven, Lichtkegel, Fackelflackern sowie Raycast-Schattenwürfe an Hindernissen (`TileLayer`, `FlxSpriteGroup`, `FlxSprite`, Klassen).
 
 Zusätzlich können Lichter **direkt im LDtk Level-Editor** über benutzerdefinierte Felder (Custom Properties) definiert und vollautomatisch instanziiert werden.
 
@@ -9,6 +9,10 @@ Zusätzlich können Lichter **direkt im LDtk Level-Editor** über benutzerdefini
 ## 🌟 Features & Highlights
 
 - **⚡ Hardwarebeschleunigter GPU-Shader**: Alle Lichter werden parallel auf der Grafikkarte mit glatten Hermite-Kurven (`smoothstep`) und Exponential-Dämpfung gerendert.
+- **🌑 Dynamische 2D-Raycast-Schatten (Occlusion Shadows)**:
+  - Licht prallt an Kacheln, Wänden und Spielfiguren ab und wirft dynamische Schatten.
+  - Hindernisse können als `TileLayer`, `FlxSpriteGroup`, `FlxSprite`, `FlxTypedGroup` oder als `Class<FlxBasic>` übergeben werden.
+  - Einstellbare Abtastpräzision (`shadowSteps`) und Halbschatten/Weichzeichnung (`shadowSoftness`).
 - **🎯 5 Spezialisierte Licht-Typen**:
   - `PointLight`: Omnidirektionales 360°-Punktlicht mit anpassbarem 100%-Helligkeitskern (`innerRadius`).
   - `SpotLight`: Gerichteter Scheinwerfer mit Abstrahlwinkel, Kegelweite und weichem Randübergang (`innerAngle`).
@@ -25,7 +29,7 @@ Zusätzlich können Lichter **direkt im LDtk Level-Editor** über benutzerdefini
 
 | Klasse / Typ | Erbt von | Beschreibung |
 | :--- | :--- | :--- |
-| `LightingSystem` | `FlxSprite` | Zentraler Manager und Renderer. Verwaltet Lichter, culling, Shader-Uniforms und LDtk-Import. |
+| `LightingSystem` | `FlxSprite` | Zentraler Manager und Renderer. Verwaltet Lichter, Schatten-Occluder, Culling, Shader-Uniforms und LDtk-Import. |
 | `Light` | `IFlxDestroyable` | Abstrakte Basisklasse aller Lichtquellen mit Position, Radius, Farbe, Intensität und Verfolgung. |
 | `PointLight` | `Light` | 360°-Punktlicht mit innerem Kern (`innerRadius`). |
 | `SpotLight` | `Light` | Scheinwerferkegel mit `angle`, `spotAngle`, `innerAngle`, `pointAt()` und `lookAt()`. |
@@ -33,45 +37,63 @@ Zusätzlich können Lichter **direkt im LDtk Level-Editor** über benutzerdefini
 | `GlowLight` | `Light` | Pulsierendes Magielicht mit `minRadius`, `maxRadius`, `minIntensity`, `maxIntensity`, `pulseSpeed`. |
 | `DirectionalLight` | `Light` | Globales Sonnen- und Mondlicht mit `directionAngle`. |
 | `LightType` | `enum abstract` | Enum der Lichtarten (`POINT`, `SPOT`, `TORCH`, `GLOW`, `DIRECTIONAL`). |
-| `LightingShader` | `FlxShader` | Der GLSL-Multi-Light Fragment-Shader. |
+| `LightingShader` | `FlxShader` | Der GLSL-Multi-Light Fragment-Shader mit integriertem 2D-Raymarching für Schatten. |
 
 ---
 
 ## 🚀 Schnelleinstieg & Code-Beispiele
 
-### 1. Grundlegendes Setup im `PlayState`
+### 1. Grundlegendes Setup mit 2D-Raycast-Schatten
 
 ```haxe
 package;
 
 import mklib.state.State;
+import mklib.layer.TileLayer;
 import mklib.light.LightingSystem;
 
 class PlayState extends State<Data.Data_Level> {
+    public var tileLayer:TileLayer;
     public var lighting:LightingSystem;
 
     override public function create():Void {
         super.create();
 
-        // 1. LightingSystem mit dunklem Nacht-Ambient erstellen
-        lighting = new LightingSystem(0xFF141424, 0.2);
+        // 1. TileLayer für Level-Wände erstellen
+        tileLayer = new TileLayer(data.l_Tiles.identifier);
+        add(tileLayer);
 
-        // 2. Fackellicht erstellen
-        var torch = lighting.createTorchLight(100, 100, 120, 0xFFFFAA44, 1.0);
+        // 2. LightingSystem mit Hindernissen für 2D-Raycast-Schatten initialisieren
+        lighting = new LightingSystem(0xFF141424, 0.2, [tileLayer]);
 
-        // 3. Scheinwerfer erstellen und auf einen Punkt ausrichten
-        var spot = lighting.createSpotLight(200, 80, 160, 90, 45, 0xFFFFFFFF);
+        // Optionale Schatten-Konfiguration:
+        lighting.shadowSteps = 32;       // Raymarching-Schritte (4-64, Standard: 32)
+        lighting.shadowSoftness = 0.3;    // Weiche Schattenkanten (Standard: 0.0)
 
-        // 4. Magischen pulsierenden Kristall erstellen
-        var crystal = lighting.createGlowLight(350, 120, 30, 70, 0xFF55AAFF, 0.3, 1.0, 2.0);
+        // 3. Fackellicht erstellen (wirft Schatten an Level-Wänden)
+        var torch = lighting.createTorchLight(100, 100, 140, 0xFFFFAA44, 1.0);
 
-        // 5. Overlay zum State hinzufügen (liegt über den Kacheln und Entities)
+        // 4. Scheinwerfer erstellen
+        var spot = lighting.createSpotLight(200, 80, 180, 90, 50, 0xFFFFFFFF);
+
+        // 5. Overlay zur Szene hinzufügen
         add(lighting);
     }
 }
 ```
 
-### 2. Licht an Spielerfigur binden
+### 2. Schattenwerfer dynamisch registrieren
+
+```haxe
+// Ganze TileLayer oder SpriteGroups als Hindernisse:
+lighting.addOccluder(tileLayer);
+lighting.addOccluder(enemiesGroup);
+
+// Oder nach Klassen filtern (sucht alle Instanzen in der Szene):
+lighting.addOccluderClass(Wall);
+```
+
+### 3. Licht an Spielerfigur binden
 
 ```haxe
 // Fackel folgt der Spielerfigur automatisch auf Schritt und Tritt
@@ -79,7 +101,7 @@ var playerTorch = lighting.createTorchLight(0, 0, 130, 0xFFFF9933, 1.1);
 playerTorch.follow(playerSprite, 0, 0, true);
 ```
 
-### 3. Scheinwerfer auf Mauszeiger oder Zielobjekt ausrichten
+### 4. Scheinwerfer auf Mauszeiger oder Zielobjekt ausrichten
 
 ```haxe
 // In der update()-Schleife: Scheinwerfer folgt der Maus
@@ -118,17 +140,6 @@ In LDtk kannst du Licht-Entities (z. B. Entity `Light`, `Torch`, `SpotLight`, `C
 | `active` / `enabled` | `Bool` | Alle | Ob das Licht initial aktiv ist (Standard: `true`) |
 | `offsetX` / `offsetY` | `Float` | Alle | Versatz relativ zur Entity-Position (Standard: Entity-Mitte) |
 
-### LDtk-Level automatisch laden:
-
-```haxe
-var lighting = new LightingSystem(0xFF141424, 0.2);
-
-// Lädt automatisch alle Licht-Entities aus allen Entity-Layern des Levels
-lighting.loadFromLevel(data);
-
-add(lighting);
-```
-
 ---
 
 ## ⚙️ Detaillierte API-Referenz
@@ -142,6 +153,10 @@ add(lighting);
 | `ambientColor` | `FlxColor` | `0xFF141424` | Grundfarbe der Dunkelheit / Umgebung. |
 | `ambientIntensity` | `Float` | `0.2` | Grundhelligkeit der Umgebung (0.0 = stockdunkel, 1.0 = hell). |
 | `autoCull` | `Bool` | `true` | Aktiviert automatisches Frustum-Culling für maximale GPU-Performance. |
+| `shadowsEnabled` | `Bool` | `false` | Aktiviert Raycast-Schattenwürfe (automatisch `true`, sobald Occluder vorhanden sind). |
+| `shadowSteps` | `Int` | `32` | Raymarching-Abtastschritte entlang jedes Lichtstrahls (4–64). |
+| `shadowSoftness` | `Float` | `0.0` | Weichzeichnung der Schattenkanten / Halbschatten (Penumbra). |
+| `occluders` | `Array<Dynamic>` | `[]` | Liste registrierter Hindernisse/Klassen für Schatten. |
 | `lights` | `Array<Light>` | `[]` | Liste aller registrierten Lichtquellen. |
 | `shaderInstance` | `LightingShader` | – | Die aktive Shader-Instanz auf der GPU. |
 
@@ -149,7 +164,13 @@ add(lighting);
 
 | Methode | Rückgabe | Beschreibung |
 | :--- | :--- | :--- |
-| `new(ambientColor, ambientIntensity)` | `Void` | Erstellt das Lighting-System. |
+| `new(ambientColor, ambientIntensity, ?occluders)` | `Void` | Erstellt das Lighting-System mit optionalen Schatten-Occludern. |
+| `addOccluder(occluder)` | `Dynamic` | Fügt ein Hindernis (`TileLayer`, Sprite, Gruppe, Klasse) hinzu und aktiviert Schatten. |
+| `addOccluders(list)` | `Void` | Fügt eine Liste von Hindernissen hinzu. |
+| `addOccluderClass(cl)` | `Void` | Registriert eine Klasse (z. B. `Wall`) als Schattenwerfer. |
+| `removeOccluder(occluder)` | `Dynamic` | Entfernt ein registriertes Hindernis. |
+| `removeOccluderClass(cl)` | `Void` | Entfernt eine registrierte Klasse. |
+| `clearOccluders()` | `Void` | Leert alle Schattenwerfer. |
 | `addLight(light)` | `T` | Registriert ein Licht und gibt es zurück. |
 | `removeLight(light, destroy)` | `T` | Entfernt ein Licht. |
 | `clearLights(destroy)` | `Void` | Entfernt alle registrierten Lichter. |
