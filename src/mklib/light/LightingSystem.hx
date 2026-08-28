@@ -12,45 +12,53 @@ import openfl.display.BlendMode;
 /**
  * Zentraler Manager und GPU-Shader-Renderer für dynamisches 2D-Licht in `mklib`.
  *
- * Verwaltet Lichter (`PointLight`, `SpotLight`, `TorchLight`, `GlowLight`, `DirectionalLight`),
- * führt intelligentes Viewport-/Frustum-Culling durch und rendert das Lichtbild hardwarebeschleunigt
- * über den `LightingShader`.
+ * Verwaltet Lichtquellen (`PointLight`, `SpotLight`, `TorchLight`, `GlowLight`, `DirectionalLight`),
+ * führt Viewport-/Frustum-Culling durch und rendert das finale Licht hardwarebeschleunigt
+ * über den `LightingShader` als Multi-Light-Overlay (Standardmäßig mit `BlendMode.MULTIPLY`).
  *
- * Bietet zudem automatische Erkennung und Instanziierung von Lichtquellen aus LDtk-Leveldaten
- * anhand benutzerdefinierter Felder (Custom Properties).
+ * Das Beleuchtungssystem wird üblicherweise wie ein `FlxSprite` zur Szene hinzugefügt:
+ * ```haxe
+ * var lighting = new LightingSystem(0xFF141424, 0.2);
+ * add(lighting);
+ * ```
+ *
+ * Bietet zudem bequeme Factory-Methoden zur programmatischen Lichterstellung sowie
+ * automatische Erkennung und Instanziierung aus LDtk-Leveldaten anhand von Custom Properties.
  */
 class LightingSystem extends FlxSprite {
 	/**
-	 * Maximale Anzahl an gleichzeitig an die GPU übergebenen Lichtern pro Viewport.
+	 * Maximale Anzahl an gleichzeitig an die GPU übergebenen Lichtern pro Viewport/Kamera (Standard: 32).
 	 */
 	public static inline var MAX_LIGHTS:Int = 32;
 
 	/**
-	 * Liste aller registrierten Lichtquellen in der Spielwelt.
+	 * Liste aller aktuell registrierten Lichtquellen in der Spielwelt.
 	 */
 	public var lights:Array<Light> = [];
 
 	/**
-	 * Die Umgebungs-Grundfarbe (Standard: Dunkles Nachtblau/Violett `0xFF141424`).
+	 * Die Umgebungs-Grundfarbe (Ambient Color), die überall dort sichtbar ist,
+	 * wo keine Lichtquellen hinleuchten (Standard: Dunkles Nachtblau `0xFF141424`).
 	 */
 	public var ambientColor:FlxColor = 0xFF141424;
 
 	/**
-	 * Die Grundhelligkeit des Umgebungslichts (0.0 = stockdunkel, 1.0 = voll ausgeleuchtet, Standard: 0.2).
+	 * Die Grundhelligkeit des Umgebungslichts (0.0 = absolute Dunkelheit, 1.0 = volle Ausleuchtung, Standard: 0.2).
 	 */
 	public var ambientIntensity:Float = 0.2;
 
 	/**
-	 * Aktiviert automatisches Frustum-Culling (nur Lichter im Kamerabereich werden an den Shader gesendet).
+	 * Aktiviert automatisches Frustum-Culling. Wenn `true`, werden nur diejenigen Lichter
+	 * an den GPU-Shader übermittelt, die sich tatsächlich im sichtbaren Bereich der Kamera befinden.
 	 */
 	public var autoCull:Bool = true;
 
 	/**
-	 * Die Instanz des GPU-Multi-Light-Shaders.
+	 * Die Instanz des GPU-Multi-Light-Shaders (`LightingShader`), der das Lichtbild berechnet.
 	 */
 	public var shaderInstance(default, null):LightingShader;
 
-	// Wiederverwendbare Puffer-Arrays zur Vermeidung von GC-Allokationen während der Render-Schleife
+	// Wiederverwendbare Puffer-Arrays zur Vermeidung von Garbage-Collector-Allokationen während der Render-Schleife
 	private var _posBuffer:Array<Float> = [];
 	private var _colorBuffer:Array<Float> = [];
 	private var _paramsBuffer:Array<Float> = [];
@@ -59,8 +67,8 @@ class LightingSystem extends FlxSprite {
 	/**
 	 * Erstellt ein neues Beleuchtungssystem.
 	 *
-	 * @param ambientColor Umgebungslicht-Farbe (Standard: `0xFF141424`).
-	 * @param ambientIntensity Umgebungslicht-Intensität (Standard: `0.2`).
+	 * @param ambientColor Die Grundfarbe der Dunkelheit / Umgebung (Standard: `0xFF141424`).
+	 * @param ambientIntensity Die Helligkeit des Umgebungslichts von `0.0` (stockdunkel) bis `1.0` (taghell, Standard: `0.2`).
 	 */
 	public function new(ambientColor:FlxColor = 0xFF141424, ambientIntensity:Float = 0.2) {
 		super(0, 0);
@@ -79,7 +87,8 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Initialisiert die internen Uniform-Puffer für die maximale Shader-Kapazität.
+	 * Initialisiert die internen Puffer-Arrays auf die durch `MAX_LIGHTS` festgelegte Größe.
+	 * Dadurch werden wiederholte Array-Allokationen in jedem Frame vermieden.
 	 */
 	private function initBuffers():Void {
 		_posBuffer = [for (i in 0...(MAX_LIGHTS * 2)) 0.0];
@@ -89,10 +98,10 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Registriert eine neue Lichtquelle im System.
+	 * Registriert eine existierende Lichtquelle im System.
 	 *
-	 * @param light Die hinzuzufügende Lichtquelle.
-	 * @return Die hinzugefügte Lichtquelle (Fluent Interface).
+	 * @param light Die hinzuzufügende Lichtquelle (z. B. `PointLight`, `SpotLight`, `TorchLight` etc.).
+	 * @return Die übergebene Lichtquelle zur bequemen Verkettung (Fluent Interface).
 	 */
 	public function addLight<T:Light>(light:T):T {
 		if (light != null && lights.indexOf(light) == -1) {
@@ -105,7 +114,7 @@ class LightingSystem extends FlxSprite {
 	 * Entfernt eine Lichtquelle aus dem System.
 	 *
 	 * @param light Die zu entfernende Lichtquelle.
-	 * @param destroy Ob die Lichtquelle zerstört werden soll (`destroy()`).
+	 * @param destroy Wenn `true`, wird zusätzlich `light.destroy()` aufgerufen (Standard: `false`).
 	 * @return Die entfernte Lichtquelle.
 	 */
 	public function removeLight<T:Light>(light:T, destroy:Bool = false):T {
@@ -119,9 +128,9 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Entfernt alle Lichtquellen aus dem System.
+	 * Entfernt alle registrierten Lichtquellen aus dem System.
 	 *
-	 * @param destroy Ob alle Lichter zerstört werden sollen.
+	 * @param destroy Wenn `true`, werden alle Lichter zusätzlich zerstört (Standard: `true`).
 	 */
 	public function clearLights(destroy:Bool = true):Void {
 		if (destroy) {
@@ -135,7 +144,9 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Gibt die Gesamtzahl der registrierten Lichter zurück.
+	 * Gibt die Gesamtzahl aller aktuell registrierten Lichtquellen zurück.
+	 *
+	 * @return Anzahl der Lichter im Array `lights`.
 	 */
 	public inline function getLightCount():Int {
 		return lights.length;
@@ -146,7 +157,17 @@ class LightingSystem extends FlxSprite {
 	// =========================================================================
 
 	/**
-	 * Erstellt und registriert ein neues omnidirektionales Punktlicht (`PointLight`).
+	 * Erstellt und registriert ein neues omnidirektionales Punktlicht (`PointLight`),
+	 * das gleichmäßig in alle Richtungen (360°) strahlt.
+	 *
+	 * @param x X-Koordinate der Lichtquelle in Weltpixeln.
+	 * @param y Y-Koordinate der Lichtquelle in Weltpixeln.
+	 * @param radius Gesamtradius des Lichtkreises in Pixeln (Standard: 100).
+	 * @param color Farbe des Lichts als `FlxColor` (Standard: Weiß `0xFFFFFFFF`).
+	 * @param intensity Helligkeitsmultiplikator des Lichts (Standard: 1.0).
+	 * @param innerRadius Radius des inneren Kernbereichs in Pixeln mit 100% voller Helligkeit (Standard: 0.0).
+	 * @param falloff Dämpfungsexponent des Helligkeitsabfalls zum Rand hin (1.0 = linear, > 1.0 = steilerer Abfall, Standard: 1.0).
+	 * @return Die erstellte und registrierte `PointLight`-Instanz.
 	 */
 	public function createPointLight(x:Float, y:Float, radius:Float = 100, color:FlxColor = FlxColor.WHITE, intensity:Float = 1.0, innerRadius:Float = 0.0, falloff:Float = 1.0):PointLight {
 		var light = new PointLight(x, y, radius, color, intensity, innerRadius, falloff);
@@ -154,7 +175,19 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Erstellt und registriert einen neuen gerichteten Scheinwerfer (`SpotLight`).
+	 * Erstellt und registriert einen neuen gerichteten Scheinwerfer (`SpotLight`),
+	 * der einen Lichtkegel in eine bestimmte Richtung wirft (z. B. Taschenlampe oder Suchscheinwerfer).
+	 *
+	 * @param x X-Koordinate des Scheinwerfers in Weltpixeln.
+	 * @param y Y-Koordinate des Scheinwerfers in Weltpixeln.
+	 * @param radius Reichweite des Lichtstrahls in Pixeln (Standard: 150).
+	 * @param angle Abstrahlrichtung in **Grad** (0° = nach rechts, 90° = nach unten, 180° = nach links, 270° = nach oben, Standard: 0°).
+	 * @param spotAngle Gesamt-Öffnungswinkel des Lichtkegels in **Grad** (z. B. 45° für schmalen Kegel, 360° für Vollkreis, Standard: 45°).
+	 * @param color Farbe des Lichts als `FlxColor` (Standard: Weiß `0xFFFFFFFF`).
+	 * @param intensity Helligkeitsmultiplikator (Standard: 1.0).
+	 * @param innerAngle Innerer Fokuswinkel in **Grad**, innerhalb dessen maximale Helligkeit herrscht, bevor der weiche Randverlauf einsetzt (Standard: 15°).
+	 * @param falloff Dämpfungsexponent des Lichtabfalls (Standard: 1.0).
+	 * @return Die erstellte und registrierte `SpotLight`-Instanz.
 	 */
 	public function createSpotLight(x:Float, y:Float, radius:Float = 150, angle:Float = 0, spotAngle:Float = 45, color:FlxColor = FlxColor.WHITE, intensity:Float = 1.0, innerAngle:Float = 15, falloff:Float = 1.0):SpotLight {
 		var light = new SpotLight(x, y, radius, angle, spotAngle, color, intensity, innerAngle, falloff);
@@ -162,7 +195,19 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Erstellt und registriert eine neue Fackellichtquelle (`TorchLight`).
+	 * Erstellt und registriert eine dynamisch flackernde Fackellichtquelle (`TorchLight`),
+	 * die Radius, Helligkeit und Position organisch oszillieren lässt.
+	 *
+	 * @param x X-Koordinate in Weltpixeln.
+	 * @param y Y-Koordinate in Weltpixeln.
+	 * @param radius Basisradius des Fackelscheins in Pixeln (Standard: 120).
+	 * @param color Farbe des Feuerscheins (Standard: Warmes Fackelorange `0xFFFFAA44`).
+	 * @param intensity Basis-Helligkeitsmultiplikator (Standard: 1.0).
+	 * @param flickerSpeed Geschwindigkeit des Flackerns und der Oszillation (Standard: 8.0).
+	 * @param flickerIntensity Maximale Helligkeitsschwankung beim Flackern (Standard: 0.15).
+	 * @param flickerRadius Maximale Radiusschwankung in Pixeln nach oben/unten (Standard: 10.0).
+	 * @param flameJitter Maximaler zufälliger Positions-Versatz (Jitter) der Flamme in Pixeln (Standard: 2.0).
+	 * @return Die erstellte und registrierte `TorchLight`-Instanz.
 	 */
 	public function createTorchLight(x:Float, y:Float, radius:Float = 120, color:FlxColor = 0xFFFFAA44, intensity:Float = 1.0, flickerSpeed:Float = 8.0, flickerIntensity:Float = 0.15, flickerRadius:Float = 10.0, flameJitter:Float = 2.0):TorchLight {
 		var light = new TorchLight(x, y, radius, color, intensity, flickerSpeed, flickerIntensity, flickerRadius, flameJitter);
@@ -170,7 +215,19 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Erstellt und registriert eine neue pulsierende Aura-Lichtquelle (`GlowLight`).
+	 * Erstellt und registriert eine harmonisch pulsierende Aura-Lichtquelle (`GlowLight`),
+	 * die ihren Radius und ihre Helligkeit sinusförmig verändert (z. B. für magische Kristalle oder Portale).
+	 *
+	 * @param x X-Koordinate in Weltpixeln.
+	 * @param y Y-Koordinate in Weltpixeln.
+	 * @param minRadius Minimaler Radius der Pulsation in Pixeln (Standard: 40).
+	 * @param maxRadius Maximaler Radius der Pulsation in Pixeln (Standard: 80).
+	 * @param color Farbe des Leuchtens (Standard: Sanftes Magie-Blau `0xFF55AAFF`).
+	 * @param minIntensity Minimale Helligkeit am Tiefpunkt der Pulsation (Standard: 0.4).
+	 * @param maxIntensity Maximale Helligkeit am Hochpunkt der Pulsation (Standard: 1.0).
+	 * @param pulseSpeed Geschwindigkeit der Pulsation in Radiant pro Sekunde (Standard: 2.0).
+	 * @param pulsePhase Startphase der Sinuswelle in Radiant (Standard: 0.0).
+	 * @return Die erstellte und registrierte `GlowLight`-Instanz.
 	 */
 	public function createGlowLight(x:Float, y:Float, minRadius:Float = 40, maxRadius:Float = 80, color:FlxColor = 0xFF55AAFF, minIntensity:Float = 0.4, maxIntensity:Float = 1.0, pulseSpeed:Float = 2.0, pulsePhase:Float = 0.0):GlowLight {
 		var light = new GlowLight(x, y, minRadius, maxRadius, color, minIntensity, maxIntensity, pulseSpeed, pulsePhase);
@@ -178,7 +235,13 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Erstellt und registriert ein neues globales Richtungslicht (`DirectionalLight`).
+	 * Erstellt und registriert ein globales, positionsunabhängiges Richtungslicht (`DirectionalLight`),
+	 * das die gesamte Szene gleichmäßig aus einem bestimmten Einstrahlwinkel erhellt (z. B. Sonnen- oder Mondlicht).
+	 *
+	 * @param directionAngle Einstrahlwinkel des Lichts in **Grad** (Standard: 45.0°).
+	 * @param color Farbe des Lichts (Standard: Warmes Sonnenlicht `0xFFFFF8EE`).
+	 * @param intensity Helligkeitsfaktor des Richtungslichts (Standard: 0.5).
+	 * @return Die erstellte und registrierte `DirectionalLight`-Instanz.
 	 */
 	public function createDirectionalLight(directionAngle:Float = 45.0, color:FlxColor = 0xFFFFF8EE, intensity:Float = 0.5):DirectionalLight {
 		var light = new DirectionalLight(directionAngle, color, intensity);
@@ -190,14 +253,14 @@ class LightingSystem extends FlxSprite {
 	// =========================================================================
 
 	/**
-	 * Parst eine LDtk-Entity und erzeugt anhand ihrer benutzerdefinierten Felder
-	 * (`fieldInstances`) die passende `Light`-Instanz.
+	 * Parst eine LDtk-Entity und erzeugt anhand ihrer benutzerdefinierten Felder (`fieldInstances`)
+	 * die passende `Light`-Instanz (`PointLight`, `SpotLight`, `TorchLight`, `GlowLight` oder `DirectionalLight`).
 	 *
 	 * Unterstützt flexible Feldnamen (z. B. `radius`, `light_radius`, `color`, `intensity`, `spotAngle` etc.)
-	 * und konvertiert LDtk-Farbwerte automatisch.
+	 * und konvertiert LDtk-Farbwerte und Offsets automatisch.
 	 *
-	 * @param entity Die aus LDtk geladene Entity-Definition.
-	 * @return Die erzeugte Lichtquelle oder `null`, falls die Entity kein Licht definiert.
+	 * @param entity Die aus LDtk geladene Entity-Definition (`ldtk.Entity`).
+	 * @return Die erzeugte `Light`-Instanz oder `null`, falls die Entity keine Lichtdefinition darstellt.
 	 */
 	public static function fromEntity(entity:ldtk.Entity):Null<Light> {
 		if (entity == null) {
@@ -274,10 +337,10 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Liest alle Lichter aus einer LDtk-Entity-Layer-Quelle (z. B. `data.l_Lights` oder `data.l_Entities`)
-	 * aus und fügt sie diesem System hinzu.
+	 * Liest alle Licht-Entities aus einer LDtk-Entity-Layer-Quelle (z. B. `data.l_Lights` oder `data.l_Entities`)
+	 * aus, konvertiert sie automatisch in Lichtquellen und fügt sie diesem System hinzu.
 	 *
-	 * @param layer Die LDtk-Layer-Quelle.
+	 * @param layer Die LDtk-Layer-Quelle (`EntityLayerSource`).
 	 * @return Anzahl der erfolgreich geladenen und hinzugefügten Lichter.
 	 */
 	public function loadFromEntityLayer(layer:EntityLayerSource<Dynamic>):Int {
@@ -301,10 +364,11 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Durchsucht alle Layer eines LDtk-Level-Objekts nach Licht-Entities und lädt diese automatisch.
+	 * Durchsucht alle Layer eines LDtk-Level-Objekts (alle Felder mit dem Präfix `l_`)
+	 * nach Licht-Entities und lädt diese automatisch in das Beleuchtungssystem.
 	 *
-	 * @param levelData Das typisierte LDtk-Level-Objekt (z. B. `state.data`).
-	 * @return Gesamtzahl der geladenen Lichter.
+	 * @param levelData Das LDtk-Level-Objekt (z. B. `state.data` bzw. `project.all_worlds...`).
+	 * @return Gesamtzahl der erfolgreich geladenen und registrierten Lichter.
 	 */
 	public function loadFromLevel(levelData:Dynamic):Int {
 		if (levelData == null) {
@@ -328,6 +392,13 @@ class LightingSystem extends FlxSprite {
 	// LDtk Hilfsfunktionen für Feld-Auslesung
 	// =========================================================================
 
+	/**
+	 * Liest den Rohwert eines benutzerdefinierten Feldes (Custom Property) aus den LDtk-JSON-Daten einer Entity aus.
+	 *
+	 * @param entity Die zu prüfende LDtk-Entity.
+	 * @param identifier Der Bezeichner des Felds (z. B. `"radius"`, `"color"`).
+	 * @return Der Wert des Feldes oder `null`, falls nicht vorhanden.
+	 */
 	private static function getEntityField(entity:ldtk.Entity, identifier:String):Dynamic {
 		if (entity != null && entity.json != null && entity.json.fieldInstances != null) {
 			for (inst in entity.json.fieldInstances) {
@@ -339,6 +410,13 @@ class LightingSystem extends FlxSprite {
 		return null;
 	}
 
+	/**
+	 * Prüft, ob eine LDtk-Entity ein bestimmtes Feld besitzt und dieses nicht `null` ist.
+	 *
+	 * @param entity Die zu prüfende LDtk-Entity.
+	 * @param identifier Der Bezeichner des Felds.
+	 * @return `true`, wenn das Feld mit einem gültigen Wert existiert, sonst `false`.
+	 */
 	private static function hasEntityField(entity:ldtk.Entity, identifier:String):Bool {
 		if (entity != null && entity.json != null && entity.json.fieldInstances != null) {
 			for (inst in entity.json.fieldInstances) {
@@ -350,6 +428,15 @@ class LightingSystem extends FlxSprite {
 		return false;
 	}
 
+	/**
+	 * Sucht eine Liste möglicher Feldnamen in einer LDtk-Entity nach einer Zahl (Float/Int) ab
+	 * und gibt den ersten gefundenen Wert zurück.
+	 *
+	 * @param entity Die LDtk-Entity.
+	 * @param keys Liste alternativer Feldnamen (z. B. `["radius", "light_radius"]`).
+	 * @param defaultValue Der Fallback-Standardwert, falls kein passendes Feld gefunden wird.
+	 * @return Der gefundene Float-Wert oder `defaultValue`.
+	 */
 	private static function getFloatParam(entity:ldtk.Entity, keys:Array<String>, defaultValue:Float):Float {
 		for (k in keys) {
 			var val = getEntityField(entity, k);
@@ -366,6 +453,14 @@ class LightingSystem extends FlxSprite {
 		return defaultValue;
 	}
 
+	/**
+	 * Sucht eine Liste möglicher Feldnamen in einer LDtk-Entity nach einem booleschen Wert ab.
+	 *
+	 * @param entity Die LDtk-Entity.
+	 * @param keys Liste alternativer Feldnamen (z. B. `["active", "enabled"]`).
+	 * @param defaultValue Der Fallback-Standardwert.
+	 * @return Der boolesche Wert oder `defaultValue`.
+	 */
 	private static function getBoolParam(entity:ldtk.Entity, keys:Array<String>, defaultValue:Bool):Bool {
 		for (k in keys) {
 			var val = getEntityField(entity, k);
@@ -379,13 +474,22 @@ class LightingSystem extends FlxSprite {
 		return defaultValue;
 	}
 
+	/**
+	 * Sucht eine Liste möglicher Feldnamen in einer LDtk-Entity nach einem Farbwert ab
+	 * und konvertiert Int-Farbwerte (0xRRGGBB bzw. 0xAARRGGBB) oder Hex-Strings (z. B. `"#FF9900"`).
+	 *
+	 * @param entity Die LDtk-Entity.
+	 * @param keys Liste alternativer Feldnamen (z. B. `["color", "light_color"]`).
+	 * @param defaultColor Die Fallback-Farbe als `FlxColor`.
+	 * @return Die ermittelte `FlxColor` oder `defaultColor`.
+	 */
 	private static function getColorParam(entity:ldtk.Entity, keys:Array<String>, defaultColor:FlxColor):FlxColor {
 		for (k in keys) {
 			var val = getEntityField(entity, k);
 			if (val != null) {
 				if (Std.isOfType(val, Int)) {
 					var intVal:Int = cast val;
-					// LDtk liefert Farben meist als 0xRRGGBB ohne Alpha
+					// LDtk liefert Farben meist als 0xRRGGBB ohne Alpha-Kanal
 					if ((intVal & 0xFF000000) == 0) {
 						intVal |= 0xFF000000;
 					}
@@ -406,6 +510,12 @@ class LightingSystem extends FlxSprite {
 	// Update- & Render-Schleife
 	// =========================================================================
 
+	/**
+	 * Aktualisiert das Beleuchtungssystem und ruft `update(elapsed)` für alle aktiven Lichter auf
+	 * (wichtig für Oszillationen bei `TorchLight` und `GlowLight` sowie Follow-Ziele).
+	 *
+	 * @param elapsed Vergangene Zeit seit dem letzten Frame in Sekunden.
+	 */
 	override public function update(elapsed:Float):Void {
 		super.update(elapsed);
 
@@ -417,6 +527,13 @@ class LightingSystem extends FlxSprite {
 		}
 	}
 
+	/**
+	 * Rendert das Beleuchtungs-Overlay:
+	 * 1. Passt die Grafikgröße dynamisch an die Kameraauflösung an.
+	 * 2. Ermittelt sichtbare Lichter via Frustum-Culling (`autoCull`).
+	 * 3. Befüllt die Shader-Uniform-Puffer (Positionen, Farben, Radien, Spot-Parameter).
+	 * 4. Führt den GPU-Draw-Call mit Multi-Light-Shader aus.
+	 */
 	override public function draw():Void {
 		var cam:FlxCamera = (camera != null) ? camera : FlxG.camera;
 		if (cam == null || !visible) {
@@ -505,6 +622,9 @@ class LightingSystem extends FlxSprite {
 		super.draw();
 	}
 
+	/**
+	 * Gibt alle Ressourcen frei, zerstört alle registrierten Lichter und setzt Puffer zurück.
+	 */
 	override public function destroy():Void {
 		clearLights(true);
 		_posBuffer = null;
@@ -515,3 +635,4 @@ class LightingSystem extends FlxSprite {
 		super.destroy();
 	}
 }
+
