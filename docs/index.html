@@ -1115,9 +1115,23 @@
             </table>
           </div>
 
-          <h2>4. Praxis-Setup & Codebeispiel</h2>
+          <h2>4. Die <code>AnimationRegistry</code> im Detail</h2>
+          <p>
+            Die Klasse <code>AnimationRegistry</code> (<code>source/AnimationRegistry.hx</code>) dient als <strong>globale Datenbank</strong> für alle Spritesheet-Animationen im Spielprojekt. Durch das Zusammenspiel mit dem Makro <code>AnimationBuilder.buildDatabase</code> werden alle Animationsdefinitionen bereits beim Kompilieren geparst und direkt als typisierter Code eingebettet.
+          </p>
 
-          <h3>1. JSON-Datei (<code>assets/data/animations/Fire.json</code>)</h3>
+          <div class="callout callout-tip">
+            <span class="callout-icon">💡</span>
+            <div>
+              <strong>Compile-Time Transformation:</strong>
+              Das Makro liest zur Compile-Zeit alle <code>.json</code>-Dateien aus <code>assets/data/animations/</code> ein, wandelt absolute Pfade in relative <code>assets/...</code>-Pfade um und hinterlegt die Daten unter dem Dateinamen (z.&nbsp;B. <code>"Fire"</code> für <code>Fire.json</code>) in der statischen Map <code>AnimationRegistry.db</code>.
+            </div>
+          </div>
+
+          <h2>5. Praxis-Setup & Codebeispiele</h2>
+
+          <h3>1. JSON-Animationsdatei (<code>assets/data/animations/Fire.json</code>)</h3>
+          <p>Definiert Bildquelle, Kachelmaße und beliebig viele Animationsclips:</p>
           <div class="code-box">
             <div class="code-header">
               <span class="code-lang-badge">JSON</span>
@@ -1134,7 +1148,7 @@
   <span class="hl-str">"animations"</span>: [
     {
       <span class="hl-str">"name"</span>: <span class="hl-str">"burn"</span>,
-      <span class="hl-str">"fps"</span>: 10,
+      <span class="hl-str">"fps"</span>: 12,
       <span class="hl-str">"loop"</span>: <span class="hl-keyword">true</span>,
       <span class="hl-str">"flipX"</span>: <span class="hl-keyword">false</span>,
       <span class="hl-str">"flipY"</span>: <span class="hl-keyword">false</span>,
@@ -1146,6 +1160,7 @@
           </div>
 
           <h3>2. Registry-Klasse (<code>source/AnimationRegistry.hx</code>)</h3>
+          <p>Definiert die zentrale Datenbank <code>db</code>, die beim Kompilieren mit allen Animationen befüllt wird:</p>
           <div class="code-box">
             <div class="code-header">
               <span class="code-lang-badge">Haxe</span>
@@ -1156,13 +1171,34 @@
 <span class="hl-keyword">import</span> mklib.animation.AnimationTypes;
 <span class="hl-keyword">import</span> mklib.macro.AnimationBuilder;
 
+<span class="hl-keyword">@:keep</span>
 <span class="hl-keyword">class</span> <span class="hl-type">AnimationRegistry</span> {
-    <span class="hl-comment">// Liest zur Compile-Zeit "assets/data/animations" ein</span>
+    <span class="hl-comment">// Liest alle JSON-Dateien aus "assets/data/animations" zur Compile-Zeit ein</span>
     <span class="hl-keyword">public</span> <span class="hl-keyword">static</span> <span class="hl-keyword">var</span> db:<span class="hl-type">Map</span>&lt;<span class="hl-type">String</span>, <span class="hl-type">SpriteSheetData</span>&gt; = <span class="hl-type">AnimationBuilder</span>.<span class="hl-func">buildDatabase</span>(<span class="hl-str">"assets/data/animations"</span>);
 }</code></pre>
           </div>
 
-          <h3>3. Entity-Verwendung (<code>source/entities/Fire.hx</code>)</h3>
+          <h3>3. LDtk-Workflow: Das Enum <code>Animations</code> (Best Practice)</h3>
+          <p>
+            Um Tippfehler zu vermeiden und im Level-Editor ein komfortables Dropdown-Menü bereitzustellen, empfiehlt sich in LDtk die Verwendung eines Enums:
+          </p>
+          <ol style="margin-left: 1.25rem; margin-bottom: 1.25rem;">
+            <li><strong>Enum anlegen:</strong> Erstelle in LDtk unter <em>Project Settings &rarr; Enums</em> ein Enum namens <code>Animations</code> mit den Namen der Animationsdateien (z.&nbsp;B. <code>Fire</code>, <code>Hero</code>, <code>Platform</code>).</li>
+            <li><strong>Entity-Feld definieren:</strong> Füge der gewünschten Entity-Definition ein Feld namens <code>Animations</code> vom Typ <code>Enum.Animations</code> hinzu.</li>
+            <li><strong>Level platzieren:</strong> Wähle beim Platzieren der Entity im Level-Editor einfach die gewünschte Animation aus dem Dropdown-Menü aus.</li>
+          </ol>
+
+          <div class="callout callout-info">
+            <span class="callout-icon">ℹ️</span>
+            <div>
+              <strong>Automatische Bindung:</strong> <code>EntitySprite</code> und <code>EntityNapeSprite</code> prüfen im Basis-Konstruktor automatisch mit <code>hasField("Animations")</code>, lesen den gewählten Enum-Wert als String aus (z.&nbsp;B. <code>"Fire"</code>) und laden die Grafik sowie Clips direkt aus <code>AnimationRegistry.db</code>.
+            </div>
+          </div>
+
+          <h3>4. Entity-Klasse im Code (<code>source/entities/Fire.hx</code>)</h3>
+          <p>
+            Durch das gesetzte LDtk-Feld <code>Animations</code> ist im Code keinerlei manuelle Animationsinitialisierung nötig:
+          </p>
           <div class="code-box">
             <div class="code-header">
               <span class="code-lang-badge">Haxe</span>
@@ -1176,9 +1212,41 @@
 <span class="hl-keyword">@:keep</span>
 <span class="hl-keyword">class</span> <span class="hl-type">Fire</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntitySprite</span> {
     <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:ldtk.<span class="hl-type">Entity</span>) {
+        <span class="hl-comment">// super(entity) liest getField("Animations") ("Fire") </span>
+        <span class="hl-comment">// und lädt Grafik + Clips vollautomatisch aus AnimationRegistry.db!</span>
         <span class="hl-keyword">super</span>(entity);
-        <span class="hl-comment">// Animationen werden automatisch geladen, wenn das Feld "Animations" vorhanden ist.</span>
     }
+}</code></pre>
+          </div>
+
+          <h3>5. Manuelles Laden & Wechseln auf Entities</h3>
+          <p>Animationen können jederzeit auch manuell über den Schlüssel zugewiesen oder gewechselt werden:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-comment">// Lädt nachträglich oder wechselt das Animationsset auf "Fire":</span>
+myEntity.<span class="hl-func">initAnimation</span>(<span class="hl-str">"Fire"</span>);
+
+<span class="hl-comment">// Manueller Wechsel des aktuellen Animationsclips:</span>
+myEntity.animation.<span class="hl-func">play</span>(<span class="hl-str">"burn"</span>);</code></pre>
+          </div>
+
+          <h3>5. Direkter Zugriff auf die Rohdaten</h3>
+          <p>Für eigene Sprites oder Flixel-Objekte kann direkt auf die typisierte Map zugegriffen werden:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> AnimationRegistry;
+
+<span class="hl-keyword">var</span> fireData = <span class="hl-type">AnimationRegistry</span>.db.<span class="hl-func">get</span>(<span class="hl-str">"Fire"</span>);
+<span class="hl-keyword">if</span> (fireData != <span class="hl-keyword">null</span>) {
+    trace(<span class="hl-str">"Grafikpfad: "</span> + fireData.imagePath);          <span class="hl-comment">// "assets/tilesets/Fire.png"</span>
+    trace(<span class="hl-str">"Frame-Breite: "</span> + fireData.config.width);     <span class="hl-comment">// 16</span>
+    trace(<span class="hl-str">"Default: "</span> + fireData.defaultAnimation);      <span class="hl-comment">// "burn"</span>
 }</code></pre>
           </div>
 

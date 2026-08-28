@@ -113,9 +113,20 @@ class AnimationRegistry {
 
 ---
 
-## 🎮 Entity-Integration (`source/entities/Fire.hx`)
+## 🎮 Entity-Integration & Verwendung
 
-`EntitySprite` (und `EntityNapeSprite`) binden das Animationssystem automatisch ein: Wenn im LDtk-Level das Feld `"Animations"` gesetzt ist, werden die passenden Animationsclips aus der `AnimationRegistry` geladen und registriert:
+### 1. LDtk-Workflow: Das Enum `Animations` (Best Practice)
+
+Um Tippfehler im Level-Editor zu vermeiden, empfiehlt sich in LDtk folgende Vorgehensweise:
+
+1. **Enum anlegen:** In LDtk unter *Project Settings &rarr; Enums* ein Enum namens `Animations` erstellen. Als Werte die Namen der Animationsdateien eintragen (z. B. `Fire`, `Hero`, `Platform`).
+2. **Entity-Feld definieren:** Bei der Entity-Definition ein Custom Field namens `Animations` vom Typ `Enum.Animations` anlegen.
+3. **Im Level zuweisen:** Beim Platzieren der Entity im Level-Editor einfach die gewünschte Animation aus dem Dropdown-Menü auswählen.
+
+> [!NOTE]
+> `EntitySprite` und `EntityNapeSprite` prüfen im Konstruktor automatisch mit `hasField("Animations")`, lesen den Wert als String aus und initialisieren die passenden Animationen direkt aus `AnimationRegistry.db`.
+
+### 2. Automatisch im Code (`source/entities/Fire.hx`)
 
 ```haxe
 package entities;
@@ -129,15 +140,38 @@ import ldtk.Entity;
 @:keep
 class Fire extends EntitySprite {
     public function new(entity:ldtk.Entity) {
+        // super(entity) liest automatisch das LDtk-Enum-Feld "Animations"
+        // und lädt die Clips aus AnimationRegistry.db!
         super(entity);
-        // Animationen werden automatisch über initAnimation() im Konstruktor von EntitySprite geladen!
     }
 }
 ```
 
-Alternativ kann `initAnimation(?animKey:String)` jederzeit manuell aufgerufen werden:
+### 3. Manuelles Laden / Wechseln auf Entities
+
+
+`initAnimation(?animKey:String)` kann jederzeit manuell aufgerufen werden:
 
 ```haxe
 // Manuelles Laden / Wechseln der Animationen:
-initAnimation("Fire");
+myEntity.initAnimation("Fire");
+
+// Clip manuell wechseln:
+myEntity.animation.play("burn");
 ```
+
+### 3. Direkter Zugriff auf die Rohdaten (`AnimationRegistry.db`)
+
+Für eigene Flixel-Sprites oder benutzerdefinierte Logik kann direkt auf die vorkompilierte Map zugegriffen werden:
+
+```haxe
+import AnimationRegistry;
+
+var fireData = AnimationRegistry.db.get("Fire");
+if (fireData != null) {
+    trace("Grafikpfad: " + fireData.imagePath);          // "assets/tilesets/Fire.png"
+    trace("Frame-Breite: " + fireData.config.width);     // 16
+    trace("Standard-Clip: " + fireData.defaultAnimation); // "burn"
+}
+```
+

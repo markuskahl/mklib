@@ -20,7 +20,7 @@ class State<TLevel = Dynamic> extends flixel.FlxState
 | :--- | :--- | :--- | :--- |
 | `project` | `ldtk.Project` | `public` | Die geladene LDtk-Projektinstanz (wird aus `Data` oder per Argument bezogen). |
 | `tags` | `Map<String, nape.callbacks.CbType>` | `public` | Eine Map aller registrierten Kollisionstags aus dem LDtk-Enum `"Tags"` auf ihre Nape-`CbType`-Instanzen. |
-| `levelName` | `String` | `public` | Der Name des aktuell aktiven LDtk-Levels (z. B. `"Level_0"`). |
+| `levelName` | `String` | `public` | Der Name des aktuell aktiven Levels (z. B. `"Level_0"`). |
 | `data` | `TLevel` | `public` | Die typisierten Leveldaten des aktiven Levels (mit direktem Zugriff auf `l_Tiles`, `l_Entities` etc.). |
 | *Ererbte Felder* | `Float`, `Bool` etc. | `public` | Alle Standardeigenschaften von `flixel.FlxState` und `flixel.group.FlxGroup` (`members`, `length`, `subState`, `camera` etc.). |
 
@@ -35,6 +35,7 @@ class State<TLevel = Dynamic> extends flixel.FlxState
 | `napeInit` | `(gx:Int, gy:Int)` | `Void` | Initialisiert den Nape-Physikraum (`FlxNapeSpace.init()`), setzt die globale Schwerkraft auf `(gx, gy)` und ruft `addCbTypes()` auf. |
 | `addCbTypes` | `()` | `Void` | Liest das Enum `"Tags"` aus den JSON-Daten des LDtk-Projekts aus und erzeugt für jeden Wert einen `CbType` in der `tags`-Map. |
 | `update` | `(elapsed:Float)` | `Void` | Haupt-Update-Schleife des States. Schaltet zudem die Maus auf Windows sichtbar und auf HTML5 unsichtbar. |
+| `destroy` | `()` | `Void` | Wird bei `FlxG.switchState` automatisch aufgerufen. Leert den Nape-Physikraum (`FlxNapeSpace.space`), entfernt alle Nape-Listener, leert die `tags`-Map und setzt `project` & `data` auf `null`. |
 
 ---
 
@@ -74,9 +75,33 @@ In LDtk kannst du ein Enum mit dem Namen `"Tags"` anlegen (z. B. mit Werten `Pla
 
 Diese CbTypes können später bequem über `mklib.tools.Tags.get("Player")` oder `mklib.physic.Listener` referenziert werden.
 
+### 4. Automatischer Speicher-Cleanup (`destroy`)
+Beim State-Wechsel über `FlxG.switchState(...)` ruft HaxeFlixel automatisch `destroy()` auf dem bisherigen State auf.
+
+Die `destroy()`-Methode in `State.hx` garantiert, dass dabei auch native Nape-Physikressourcen und Projekt-Referenzen vollständig gelöscht werden:
+
+```haxe
+override function destroy():Void {
+    if (FlxNapeSpace.space != null) {
+        FlxNapeSpace.space.listeners.clear(); // Löscht alle Kollisions-Listener
+        FlxNapeSpace.space.clear();           // Löscht alle Körper, Constraints & Shapes
+    }
+
+    if (tags != null) {
+        tags.clear();
+        tags = null;
+    }
+
+    project = null;
+    data = null;
+
+    super.destroy(); // HaxeFlixel räumt Sprites und SubStates auf
+}
+```
+
 ---
 
-## 💡 Code-Beispiel: Level-Wechsel
+## 💻 Code-Beispiel: Level-Wechsel
 
 ```haxe
 package;
@@ -100,7 +125,7 @@ class LevelState extends State<Data.Data_Level> {
     }
 
     public function goToNextLevel():Void {
-        // Wechselt zu Level_1
+        // Wechselt zu Level_1 (FlxG.switchState ruft automatisch destroy() auf!)
         FlxG.switchState(new LevelState("Level_1"));
     }
 }

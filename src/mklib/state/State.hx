@@ -13,7 +13,8 @@ import flixel.FlxState;
  * Verwaltet:
  * - Das LDtk-Projekt und das typisierte Level-Datenobjekt (`data`).
  * - Die automatische Initialisierung des Nape-Physikraums (`napeInit`).
- * - Die Konvertierung von LDtk-Tags (Enum `"Tags"`) in Nape-`CbType`-Objekte.
+ * - Die Konvertierung von LDtk-Tags (Enum "Tags") in Nape-`CbType`-Objekte.
+ * - Das automatische, saubere Aufräumen von Nape-Space, CbTypes und LDtk-Referenzen beim State-Wechsel.
  *
  * @param TLevel Der Typ des LDtk-Levels (z. B. `Data.Data_Level`).
  */
@@ -41,8 +42,8 @@ class State<TLevel = Dynamic> extends FlxState {
 	/**
 	 * Erstellt einen neuen State und lädt das angegebene Level aus dem LDtk-Projekt.
 	 *
-	 * @param LevelName Der Name des zu ladenden LDtk-Levels (Standard: `"Level_0"`).
-	 * @param projectInstance Optionale LDtk-Projektinstanz (falls `null`, wird versucht, die globale Klasse `"Data"` zu instanziieren).
+	 * @param LevelName Der Name des zu ladenden LDtk-Levels (Standard: "Level_0").
+	 * @param projectInstance Optionale LDtk-Projektinstanz (falls null, wird versucht, die globale Klasse "Data" zu instanziieren).
 	 */
 	public function new(LevelName:String = "Level_0", ?projectInstance:ldtk.Project) {
 		super();
@@ -74,7 +75,7 @@ class State<TLevel = Dynamic> extends FlxState {
 	}
 
 	/**
-	 * Liest das Enum `"Tags"` aus der LDtk-Projektdefinition aus und erzeugt
+	 * Liest das Enum "Tags" aus der LDtk-Projektdefinition aus und erzeugt
 	 * für jeden Wert einen entsprechenden Nape-`CbType` in der `tags`-Map.
 	 */
 	public function addCbTypes():Void {
@@ -117,5 +118,26 @@ class State<TLevel = Dynamic> extends FlxState {
 		#if html5
 		FlxG.mouse.visible = false;
 		#end
+	}
+
+	/**
+	 * Räumt den State beim Wechsel sauber auf, um Speicherlecks zu verhindern.
+	 * Leert den Nape-Physikraum, Nape-Listener, CbTypes sowie LDtk-Referenzen.
+	 */
+	override function destroy():Void {
+		if (FlxNapeSpace.space != null) {
+			FlxNapeSpace.space.listeners.clear();
+			FlxNapeSpace.space.clear();
+		}
+
+		if (tags != null) {
+			tags.clear();
+			tags = null;
+		}
+
+		project = null;
+		data = null;
+
+		super.destroy();
 	}
 }
