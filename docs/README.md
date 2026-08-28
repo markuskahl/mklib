@@ -1,99 +1,101 @@
-# mklib – Dokumentation & API-Referenz
+# mklib — Documentation & API Reference
 
-**`mklib`** ist eine performante Haxe-Bibliothek zur nahtlosen Verbindung von **HaxeFlixel**, dem Level-Editor **LDtk** und der 2D-Physik-Engine **Nape**. Sie bietet Werkzeuge für automatische Level- und Entity-Instanziierung, ein unkompliziertes Physik- und Sensor-System sowie integriertes A*-Pathfinding mit Multi-Tile-Unterstützung.
-
----
-
-## 📚 Inhaltsverzeichnis & Module
-
-1. [**Schnellstart & Einrichtung**](getting_started.md)
-   - Installation & Haxelib-Abhängigkeiten
-   - LDtk-Makro-Setup (`Data.hx`)
-   - Erster `PlayState` und Spielstart
-2. [**State-Management (`mklib.state.State`)**](state.md)
-   - Eigenschaften: `project`, `tags`, `levelName`, `data`
-   - Methoden: `new`, `create`, `napeInit`, `addCbTypes`, `update`
-3. [**Layer-System (`mklib.layer.*`)**](layers.md)
-   - `TileLayer`: Rendern von LDtk-Kachelebenen (`new`, `render`)
-   - `EntityLayer`: Dynamische Instanziierung von Spielobjekten via Reflection (`new`, `addEntities`)
-   - `EntityLayerSource<T>`: Typedef für Entity-Layer-Quellen
-4. [**Entities & Spielobjekte (`mklib.entity.*`)**](entities.md)
-   - `EntitySprite`: Basisklasse für visuelle Sprites (`_entity`, `iid`, `state`, `new`)
-   - `EntityNapeSprite`: Physikalische Körper, automatische LDtk-Tags und Form-Zentrierung (`addCbType`, `updateShapePosition`)
-5. [**Physik & Sensoren (`mklib.physic.*` & `mklib.tools.Tags`)**](physics.md)
-   - `Listener`: 9 Methoden für Kollisionen (`COLLISION`) und Sensoren (`SENSOR`) mit `BEGIN`, `END`, `ONGOING`, `ANY_BODY`
-   - `Tags`: Zentraler Zugriff auf CbTypes (`get`, `exist`)
-6. [**Pathfinding & Navigation (`mklib.path.*`)**](pathfinding.md)
-   - `NavGrid`: 2D-Raster auf 1D-Array-Basis (4 Eigenschaften, 12 Methoden)
-   - `NavGridBuilder`: Automatisches Level-Scanning aus IntGrid, Tiles & Entities
-   - `AStar` & `GridPoint`: 4-Wege- & 8-Wege-Pfadsuche für Einheiten beliebiger Kachelgröße
-7. [**Tools & Mathematik (`mklib.tools.*` & `mklib.math.*`)**](tools_math.md)
-   - `AspectRatio`: Dynamische Bildschirmauflösung & Skalierung (`width`, `height`, `isDefault`, `isInRange`)
-   - `MathTool`: Hilfsfunktionen zur Rundung (`floatFix`)
-8. [**Animationssystem & Makros (`mklib.animation.*` & `mklib.macro.*`)**](animation.md)
-   - `AnimationBuilder`: Compile-Time-Makro zum Einlesen von JSON-Animationen (`buildDatabase`)
-   - `AnimationTypes`: Datenstrukturen (`FrameConfig`, `AnimationClip`, `SpriteSheetData`)
-   - `AnimationRegistry`: Globales Bereitstellungsmuster für Entity-Animationen
-9. [**GPU-Lighting-System (`mklib.light.*` & `mklib.light.shader.*`)**](lighting.md)
-   - `LightingSystem`: Hardwarebeschleunigter 2D-Shader-Renderer, 2D-Raymarching-Schatten, Viewport-Culling und LDtk-Level-Import
-   - `Light` (Basisklasse): Weltpositionen, Radius, Farbe, Intensität, Falloff und `follow(target)`
-   - `PointLight`, `SpotLight`, `TorchLight`, `GlowLight`, `DirectionalLight`: Spezialisierte Lichtquellen
-   - LDtk Custom Properties: Vollständige Konfiguration von Lichtern direkt im Level-Editor
+**`mklib`** is a high-performance Haxe library for seamlessly integrating **HaxeFlixel**, the **LDtk** level editor, and the **Nape** 2D physics engine. It provides comprehensive tooling for automatic level and entity instantiation, a clean physics and collision sensor system, GPU-accelerated lighting, dynamic water reflection shaders, and fast 2D A* pathfinding.
 
 ---
 
-## 🏛️ Vollständige API-Matrix
+## 📚 Table of Contents
 
-| Modul / Paket | Klasse / Typ | Eigenschaften | Methoden |
-| :--- | :--- | :--- | :--- |
-| `mklib.state` | `State<TLevel>` | `project`, `tags`, `levelName`, `data` | `new`, `create`, `addCbTypes`, `napeInit`, `update` |
-| `mklib.layer` | `TileLayer` | `levelName`, `layerName`, `state` | `new`, `render` |
-| `mklib.layer` | `EntityLayer` | `layerName`, `packageName`, `state` | `new`, `addEntities` |
-| `mklib.layer` | `EntityLayerSource<T>` | `identifier`, `getAllUntyped` | – |
-| `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic` | `new`, `getGraphicPath`, `getField`, `hasField`, `initAnimation` |
-| `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic`, `body` | `new`, `getGraphicPath`, `getField`, `hasField`, `sensorEnabled`, `addCbType`, `updateShapePosition`, `initAnimation` |
-| `mklib.light` | `LightingSystem` | `lights`, `ambientColor`, `ambientIntensity`, `autoCull`, `shadowsEnabled`, `shadowSteps`, `shadowSoftness`, `occluders`, `shaderInstance` | `new`, `addLight`, `removeLight`, `clearLights`, `addOccluder`, `addOccluders`, `addOccluderClass`, `removeOccluder`, `removeOccluderClass`, `clearOccluders`, `createPointLight`, `createSpotLight`, `createTorchLight`, `createGlowLight`, `createDirectionalLight`, `loadFromLevel`, `loadFromEntityLayer`, `fromEntity` |
-| `mklib.light` | `Light` | `x`, `y`, `radius`, `color`, `intensity`, `falloff`, `active`, `visible`, `target` | `new`, `follow`, `stopFollowing`, `setPosition`, `setColor`, `update`, `destroy` |
-| `mklib.light` | `PointLight` | `innerRadius` | `new` |
-| `mklib.light` | `SpotLight` | `angle`, `spotAngle`, `innerAngle` | `new`, `pointAt`, `lookAt` |
-| `mklib.light` | `TorchLight` | `flickerSpeed`, `flickerIntensity`, `flickerRadius`, `flameJitter` | `new`, `update` |
-| `mklib.light` | `GlowLight` | `minRadius`, `maxRadius`, `minIntensity`, `maxIntensity`, `pulseSpeed` | `new`, `update` |
-| `mklib.light` | `DirectionalLight` | `directionAngle` | `new` |
-| `mklib.animation` | `FrameConfig` | `width`, `height`, `spacing`, `margin` | – |
-| `mklib.animation` | `AnimationClip` | `name`, `fps`, `loop`, `flipX`, `flipY`, `frames` | – |
-| `mklib.animation` | `SpriteSheetData` | `imagePath`, `config`, `animations`, `defaultAnimation` | – |
-| `mklib.macro` | `AnimationBuilder` | – | `buildDatabase` |
-| `mklib.physic` | `Listener` | – | `addCollisionBeginListener`, `addCollisionEndListener`, `addCollisionOngoingListener`, `addSensorBeginListener`, `addSensorEndListener`, `addSensorOngoingListener`, `addSensorBeginListenerANY`, `addSensorEndListenerANY`, `addSensorOngoingListenerANY` |
-| `mklib.tools` | `Tags` | – | `get`, `exist` |
-| `mklib.path` | `NavGrid` | `width`, `height`, `gridSize`, `data` | `new`, `isInBounds`, `getIndex`, `get`, `set`, `isWalkable`, `isAreaWalkable`, `setArea`, `setEntity`, `worldToGridX`, `worldToGridY`, `gridToWorldX`, `gridToWorldY`, `clear`, `clone`, `toString` |
-| `mklib.path` | `NavGridBuilder` | `grid`, `level` | `new`, `fromLevel`, `addIntGrid`, `addTileLayer`, `addEntityLayer`, `addLayerByName`, `autoBuild`, `build` |
-| `mklib.path` | `AStar` | `SQRT2` | `findPath`, `findWorldPath`, `heuristic`, `reconstructPath` |
-| `mklib.path` | `GridPoint` | `x`, `y` | `new`, `equals`, `toString` |
-| `mklib.tools` | `AspectRatio` | `width`, `height`, `isDefault`, `screenRatio` | `new`, `calc`, `isInRange` |
-| `mklib.math` | `MathTool` | – | `floatFix` |
+1. [**Getting Started & Setup**](getting_started.md)
+   - Requirements, Installation & haxelib configuration
+   - Project configuration (`Project.xml` & `Data.hx`)
+   - Complete minimal example
+
+2. [**State Management (`mklib.state.State`)**](state.md)
+   - Generic base state `State<TLevel>`
+   - Typed level access (`data`)
+   - Nape physics initialization & collision tag registration
+   - Automatic memory cleanup & leak prevention (`destroy`)
+
+3. [**Layer System (`TileLayer` & `EntityLayer`)**](layers.md)
+   - `TileLayer`: Rendering LDtk tile layers
+   - `EntityLayer`: Dynamic entity instantiation via reflection
+   - Layer data sources & utilities
+
+4. [**Entities & Game Objects (`EntitySprite` & `EntityNapeSprite`)**](entities.md)
+   - Visual entities with custom fields & animations (`EntitySprite`)
+   - Physics entities with Nape Body, Shapes & collision tags (`EntityNapeSprite`)
+   - Auto-updating shape positions & sensor handling
+
+5. [**Animation System & Macros (`AnimationBuilder` & `AnimationTypes`)**](animation.md)
+   - Build-time compile-safe animation generation (`AnimationBuilder.buildDatabase`)
+   - JSON animation configuration & spritesheets
+   - `AnimationClip`, `FrameConfig`, and `SpriteSheetData` types
+
+6. [**Physics & Collision Sensors (`Listener` & `Tags`)**](physics.md)
+   - String-based collision types via LDtk enum `"Tags"`
+   - Collision & sensor callbacks (`Listener.addCollisionBeginListener`, `Listener.addSensorBeginListener`, etc.)
+
+7. [**Pathfinding & Navigation (`NavGrid`, `NavGridBuilder`, `AStar`)**](pathfinding.md)
+   - 2D grid map with multi-tile sizing and diagonals (`NavGrid`)
+   - Auto-building navigation grids from LDtk IntGrid and tile layers (`NavGridBuilder`)
+   - Optimized A* algorithm with Euclidean/Manhattan heuristics (`AStar`)
+
+8. [**GPU Lighting System (`LightingSystem`, `Light`, etc.)**](lighting.md)
+   - GPU-accelerated 2D lighting with multi-pass shaders
+   - Light types: Point, Spot, Torch (flicker), Glow (pulse), Directional
+   - Raymarched soft shadows and occluders
+
+9. [**Water Reflection & Wave Shaders (`WaterReflectionShader`, `WaterReflectionPlane`, `EntityWaterReflection`)**](water_reflection.md)
+   - Dynamic real-time water wave & reflection shader
+   - Full water planes and per-entity reflection sprites
+   - Configurable wave amplitude, frequency, foam, and reflection fade
+
+10. [**Tools & Math Utilities (`AspectRatio` & `MathTool`)**](tools_math.md)
+    - Aspect ratio calculations & validation (`AspectRatio`)
+    - High-precision float rounding & arithmetic fixes (`MathTool`)
 
 ---
 
-## 🏗️ Architektur
+## 🚀 Quick Start Example
 
-```mermaid
-graph TD
-    LDtk[LDtk Level-Editor JSON / Macro] --> Data[Data.hx / ldtk.Project]
-    Data --> State[mklib.state.State]
-    State --> TileLayer[mklib.layer.TileLayer]
-    State --> EntityLayer[mklib.layer.EntityLayer]
-    State --> NavGrid[mklib.path.NavGridBuilder / NavGrid]
-    
-    EntityLayer --> EntitySprite[mklib.entity.EntitySprite]
-    EntityLayer --> EntityNapeSprite[mklib.entity.EntityNapeSprite]
-    
-    AnimJSON[assets/data/animations/*.json] -->|Compile-Time Macro| AnimMacro[mklib.macro.AnimationBuilder]
-    AnimMacro --> AnimReg[AnimationRegistry.db]
-    AnimReg --> EntitySprite
-    
-    State --> NapeSpace[Nape FlxNapeSpace]
-    EntityNapeSprite --> Listener[mklib.physic.Listener]
-    NapeSpace --> Listener
-    
-    NavGrid --> AStar[mklib.path.AStar]
+```haxe
+package;
+
+import flixel.FlxG;
+import mklib.state.State;
+import mklib.layer.TileLayer;
+import mklib.layer.EntityLayer;
+import mklib.light.LightingSystem;
+import mklib.path.NavGridBuilder;
+import mklib.path.NavGrid;
+
+class PlayState extends State<Data.Data_Level> {
+    override public function create():Void {
+        super.create();
+
+        // 1. Initialize Nape physics
+        napeInit(0, 300);
+
+        // 2. Render tilemap layer
+        add(new TileLayer(data.l_Tiles.identifier));
+
+        // 3. Spawn entities from the "entities" package
+        add(new EntityLayer(data.l_Entities));
+
+        // 4. Auto-generate A* pathfinding grid
+        var navGrid:NavGrid = NavGridBuilder.autoBuild(data);
+
+        // 5. Add dynamic GPU lighting
+        var lighting = new LightingSystem(0xFF141424, 0.2);
+        lighting.loadFromLevel(data);
+        add(lighting);
+    }
+}
 ```
+
+---
+
+## 📄 License
+
+MIT License. See [haxelib.json](../haxelib.json).\n
