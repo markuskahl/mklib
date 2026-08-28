@@ -17,6 +17,7 @@ Die vollständige interaktive Dokumentation inklusive Live-A*-Pathfinding-Simula
 - [**Animationssystem & Makros (`AnimationBuilder` & `AnimationTypes`)**](docs/animation.md)
 - [**Physik & Sensoren (`Listener` & `Tags`)**](docs/physics.md)
 - [**Pathfinding & Navigation (`NavGrid`, `NavGridBuilder`, `AStar`)**](docs/pathfinding.md)
+- [**GPU-Lighting-System (`LightingSystem`, `Light`, `PointLight`, `SpotLight`, `TorchLight`, `GlowLight`)**](docs/lighting.md)
 - [**Tools & Mathematik (`AspectRatio` & `MathTool`)**](docs/tools_math.md)
 
 ---
@@ -31,6 +32,13 @@ Die vollständige interaktive Dokumentation inklusive Live-A*-Pathfinding-Simula
 | `mklib.layer` | `EntityLayerSource<T>` | `identifier`, `getAllUntyped` | – |
 | `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic` | `new`, `getGraphicPath`, `getField`, `hasField`, `initAnimation` |
 | `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic`, `body` | `new`, `getGraphicPath`, `getField`, `hasField`, `sensorEnabled`, `addCbType`, `updateShapePosition`, `initAnimation` |
+| `mklib.light` | `LightingSystem` | `lights`, `ambientColor`, `ambientIntensity`, `autoCull`, `shaderInstance` | `new`, `addLight`, `removeLight`, `clearLights`, `createPointLight`, `createSpotLight`, `createTorchLight`, `createGlowLight`, `createDirectionalLight`, `loadFromLevel`, `loadFromEntityLayer`, `fromEntity` |
+| `mklib.light` | `Light` | `x`, `y`, `radius`, `color`, `intensity`, `falloff`, `active`, `visible`, `target` | `new`, `follow`, `stopFollowing`, `setPosition`, `setColor`, `update`, `destroy` |
+| `mklib.light` | `PointLight` | `innerRadius` | `new` |
+| `mklib.light` | `SpotLight` | `angle`, `spotAngle`, `innerAngle` | `new`, `pointAt`, `lookAt` |
+| `mklib.light` | `TorchLight` | `flickerSpeed`, `flickerIntensity`, `flickerRadius`, `flameJitter` | `new`, `update` |
+| `mklib.light` | `GlowLight` | `minRadius`, `maxRadius`, `minIntensity`, `maxIntensity`, `pulseSpeed` | `new`, `update` |
+| `mklib.light` | `DirectionalLight` | `directionAngle` | `new` |
 | `mklib.animation` | `FrameConfig` | `width`, `height`, `spacing`, `margin` | – |
 | `mklib.animation` | `AnimationClip` | `name`, `fps`, `loop`, `flipX`, `flipY`, `frames` | – |
 | `mklib.animation` | `SpriteSheetData` | `imagePath`, `config`, `animations`, `defaultAnimation` | – |
@@ -55,6 +63,7 @@ import flixel.FlxG;
 import mklib.state.State;
 import mklib.layer.TileLayer;
 import mklib.layer.EntityLayer;
+import mklib.light.LightingSystem;
 import mklib.path.NavGridBuilder;
 import mklib.path.NavGrid;
 
@@ -73,6 +82,11 @@ class PlayState extends State<Data.Data_Level> {
 
         // 4. A*-NavGrid automatisch aus Leveldaten bauen
         var navGrid:NavGrid = NavGridBuilder.autoBuild(data);
+
+        // 5. GPU-Shader-Beleuchtung mit LDtk-Entities laden
+        var lighting = new LightingSystem(0xFF141424, 0.2);
+        lighting.loadFromLevel(data);
+        add(lighting);
     }
 }
 ```
