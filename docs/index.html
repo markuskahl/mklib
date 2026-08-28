@@ -40,8 +40,8 @@
     <div class="header-actions">
       <!-- Language Switcher -->
       <div class="lang-switch-group">
-        <button class="lang-btn active" data-lang="de" title="Deutsch">DE</button>
-        <button class="lang-btn" data-lang="en" title="English">EN</button>
+        <button class="lang-btn active" data-set-lang="de" title="Deutsch">DE</button>
+        <button class="lang-btn" data-set-lang="en" title="English">EN</button>
       </div>
 
       <button id="theme-toggle" class="icon-btn" title="Thema wechseln">☀️</button>
@@ -341,222 +341,257 @@
           </div>
         </div>
         <div data-lang="en">
-          <h1>mklib <span class="hero-gradient-text">API Documentation</span></h1>
-          <p class="section-desc">The all-in-one Haxe library seamlessly connecting HaxeFlixel, LDtk, and Nape Physics.</p>
+<h1>mklib <span class="hero-gradient-text">API Documentation</span></h1>
+          <p class="section-desc">
+            Complete, comprehensive reference of all classes, properties, and methods in the <strong>mklib</strong> library for <strong>HaxeFlixel</strong>, the <strong>LDtk Level Editor</strong>, and <strong>Nape 2D</strong>.
+          </p>
 
-          <div class="card-grid">
-            <div class="card">
-              <div class="card-icon">🗺️</div>
-              <div class="card-title">LDtk Integration</div>
-              <div class="card-desc">Automatic level and layer loading, typed field data, and dynamic entity instantiation from LDtk projects.</div>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">🗺️</div>
+              <h3>LDtk Integration</h3>
+              <p>Automated tile layer rendering (<code>TileLayer</code>) and dynamic reflection-based entity instantiation (<code>EntityLayer</code>).</p>
             </div>
-            <div class="card">
-              <div class="card-icon">⚡</div>
-              <div class="card-title">Nape Physics & Tags</div>
-              <div class="card-desc">Intuitive collision and sensor callbacks based on LDtk enum tags, without low-level Nape boilerplate.</div>
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>Nape Physics & Tags</h3>
+              <p>9 specialized collision and sensor listeners (<code>Listener</code>) with human-readable string tags (<code>Tags</code>).</p>
             </div>
-            <div class="card">
-              <div class="card-icon">🧭</div>
-              <div class="card-title">A* Pathfinding</div>
-              <div class="card-desc">Fast 2D pathfinding with multi-tile sizing, diagonal movement, and auto-grid generation from LDtk IntGrid layers.</div>
+            <div class="feature-card">
+              <div class="feature-icon">🧭</div>
+              <h3>A* Pathfinding</h3>
+              <p>High-performance 2D pathfinding grid (<code>NavGrid</code>, <code>NavGridBuilder</code>, <code>AStar</code>) with multi-tile agent support.</p>
             </div>
-            <div class="card">
-              <div class="card-icon">📐</div>
-              <div class="card-title">Responsive Scaling</div>
-              <div class="card-desc">Utilities for calculating dynamic aspect ratios and responsive display configurations.</div>
+            <div class="feature-card">
+              <div class="feature-icon">📱</div>
+              <h3>Responsive Scaling</h3>
+              <p>Dynamic game resolution for widescreen displays (<code>AspectRatio</code>) and mathematical helpers (<code>MathTool</code>).</p>
             </div>
           </div>
 
-          <h2>🧩 Complete Class & API Matrix</h2>
-          <p class="section-desc">Quick reference of all classes, properties, and methods in <code>mklib</code>:</p>
+          <h2>🏛️ Vollständige Klassen- & API-Matrix</h2>
+          <p>Alle in der Bibliothek enthaltenen Typen im Überblick:</p>
 
-          <div class="table-container">
+          <div class="api-table-wrapper">
             <table class="api-table">
               <thead>
                 <tr>
-                  <th>Module</th>
+                  <th>Modul / Paket</th>
                   <th>Class / Type</th>
                   <th>Properties</th>
                   <th>Methods</th>
+                  <th>Kapitel</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td><code>mklib.state</code></td>
-                  <td><strong><a href="#state">State&lt;TLevel&gt;</a></strong></td>
+                  <td><strong><code>State&lt;TLevel&gt;</code></strong></td>
                   <td><code>project</code>, <code>tags</code>, <code>levelName</code>, <code>data</code></td>
-                  <td><code>new</code>, <code>create</code>, <code>addCbTypes</code>, <code>napeInit</code>, <code>update</code>, <code>destroy</code></td>
+                  <td><code>new</code>, <code>create</code>, <code>napeInit</code>, <code>addCbTypes</code>, <code>update</code></td>
+                  <td><a href="#state">State →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.layer</code></td>
-                  <td><strong><a href="#layers">TileLayer</a></strong></td>
+                  <td><strong><code>TileLayer</code></strong></td>
                   <td><code>levelName</code>, <code>layerName</code>, <code>state</code></td>
                   <td><code>new</code>, <code>render</code></td>
+                  <td><a href="#layers">Layer →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.layer</code></td>
-                  <td><strong><a href="#layers">EntityLayer</a></strong></td>
+                  <td><strong><code>EntityLayer</code></strong></td>
                   <td><code>layerName</code>, <code>packageName</code>, <code>state</code></td>
                   <td><code>new</code>, <code>addEntities</code>, <code>isNapeEntity</code></td>
+                  <td><a href="#layers">Layer →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.layer</code></td>
-                  <td><strong><a href="#layers">EntityLayerSource&lt;T&gt;</a></strong></td>
+                  <td><strong><code>EntityLayerSource&lt;T&gt;</code></strong></td>
                   <td><code>identifier</code>, <code>getAllUntyped</code></td>
-                  <td>—</td>
+                  <td>–</td>
+                  <td><a href="#layers">Layer →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.entity</code></td>
-                  <td><strong><a href="#entities">EntitySprite</a></strong></td>
+                  <td><strong><code>EntitySprite</code></strong></td>
                   <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code></td>
                   <td><code>new</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>initAnimation</code></td>
+                  <td><a href="#entities">Entities →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.entity</code></td>
-                  <td><strong><a href="#entities">EntityNapeSprite</a></strong></td>
+                  <td><strong><code>EntityNapeSprite</code></strong></td>
                   <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code>, <code>body</code></td>
                   <td><code>new</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>sensorEnabled</code>, <code>addCbType</code>, <code>updateShapePosition</code>, <code>initAnimation</code></td>
+                  <td><a href="#entities">Entities →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.animation</code></td>
-                  <td><strong><a href="#animation">FrameConfig</a></strong></td>
-                  <td><code>width</code>, <code>height</code>, <code>spacing</code>, <code>margin</code></td>
-                  <td>—</td>
-                </tr>
-                <tr>
-                  <td><code>mklib.animation</code></td>
-                  <td><strong><a href="#animation">AnimationClip</a></strong></td>
-                  <td><code>name</code>, <code>fps</code>, <code>loop</code>, <code>flipX</code>, <code>flipY</code>, <code>frames</code></td>
-                  <td>—</td>
-                </tr>
-                <tr>
-                  <td><code>mklib.animation</code></td>
-                  <td><strong><a href="#animation">SpriteSheetData</a></strong></td>
+                  <td><strong><code>FrameConfig</code> / <code>AnimationClip</code> / <code>SpriteSheetData</code></strong></td>
                   <td><code>imagePath</code>, <code>config</code>, <code>animations</code>, <code>defaultAnimation</code></td>
-                  <td>—</td>
+                  <td>Typdefinitionen für Spritesheets und Clips</td>
+                  <td><a href="#animation">Animationen →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.macro</code></td>
-                  <td><strong><a href="#animation">AnimationBuilder</a></strong></td>
-                  <td>—</td>
-                  <td><code>buildDatabase</code> (Macro)</td>
+                  <td><strong><code>AnimationBuilder</code></strong></td>
+                  <td>–</td>
+                  <td><code>buildDatabase</code> (Compile-Time-Makro)</td>
+                  <td><a href="#animation">Animationen →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.physic</code></td>
-                  <td><strong><a href="#physics">Listener</a></strong></td>
-                  <td>—</td>
-                  <td><code>addCollisionBeginListener</code>, <code>addCollisionEndListener</code>, <code>addCollisionOngoingListener</code>, <code>addSensorBeginListener</code>, <code>addSensorEndListener</code>, <code>addSensorOngoingListener</code>, <code>addSensorBeginListenerANY</code>, <code>addSensorEndListenerANY</code>, <code>addSensorOngoingListenerANY</code></td>
+                  <td><strong><code>Listener</code></strong></td>
+                  <td>–</td>
+                  <td>9 Listener für Kollisionen und Sensoren</td>
+                  <td><a href="#physics">Physik →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.tools</code></td>
-                  <td><strong><a href="#physics">Tags</a></strong></td>
-                  <td>—</td>
+                  <td><strong><code>Tags</code></strong></td>
+                  <td>–</td>
                   <td><code>get</code>, <code>exist</code></td>
-                </tr>
-                <tr>
-                  <td><code>mklib.path</code></td>
-                  <td><strong><a href="#pathfinding">NavGrid</a></strong></td>
-                  <td><code>width</code>, <code>height</code>, <code>gridSize</code>, <code>data</code></td>
-                  <td><code>new</code>, <code>isInBounds</code>, <code>getIndex</code>, <code>get</code>, <code>set</code>, <code>isWalkable</code>, <code>isAreaWalkable</code>, <code>setArea</code>, <code>setEntity</code>, <code>worldToGridX</code>, <code>worldToGridY</code>, <code>gridToWorldX</code>, <code>gridToWorldY</code>, <code>clear</code>, <code>clone</code>, <code>toString</code></td>
-                </tr>
-                <tr>
-                  <td><code>mklib.path</code></td>
-                  <td><strong><a href="#pathfinding">NavGridBuilder</a></strong></td>
-                  <td><code>grid</code>, <code>level</code></td>
-                  <td><code>new</code>, <code>fromLevel</code>, <code>addIntGrid</code>, <code>addTileLayer</code>, <code>addEntityLayer</code>, <code>addLayerByName</code>, <code>autoBuild</code>, <code>build</code></td>
-                </tr>
-                <tr>
-                  <td><code>mklib.path</code></td>
-                  <td><strong><a href="#pathfinding">AStar</a></strong></td>
-                  <td><code>SQRT2</code></td>
-                  <td><code>findPath</code>, <code>findWorldPath</code>, <code>heuristic</code>, <code>reconstructPath</code></td>
-                </tr>
-                <tr>
-                  <td><code>mklib.path</code></td>
-                  <td><strong><a href="#pathfinding">GridPoint</a></strong></td>
-                  <td><code>x</code>, <code>y</code></td>
-                  <td><code>new</code>, <code>equals</code>, <code>toString</code></td>
+                  <td><a href="#physics">Physik →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.light</code></td>
-                  <td><strong><a href="#lighting">LightingSystem</a></strong></td>
-                  <td><code>lights</code>, <code>ambientColor</code>, <code>ambientIntensity</code>, <code>autoCull</code>, <code>shadowsEnabled</code>, <code>occluders</code></td>
-                  <td><code>new</code>, <code>addLight</code>, <code>removeLight</code>, <code>clearLights</code>, <code>addOccluder</code>, <code>createPointLight</code>, <code>createSpotLight</code>, <code>createTorchLight</code>, <code>createGlowLight</code>, <code>createDirectionalLight</code>, <code>loadFromLevel</code></td>
+                  <td><strong><code>LightingSystem</code></strong></td>
+                  <td><code>lights</code>, <code>ambientColor</code>, <code>ambientIntensity</code>, <code>autoCull</code>, <code>shaderInstance</code></td>
+                  <td><code>new</code>, <code>addLight</code>, <code>removeLight</code>, <code>clearLights</code>, <code>createPointLight</code>, <code>createSpotLight</code>, <code>createTorchLight</code>, <code>createGlowLight</code>, <code>loadFromLevel</code>, <code>fromEntity</code></td>
+                  <td><a href="#lighting">Lighting →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.light</code></td>
-                  <td><strong><a href="#lighting">Light (Base)</a></strong></td>
+                  <td><strong><code>Light</code></strong></td>
                   <td><code>x</code>, <code>y</code>, <code>radius</code>, <code>color</code>, <code>intensity</code>, <code>falloff</code>, <code>active</code>, <code>visible</code>, <code>target</code></td>
                   <td><code>new</code>, <code>follow</code>, <code>stopFollowing</code>, <code>setPosition</code>, <code>setColor</code>, <code>update</code>, <code>destroy</code></td>
+                  <td><a href="#lighting">Lighting →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.light</code></td>
+                  <td><strong><code>SpotLight</code> / <code>TorchLight</code> / <code>GlowLight</code> / <code>PointLight</code></strong></td>
+                  <td><code>angle</code>, <code>spotAngle</code>, <code>flickerSpeed</code>, <code>minRadius</code>, <code>maxRadius</code>, <code>innerRadius</code></td>
+                  <td>Spezialisierte GPU-Lichtquellen mit Dämpfung, Wobble & Pulsieren</td>
+                  <td><a href="#lighting">Lighting →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.effect</code></td>
-                  <td><strong><a href="#effects">WaterReflectionShader</a></strong></td>
+                  <td><strong><code>WaterReflectionShader</code></strong></td>
                   <td><code>data</code></td>
                   <td><code>new</code>, <code>update</code>, <code>setWaterLevel</code>, <code>syncWithCamera</code>, <code>setWaveParams</code>, <code>setWaterColor</code>, <code>setFoam</code>, <code>setFade</code>, <code>setMode</code></td>
+                  <td><a href="#effects">Shader →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.effect</code></td>
-                  <td><strong><a href="#effects">WaterReflectionPlane</a></strong></td>
+                  <td><strong><code>WaterReflectionPlane</code></strong></td>
                   <td><code>shaderInstance</code>, <code>autoSyncCamera</code>, <code>targetCamera</code></td>
                   <td><code>new</code>, <code>update</code>, <code>setWaveParams</code>, <code>setFoam</code>, <code>destroy</code></td>
+                  <td><a href="#effects">Shader →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.effect</code></td>
-                  <td><strong><a href="#effects">EntityWaterReflection</a></strong></td>
+                  <td><strong><code>EntityWaterReflection</code></strong></td>
                   <td><code>target</code>, <code>shaderInstance</code>, <code>offsetX</code>, <code>offsetY</code>, <code>verticalScale</code></td>
                   <td><code>new</code>, <code>update</code>, <code>syncWithTarget</code>, <code>setWaveParams</code>, <code>destroy</code></td>
+                  <td><a href="#effects">Shader →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.effect</code></td>
+                  <td><strong><code>WaterReflectionMode</code></strong></td>
+                  <td><code>VERTICAL_WATER_PLANE</code>, <code>HORIZONTAL_MIRROR</code>, <code>WAVE_DISTORTION_ONLY</code></td>
+                  <td>–</td>
+                  <td><a href="#effects">Shader →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.path</code></td>
+                  <td><strong><code>NavGrid</code></strong></td>
+                  <td><code>width</code>, <code>height</code>, <code>gridSize</code>, <code>data</code></td>
+                  <td>12 Methoden zur Rasterverwaltung & Koordinatenumrechnung</td>
+                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.path</code></td>
+                  <td><strong><code>NavGridBuilder</code></strong></td>
+                  <td><code>grid</code>, <code>level</code></td>
+                  <td><code>new</code>, <code>fromLevel</code>, <code>addIntGrid</code>, <code>addTileLayer</code>, <code>addEntityLayer</code>, <code>addLayerByName</code>, <code>autoBuild</code>, <code>build</code></td>
+                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.path</code></td>
+                  <td><strong><code>AStar</code></strong></td>
+                  <td><code>SQRT2</code></td>
+                  <td><code>findPath</code>, <code>findWorldPath</code>, <code>heuristic</code>, <code>reconstructPath</code></td>
+                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.path</code></td>
+                  <td><strong><code>GridPoint</code></strong></td>
+                  <td><code>x</code>, <code>y</code></td>
+                  <td><code>new</code>, <code>equals</code>, <code>toString</code></td>
+                  <td><a href="#pathfinding">Pathfinding →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.tools</code></td>
-                  <td><strong><a href="#tools-math">AspectRatio</a></strong></td>
+                  <td><strong><code>AspectRatio</code></strong></td>
                   <td><code>width</code>, <code>height</code>, <code>isDefault</code>, <code>screenRatio</code></td>
                   <td><code>new</code>, <code>calc</code>, <code>isInRange</code></td>
+                  <td><a href="#tools-math">Tools →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.math</code></td>
-                  <td><strong><a href="#tools-math">MathTool</a></strong></td>
-                  <td>—</td>
+                  <td><strong><code>MathTool</code></strong></td>
+                  <td>–</td>
                   <td><code>floatFix</code></td>
+                  <td><a href="#tools-math">Tools →</a></td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <h2>🚀 Minimal Example</h2>
-          <div class="code-block-wrapper">
-            <pre><code class="language-haxe">package;
+          <h2>Minimalbeispiel</h2>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
 
-import flixel.FlxG;
-import mklib.state.State;
-import mklib.layer.TileLayer;
-import mklib.layer.EntityLayer;
-import mklib.light.LightingSystem;
-import mklib.path.NavGridBuilder;
-import mklib.path.NavGrid;
+<span class="hl-keyword">import</span> flixel.FlxG;
+<span class="hl-keyword">import</span> mklib.state.State;
+<span class="hl-keyword">import</span> mklib.layer.TileLayer;
+<span class="hl-keyword">import</span> mklib.layer.EntityLayer;
+<span class="hl-keyword">import</span> mklib.path.NavGridBuilder;
+<span class="hl-keyword">import</span> mklib.path.NavGrid;
 
-class PlayState extends State&lt;Data.Data_Level&gt; {
-    override public function create():Void {
-        super.create();
+<span class="hl-keyword">class</span> <span class="hl-type">PlayState</span> <span class="hl-keyword">extends</span> <span class="hl-type">State</span>&lt;Data.Data_Level&gt; {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> tileLayer:<span class="hl-type">TileLayer</span>;
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> entityLayer:<span class="hl-type">EntityLayer</span>;
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> navGrid:<span class="hl-type">NavGrid</span>;
 
-        // 1. Initialize Nape physics with downward gravity
-        napeInit(0, 300);
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">create</span>():<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.create();
 
-        // 2. Render tilemap layer
-        add(new TileLayer(data.l_Tiles.identifier));
+        <span class="hl-comment">// 1. Nape-Physikraum mit Schwerkraft initialisieren</span>
+        napeInit(<span class="hl-num">0</span>, <span class="hl-num">300</span>);
 
-        // 3. Instantiate entities from "entities.*" package
-        add(new EntityLayer(data.l_Entities));
+        <span class="hl-comment">// 2. Kachelebene aus LDtk rendern</span>
+        tileLayer = <span class="hl-keyword">new</span> <span class="hl-type">TileLayer</span>(data.l_Tiles.identifier);
+        add(tileLayer);
 
-        // 4. Auto-generate A* pathfinding navigation grid
-        var navGrid:NavGrid = NavGridBuilder.autoBuild(data);
+        <span class="hl-comment">// 3. Entities im Package "entities.*" automatisch instanziieren</span>
+        entityLayer = <span class="hl-keyword">new</span> <span class="hl-type">EntityLayer</span>(data.l_Entities);
+        add(entityLayer);
 
-        // 5. Add dynamic GPU shader lighting
-        var lighting = new LightingSystem(0xFF141424, 0.2);
-        lighting.loadFromLevel(data);
-        add(lighting);
+        <span class="hl-comment">// 4. A*-NavGrid automatisch aus Leveldaten bauen</span>
+        navGrid = <span class="hl-type">NavGridBuilder</span>.autoBuild(data);
     }
 }</code></pre>
+          </div>
+
+          <div class="section-nav-footer">
+            <span></span>
+            <a href="#getting-started" class="nav-page-btn">Schnellstart →</a>
           </div>
         </div>
       </section>
@@ -635,43 +670,74 @@ class PlayState extends State&lt;Data.Data_Level&gt; {
           </div>
         </div>
         <div data-lang="en">
-          <h1>🚀 Getting Started & Setup</h1>
-          <p class="section-desc">Step-by-step guide to integrating mklib into your HaxeFlixel project.</p>
+<h1>🚀 Quick Start & Setup</h1>
+          <p class="section-desc">Step-by-step guide to installing and integrating mklib into your HaxeFlixel project.</p>
 
           <h2>1. Dependencies in Project.xml</h2>
-          <div class="code-block-wrapper">
-            <pre><code class="language-xml">&lt;!-- Required haxelib dependencies --&gt;
+          <p>Add <code>mklib</code> and the required libraries to your <code>Project.xml</code>:</p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">XML</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code>&lt;haxelib name="openfl" /&gt;
 &lt;haxelib name="flixel" /&gt;
 &lt;haxelib name="flixel-addons" /&gt;
 &lt;haxelib name="nape-haxe4" /&gt;
 &lt;haxelib name="ldtk-haxe-api" /&gt;
-&lt;haxelib name="mklib" /&gt;
-
-&lt;!-- Ensure entities package is included in compilation --&gt;
-&lt;haxeflag name="--macro" value="haxe.macro.Compiler.include('entities')" /&gt;</code></pre>
+&lt;haxelib name="mklib" /&gt;</code></pre>
           </div>
 
           <h2>2. LDtk Macro Setup (Data.hx)</h2>
-          <p>Create a <code>Data.hx</code> file in your source root to generate typed compile-time classes from your LDtk project file:</p>
-          <div class="code-block-wrapper">
-            <pre><code class="language-haxe">package;
+          <p>Create the file <code>source/Data.hx</code>. The macro analyzes your <code>map.ldtk</code> file at compile time and generates typed classes:</p>
 
-private typedef _Tmp = haxe.macro.MacroType&lt;[ldtk.Project.build("assets/data/dungeon.ldtk")]&gt;;</code></pre>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-comment">/**
+ * LDtk macro compilation: Reads "assets/data/map.ldtk" at compile time
+ * and generates typed classes and enums for all levels, layers, and entities.
+ */</span>
+<span class="hl-keyword">private</span> <span class="hl-keyword">typedef</span> _Tmp = haxe.macro.MacroType&lt;[ ldtk.Project.build(<span class="hl-string">"assets/data/map.ldtk"</span>) ]&gt;;</code></pre>
           </div>
 
-          <h2>3. Game Start in Main.hx</h2>
-          <div class="code-block-wrapper">
-            <pre><code class="language-haxe">package;
+          <h2>3. Game Entry Point in Main.hx</h2>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
 
-import flixel.FlxGame;
-import openfl.display.Sprite;
+<span class="hl-keyword">import</span> flixel.FlxGame;
+<span class="hl-keyword">import</span> openfl.display.Sprite;
 
-class Main extends Sprite {
-    public function new() {
-        super();
-        addChild(new FlxGame(1280, 720, () -&gt; new PlayState("Level_0"), 60, 60, true));
+<span class="hl-comment">/**
+ * Haupteinstiegspunkt der Anwendung.
+ */</span>
+<span class="hl-keyword">class</span> <span class="hl-type">Main</span> <span class="hl-keyword">extends</span> <span class="hl-type">Sprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>() {
+        <span class="hl-keyword">super</span>();
+        addChild(<span class="hl-keyword">new</span> <span class="hl-type">FlxGame</span>(<span class="hl-num">320</span>, <span class="hl-num">180</span>, PlayState, <span class="hl-num">60</span>, <span class="hl-num">60</span>, <span class="hl-keyword">true</span>, <span class="hl-keyword">false</span>));
     }
 }</code></pre>
+          </div>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">💡</div>
+            <div>
+              <strong>Tipp zur Dead-Code-Elimination (DCE):</strong> Versehe deine dynamisch geladenen Entity-Klassen stets mit der Annotation <code>@:keep</code>, damit der Haxe-Compiler sie bei Release-Builds nicht wegoptimiert.
+            </div>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#overview" class="nav-page-btn">← Übersicht</a>
+            <a href="#state" class="nav-page-btn">State Management →</a>
           </div>
         </div>
       </section>
@@ -782,44 +848,106 @@ class Main extends Sprite {
           </div>
         </div>
         <div data-lang="en">
-          <h1>🎮 State Management (<code>mklib.state.State</code>)</h1>
-          <p class="section-desc">The generic base state for automated level management, Nape physics, and LDtk integration.</p>
+<h1>🎮 State Management (<code>mklib.state.State</code>)</h1>
+          <p class="section-desc">Die generische Basisklasse für HaxeFlixel-Spielzustände mit automatischer LDtk- und Nape-Anbindung.</p>
 
           <h2>Class Signature</h2>
-          <div class="code-block-wrapper">
-            <pre><code class="language-haxe">class State&lt;TLevel = Dynamic&gt; extends flixel.FlxState</code></pre>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe Signature</span>
+            </div>
+            <pre><code><span class="hl-keyword">class</span> <span class="hl-type">State</span>&lt;TLevel = Dynamic&gt; <span class="hl-keyword">extends</span> flixel.<span class="hl-type">FlxState</span></code></pre>
           </div>
 
           <h2>Properties</h2>
-          <div class="table-container">
+          <div class="api-table-wrapper">
             <table class="api-table">
               <thead>
-                <tr><th>Property</th><th>Type</th><th>Modifier</th><th>Description</th></tr>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
+                </tr>
               </thead>
               <tbody>
-                <tr><td><code>project</code></td><td><code>ldtk.Project</code></td><td><code>public</code></td><td>The loaded LDtk project instance (resolved from <code>Data</code> or constructor argument).</td></tr>
-                <tr><td><code>tags</code></td><td><code>Map&lt;String, nape.callbacks.CbType&gt;</code></td><td><code>public</code></td><td>Map of collision tags from the LDtk enum <code>"Tags"</code> to their Nape <code>CbType</code> instances.</td></tr>
-                <tr><td><code>levelName</code></td><td><code>String</code></td><td><code>public</code></td><td>Name of the currently active level (e.g. <code>"Level_0"</code>).</td></tr>
-                <tr><td><code>data</code></td><td><code>TLevel</code></td><td><code>public</code></td><td>Typed level data of the active level with direct access to layers (<code>l_Tiles</code>, <code>l_Entities</code> etc.).</td></tr>
+                <tr>
+                  <td><code>project</code></td>
+                  <td><code>ldtk.Project</code></td>
+                  <td><code>public</code></td>
+                  <td>Die geladene LDtk-Projektinstanz (automatisch via Reflection aus <code>Data</code> oder per Parameter).</td>
+                </tr>
+                <tr>
+                  <td><code>tags</code></td>
+                  <td><code>Map&lt;String, nape.callbacks.CbType&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Map aller registrierten Nape-CbTypes, aufgelöst aus dem LDtk-Enum <code>"Tags"</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>levelName</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>The name of the currently active LDtk level (e.g. <code>"Level_0"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>data</code></td>
+                  <td><code>TLevel</code></td>
+                  <td><code>public</code></td>
+                  <td>Die typisierten Leveldaten des geladenen Levels (z. B. <code>data.l_Tiles</code>, <code>data.l_Entities</code>).</td>
+                </tr>
               </tbody>
             </table>
           </div>
 
           <h2>Methods</h2>
-          <div class="table-container">
+          <div class="api-table-wrapper">
             <table class="api-table">
               <thead>
-                <tr><th>Method</th><th>Signature</th><th>Return</th><th>Description</th></tr>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
               </thead>
               <tbody>
-                <tr><td><code>new</code></td><td><code>(LevelName:String = "Level_0", ?projectInstance:ldtk.Project)</code></td><td><code>Void</code></td><td>Creates the state, instantiates the LDtk project and loads the specified level into <code>data</code>.</td></tr>
-                <tr><td><code>create</code></td><td><code>()</code></td><td><code>Void</code></td><td>Initializes the state (<code>FlxState.create()</code>).</td></tr>
-                <tr><td><code>napeInit</code></td><td><code>(gx:Int, gy:Int)</code></td><td><code>Void</code></td><td>Initializes Nape physics space (<code>FlxNapeSpace.init()</code>), sets global gravity <code>(gx, gy)</code> and invokes <code>addCbTypes()</code>.</td></tr>
-                <tr><td><code>addCbTypes</code></td><td><code>()</code></td><td><code>Void</code></td><td>Parses the enum <code>"Tags"</code> from LDtk JSON definitions and creates a <code>CbType</code> for each value in the <code>tags</code> map.</td></tr>
-                <tr><td><code>update</code></td><td><code>(elapsed:Float)</code></td><td><code>Void</code></td><td>Main update loop. Automatically toggles mouse cursor visibility per platform (visible on Windows, hidden on HTML5).</td></tr>
-                <tr><td><code>destroy</code></td><td><code>()</code></td><td><code>Void</code></td><td>Invoked automatically during <code>FlxG.switchState</code>. Clears Nape physics space (<code>FlxNapeSpace.space</code>), removes collision listeners, clears <code>tags</code>, and frees LDtk references to prevent memory leaks.</td></tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(LevelName:String = "Level_0", ?projectInstance:ldtk.Project)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt den State, bindet das LDtk-Projekt und lädt das angegebene Level in <code>data</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>create</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Initialisiert den Spielzustand (ruft <code>super.create()</code> auf).</td>
+                </tr>
+                <tr>
+                  <td><code>napeInit</code></td>
+                  <td><code>(gx:Int, gy:Int):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Initialisiert <code>FlxNapeSpace</code>, setzt die globale Schwerkraft und ruft automatisch <code>addCbTypes()</code> auf.</td>
+                </tr>
+                <tr>
+                  <td><code>addCbTypes</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Liest das LDtk-Enum <code>"Tags"</code> aus der Projektdefinition aus und füllt die <code>tags</code>-Map mit <code>CbType</code>-Instanzen.</td>
+                </tr>
+                <tr>
+                  <td><code>update</code></td>
+                  <td><code>(elapsed:Float):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Frame-Update-Schleife. Regelt u. a. die automatische Sichtbarkeit des Mauszeigers (Windows vs. HTML5).</td>
+                </tr>
               </tbody>
             </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#getting-started" class="nav-page-btn">← Schnellstart</a>
+            <a href="#layers" class="nav-page-btn">Layer System →</a>
           </div>
         </div>
       </section>
@@ -999,40 +1127,175 @@ class Main extends Sprite {
           </div>
         </div>
         <div data-lang="en">
-          <h1>🗺️ Layer System (<code>mklib.layer.*</code>)</h1>
-          <p class="section-desc">Automated rendering of LDtk tile layers and dynamic reflection-based entity instantiation.</p>
+<h1>🧱 Layer System (<code>mklib.layer.*</code>)</h1>
+          <p class="section-desc">Verwaltung und Darstellung von Kachel- und Entity-Ebenen aus LDtk.</p>
 
-          <h2>1. TileLayer (<code>mklib.layer.TileLayer</code>)</h2>
-          <p>Renders a visual tile layer from the LDtk project into the HaxeFlixel scene.</p>
-          <div class="table-container">
+          <h2>1. <code>TileLayer</code> (<code>mklib.layer.TileLayer</code>)</h2>
+          <p>Erbt von <code>FlxSpriteGroup</code> und rendert statische (<code>Layer_Tiles</code>) oder automatische Kachelebenen (<code>Layer_AutoLayer</code>).</p>
+
+          <h3>Properties</h3>
+          <div class="api-table-wrapper">
             <table class="api-table">
               <thead>
-                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
+                </tr>
               </thead>
               <tbody>
-                <tr><td><code>levelName</code></td><td><code>String</code></td><td>Name of the active level.</td></tr>
-                <tr><td><code>layerName</code></td><td><code>String</code></td><td>Identifier of the LDtk layer (e.g. <code>"Tiles"</code> or <code>"Collisions"</code>).</td></tr>
-                <tr><td><code>state</code></td><td><code>mklib.state.State</code></td><td>Reference to the active state.</td></tr>
+                <tr>
+                  <td><code>levelName</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Der Name des geladenen LDtk-Levels (z. B. <code>"Level_0"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>layerName</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Der Bezeichner des LDtk-Tile-Layers (z. B. <code>"Tiles"</code>, <code>"Background"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>state</code></td>
+                  <td><code>mklib.state.State</code></td>
+                  <td><code>public</code></td>
+                  <td>Referenz auf den aktiven `State`.</td>
+                </tr>
               </tbody>
             </table>
           </div>
-          <div class="table-container">
+
+          <h3>Methods</h3>
+          <div class="api-table-wrapper">
             <table class="api-table">
               <thead>
-                <tr><th>Method</th><th>Signature</th><th>Description</th></tr>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
               </thead>
               <tbody>
-                <tr><td><code>new</code></td><td><code>(?LayerName:String = "Tiles", ?LevelName:String)</code></td><td>Creates the tile layer and attaches it to the current state.</td></tr>
-                <tr><td><code>render</code></td><td><code>()</code></td><td>Renders all tile graphics using HaxeFlixel tilemaps.</td></tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(LayerName:String)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt den <code>TileLayer</code>, bindet State/Level und führt direkt <code>render()</code> aus.</td>
+                </tr>
+                <tr>
+                  <td><code>render</code></td>
+                  <td><code>():FlxSpriteGroup</code></td>
+                  <td><code>FlxSpriteGroup</code></td>
+                  <td>Leert die Gruppe und zeichnet die Kacheln anhand von <code>state.data</code> neu. Gibt <code>this</code> zurück.</td>
+                </tr>
               </tbody>
             </table>
           </div>
 
-          <h2>2. EntityLayer & EntityLayerSource</h2>
-          <p>Scans the LDtk entity layer and automatically instantiates matching Haxe classes from the <code>entities.*</code> package.</p>
-          <div class="code-block-wrapper">
-            <pre><code class="language-haxe">// In your PlayState.hx:
-add(new EntityLayer(data.l_Entities)); // Automatically spawns Player, Coins, Enemies etc.</code></pre>
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>EntityLayer</code> & <code>EntityLayerSource</code></h2>
+          <p>Erbt von <code>FlxSpriteGroup</code> und instanziiert automatisch alle LDtk-Entities via Reflection.</p>
+
+          <h3>Typedef: <code>EntityLayerSource&lt;T = Dynamic&gt;</code></h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Feld</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>identifier</code></td>
+                  <td><code>String</code></td>
+                  <td>Der Bezeichner des Layers in LDtk (z. B. <code>"Entities"</code>, <code>"Actors"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>getAllUntyped</code></td>
+                  <td><code>() -&gt; Array&lt;T&gt;</code></td>
+                  <td>Gibt alle im Layer platzierten Entities als Array zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Eigenschaften von <code>EntityLayer</code></h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>layerName</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Der LDtk-Layer-Bezeichner.</td>
+                </tr>
+                <tr>
+                  <td><code>packageName</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Das Haxe-Package zur Klassensuche (Standard: <code>"entities"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>state</code></td>
+                  <td><code>mklib.state.State&lt;Dynamic&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Referenz auf den aktiven `State`.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methoden von <code>EntityLayer</code></h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(layer:EntityLayerSource&lt;Dynamic&gt;, packageName:String = "entities")</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt den Layer, liest alle Entities aus und ruft <code>addEntities()</code> auf.</td>
+                </tr>
+                <tr>
+                  <td><code>addEntities</code></td>
+                  <td><code>(entities:Array&lt;ldtk.Entity&gt;):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Instanziiert dynamisch passende Klassen (<code>packageName.EntityIdentifier</code>) oder nutzt Fallback auf <code>EntityNapeSprite</code> / <code>EntitySprite</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>isNapeEntity</code></td>
+                  <td><code>(entity:ldtk.Entity):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob eine Entity Nape-Physikeigenschaften (Felder wie <code>Tag</code>, <code>sensorEnabled</code> oder LDtk-Tags) aufweist.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#state" class="nav-page-btn">← State Management</a>
+            <a href="#entities" class="nav-page-btn">Entities & Sprites →</a>
           </div>
         </div>
       </section>
@@ -1265,35 +1528,228 @@ add(new EntityLayer(data.l_Entities)); // Automatically spawns Player, Coins, En
           </div>
         </div>
         <div data-lang="en">
-          <h1>👾 Entities & Sprites (<code>mklib.entity.*</code>)</h1>
-          <p class="section-desc">Base classes for visual and physics-driven game entities generated from LDtk.</p>
+<h1>👾 Entities & Sprites (<code>mklib.entity.*</code>)</h1>
+          <p class="section-desc">Basisklassen für visuelle und physikalische Spielobjekte.</p>
 
-          <h2>1. EntitySprite (<code>mklib.entity.EntitySprite</code>)</h2>
-          <p>Extends <code>flixel.FlxSprite</code> for purely visual game objects with LDtk custom field integration.</p>
-          <div class="table-container">
+          <h2>1. <code>EntitySprite</code> (<code>mklib.entity.EntitySprite</code>)</h2>
+          <p>Basisklasse für rein visuelle Entities ohne Physik. Erbt von <code>flixel.FlxSprite</code>.</p>
+
+          <h3>Properties</h3>
+          <div class="api-table-wrapper">
             <table class="api-table">
-              <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
               <tbody>
-                <tr><td><code>_entity</code></td><td><code>Dynamic</code></td><td>Raw LDtk entity data.</td></tr>
-                <tr><td><code>iid</code></td><td><code>String</code></td><td>Unique LDtk instance identifier.</td></tr>
-                <tr><td><code>graphicPath</code></td><td><code>String</code></td><td>Asset path to the sprite graphic.</td></tr>
-                <tr><td><code>hasGraphic</code></td><td><code>Bool</code></td><td>Whether a graphic asset was loaded.</td></tr>
+                <tr>
+                  <td><code>_entity</code></td>
+                  <td><code>ldtk.Entity</code></td>
+                  <td><code>public</code></td>
+                  <td>Die originale LDtk-Entity-Definition inklusive benutzerdefinierter Felder.</td>
+                </tr>
+                <tr>
+                  <td><code>iid</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Die weltweit eindeutige Instanz-ID der Entity aus LDtk.</td>
+                </tr>
+                <tr>
+                  <td><code>state</code></td>
+                  <td><code>mklib.state.State</code></td>
+                  <td><code>public</code></td>
+                  <td>Referenz auf den aktuellen `State`.</td>
+                </tr>
+                <tr>
+                  <td><code>graphicPath</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Der aufgelöste Pfad zur Grafikdatei (beginnend mit <code>assets/</code>, z. B. <code>assets/tilesets/Fire.png</code>), falls ein Tile zugewiesen ist, sonst <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasGraphic</code></td>
+                  <td><code>Bool</code></td>
+                  <td><code>public</code></td>
+                  <td>Gibt an, ob der Entity in LDtk eine gültige Grafikdatei zugewiesen ist (<code>true</code>), andernfalls <code>false</code>.</td>
+                </tr>
               </tbody>
             </table>
           </div>
 
-          <h2>2. EntityNapeSprite (<code>mklib.entity.EntityNapeSprite</code>)</h2>
-          <p>Extends <code>EntitySprite</code> with a native Nape <code>Body</code>, shape position synchronisation, and sensor capabilities.</p>
-          <div class="table-container">
+          <h3>Methods</h3>
+          <div class="api-table-wrapper">
             <table class="api-table">
-              <thead><tr><th>Property / Method</th><th>Type / Signature</th><th>Description</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
               <tbody>
-                <tr><td><code>body</code></td><td><code>nape.phys.Body</code></td><td>The physical Nape body attached to this sprite.</td></tr>
-                <tr><td><code>sensorEnabled</code></td><td><code>Bool</code></td><td>Toggles whether the physical body acts as an overlap sensor.</td></tr>
-                <tr><td><code>addCbType</code></td><td><code>(tagName:String):Void</code></td><td>Adds a Nape <code>CbType</code> from LDtk tags to the body.</td></tr>
-                <tr><td><code>updateShapePosition</code></td><td><code>():Void</code></td><td>Synchronizes Nape shape offsets with sprite dimensions.</td></tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(entity:ldtk.Entity)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt das Sprite, setzt Position, Abmessungen, bindet den <code>State</code>, initialisiert <code>graphicPath</code> / <code>hasGraphic</code> und lädt automatisch die Kachelgrafik, falls vorhanden.</td>
+                </tr>
+                <tr>
+                  <td><code>getGraphicPath</code></td>
+                  <td><code>():Null&lt;String&gt;</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td>Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile in LDtk definiert ist, und setzt <code>hasGraphic</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>getField</code></td>
+                  <td><code>(identifier:String):Dynamic</code></td>
+                  <td><code>Dynamic</code></td>
+                  <td>Liest den Wert eines benutzerdefinierten LDtk-Feldes (<code>fieldInstances</code>) aus oder <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasField</code></td>
+                  <td><code>(identifier:String):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert.</td>
+                </tr>
+                <tr>
+                  <td><code>initAnimation</code></td>
+                  <td><code>(?animKey:String):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Lädt alle Animationsclips aus <code>AnimationRegistry.db</code> und startet die Standardanimation.</td>
+                </tr>
               </tbody>
             </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>EntityNapeSprite</code> (<code>mklib.entity.EntityNapeSprite</code>)</h2>
+          <p>Erweiterte Basisklasse für Nape-Physik-Objekte. Erbt von <code>flixel.addons.nape.FlxNapeSprite</code>.</p>
+
+          <h3>Properties</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>_entity</code></td>
+                  <td><code>ldtk.Entity</code></td>
+                  <td><code>public</code></td>
+                  <td>Die zugrundeliegende LDtk-Entity mit allen Feldern.</td>
+                </tr>
+                <tr>
+                  <td><code>iid</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Die eindeutige LDtk-Instanz-ID.</td>
+                </tr>
+                <tr>
+                  <td><code>state</code></td>
+                  <td><code>mklib.state.State</code></td>
+                  <td><code>public</code></td>
+                  <td>Referenz auf den aktiven `State`.</td>
+                </tr>
+                <tr>
+                  <td><code>graphicPath</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Der aufgelöste Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile zugewiesen ist, sonst <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasGraphic</code></td>
+                  <td><code>Bool</code></td>
+                  <td><code>public</code></td>
+                  <td>Gibt an, ob der Entity in LDtk eine gültige Grafikdatei zugewiesen ist (<code>true</code>), andernfalls <code>false</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>body</code></td>
+                  <td><code>nape.phys.Body</code></td>
+                  <td><code>public</code></td>
+                  <td>*(Ererbt)* Der physikalische Nape-Körper.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methods</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(entity:ldtk.Entity)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt das Nape-Sprite und synchronisiert Position, Entity, State, <code>graphicPath</code> und <code>hasGraphic</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>getGraphicPath</code></td>
+                  <td><code>():Null&lt;String&gt;</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td>Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile in LDtk definiert ist.</td>
+                </tr>
+                <tr>
+                  <td><code>getField</code></td>
+                  <td><code>(identifier:String):Dynamic</code></td>
+                  <td><code>Dynamic</code></td>
+                  <td>Liest den Wert eines benutzerdefinierten LDtk-Feldes (<code>fieldInstances</code>) aus oder <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasField</code></td>
+                  <td><code>(identifier:String):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert.</td>
+                </tr>
+                <tr>
+                  <td><code>sensorEnabled</code></td>
+                  <td><code>(?enable:Null&lt;Bool&gt;):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Setzt die <code>sensorEnabled</code>-Eigenschaft für alle Shapes des Körpers. Ohne Parameter wird der Wert aus dem LDtk-Feld <code>"sensorEnabled"</code> ausgelesen.</td>
+                </tr>
+                <tr>
+                  <td><code>addCbType</code></td>
+                  <td><code>(name:String = null):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Weist dem Nape-Körper Tags zu. Liest bei <code>name == null</code> automatisch die LDtk-Felder <code>"Tag"</code> oder <code>"Tags"</code> aus. Setzt <code>body.userData.instance = this</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>updateShapePosition</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Zentriert den Nape-Körper im Mittelpunkt der LDtk-Entity (<code>pixelX + width/2, pixelY + height/2</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>initAnimation</code></td>
+                  <td><code>(?animKey:String):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Lädt alle Animationsclips aus <code>AnimationRegistry.db</code> und startet die Standardanimation.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#layers" class="nav-page-btn">← Layer System</a>
+            <a href="#animation" class="nav-page-btn">Animationen & Makros →</a>
           </div>
         </div>
       </section>
@@ -1628,30 +2084,330 @@ myEntity.animation.<span class="hl-func">play</span>(<span class="hl-str">"burn"
           </div>
         </div>
         <div data-lang="en">
-          <h1>🎬 Animation System & Macros (<code>mklib.animation.*</code> & <code>mklib.macro.*</code>)</h1>
-          <p class="section-desc">Compile-time animation generation from JSON definitions with zero runtime overhead.</p>
+<h1>🎬 Animation System & Macros (<code>mklib.animation.*</code> & <code>mklib.macro.*</code>)</h1>
+          <p class="section-desc">Automatisiertes Compile-Time-Laden von JSON-Spritesheet-Animationen ohne Laufzeit-Overhead.</p>
 
-          <h2>1. Compile-Time Macro (<code>AnimationBuilder</code>)</h2>
-          <p>Scans your animation JSON files at compile-time and creates a typed <code>AnimationRegistry</code> database.</p>
-          <div class="code-block-wrapper">
-            <pre><code class="language-haxe">package;
+          <h2>1. Overview & Architecture</h2>
+          <p>
+            Das Animationssystem von <code>mklib</code> besteht aus typsicheren Datenstrukturen (<code>AnimationTypes</code>), einem Compile-Time-Makro (<code>AnimationBuilder</code>) und einer zentralen Datenbank (<code>AnimationRegistry</code>).
+          </p>
+          <div class="feature-grid" style="margin: 1.5rem 0;">
+            <div class="feature-card">
+              <div class="feature-icon">📁</div>
+              <h3>JSON Definitions</h3>
+              <p>Clips, Frameraten und Rastermaße werden als übersichtliche <code>.json</code>-Dateien in <code>assets/data/animations/</code> abgelegt.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>Compile-Time Macro</h3>
+              <p><code>AnimationBuilder.buildDatabase()</code> liest alle JSONs beim Kompilieren ein, normalisiert Pfade und erzeugt ein getyptes Map-Literal.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🚀</div>
+              <h3>Zero Runtime Cost</h3>
+              <p>Kein JSON-Parsing zur Laufzeit. Entities greifen direkt auf die typisierte <code>AnimationRegistry.db</code> zu.</p>
+            </div>
+          </div>
 
-class AnimationRegistry {
-    // Generates static database at build-time
-    public static var db = mklib.macro.AnimationBuilder.buildDatabase("assets/data/animations");
+          <h2>2. Data Structures (<code>mklib.animation.AnimationTypes</code>)</h2>
+          
+          <h3><code>FrameConfig</code></h3>
+          <p>Konfiguriert Kachelabmessungen und Abstände auf dem Spritesheet.</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Optional</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>width</code></td>
+                  <td><code>Int</code></td>
+                  <td>Nein</td>
+                  <td>Width of a single frame in pixels.</td>
+                </tr>
+                <tr>
+                  <td><code>height</code></td>
+                  <td><code>Int</code></td>
+                  <td>Nein</td>
+                  <td>Height of a single frame in pixels.</td>
+                </tr>
+                <tr>
+                  <td><code>spacing</code></td>
+                  <td><code>Null&lt;Int&gt;</code></td>
+                  <td>Ja</td>
+                  <td>Abstand zwischen Frames in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>margin</code></td>
+                  <td><code>Null&lt;Int&gt;</code></td>
+                  <td>Ja</td>
+                  <td>Äußerer Rand des Spritesheets in Pixeln.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3><code>AnimationClip</code></h3>
+          <p>Definiert einen Animationsabschnitt mit Bildfolge, Geschwindigkeit und Wiederholung.</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Optional</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>name</code></td>
+                  <td><code>String</code></td>
+                  <td>Nein</td>
+                  <td>Name des Clips (z. B. <code>"burn"</code>, <code>"walk"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>fps</code></td>
+                  <td><code>Int</code></td>
+                  <td>Nein</td>
+                  <td>Abspielgeschwindigkeit (Frames pro Sekunde).</td>
+                </tr>
+                <tr>
+                  <td><code>loop</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Nein</td>
+                  <td>Endlosschleife aktivieren (<code>true</code>/<code>false</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flipX</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Nein</td>
+                  <td>Horizontale Spiegelung der Frames.</td>
+                </tr>
+                <tr>
+                  <td><code>flipY</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Nein</td>
+                  <td>Vertikale Spiegelung der Frames.</td>
+                </tr>
+                <tr>
+                  <td><code>frames</code></td>
+                  <td><code>Array&lt;Int&gt;</code></td>
+                  <td>Nein</td>
+                  <td>Liste der Frame-Indizes (z. B. <code>[0, 1, 2, 3]</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3><code>SpriteSheetData</code></h3>
+          <p>Vollständiger Datensatz für ein animiertes Spritesheet.</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Optional</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>imagePath</code></td>
+                  <td><code>String</code></td>
+                  <td>Nein</td>
+                  <td>Pfad zur Grafikdatei (z. B. <code>"assets/tilesets/Fire.png"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>config</code></td>
+                  <td><code>FrameConfig</code></td>
+                  <td>Nein</td>
+                  <td>Kachel- und Rastereinstellungen.</td>
+                </tr>
+                <tr>
+                  <td><code>animations</code></td>
+                  <td><code>Array&lt;AnimationClip&gt;</code></td>
+                  <td>Nein</td>
+                  <td>Liste aller definierten Clips.</td>
+                </tr>
+                <tr>
+                  <td><code>defaultAnimation</code></td>
+                  <td><code>String</code></td>
+                  <td>Nein</td>
+                  <td>Name des standardmäßig abzuspielenden Clips.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>3. Compile-Time Macro (<code>mklib.macro.AnimationBuilder</code>)</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>buildDatabase</code></td>
+                  <td><code>(folderPath:String):Expr</code></td>
+                  <td><code>Expr</code> (Makro)</td>
+                  <td>Liest alle <code>.json</code>-Dateien im Ordner zur Compile-Zeit ein, normalisiert Asset-Pfade und generiert eine <code>Map&lt;String, SpriteSheetData&gt;</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>4. The <code>AnimationRegistry</code> in Detail</h2>
+          <p>
+            Die Klasse <code>AnimationRegistry</code> (<code>source/AnimationRegistry.hx</code>) dient als <strong>globale Datenbank</strong> für alle Spritesheet-Animationen im Spielprojekt. Durch das Zusammenspiel mit dem Makro <code>AnimationBuilder.buildDatabase</code> werden alle Animationsdefinitionen bereits beim Kompilieren geparst und direkt als typisierter Code eingebettet.
+          </p>
+
+          <div class="callout callout-tip">
+            <span class="callout-icon">💡</span>
+            <div>
+              <strong>Compile-Time Transformation:</strong>
+              Das Makro liest zur Compile-Zeit alle <code>.json</code>-Dateien aus <code>assets/data/animations/</code> ein, wandelt absolute Pfade in relative <code>assets/...</code>-Pfade um und hinterlegt die Daten unter dem Dateinamen (z.&nbsp;B. <code>"Fire"</code> für <code>Fire.json</code>) in der statischen Map <code>AnimationRegistry.db</code>.
+            </div>
+          </div>
+
+          <h2>5. Real-World Setup & Code Examples</h2>
+
+          <h3>1. JSON Animation File (<code>assets/data/animations/Fire.json</code>)</h3>
+          <p>Definiert Bildquelle, Kachelmaße und beliebig viele Animationsclips:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">JSON</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code>{
+  <span class="hl-str">"imagePath"</span>: <span class="hl-str">"assets/tilesets/Fire.png"</span>,
+  <span class="hl-str">"config"</span>: {
+    <span class="hl-str">"width"</span>: 16,
+    <span class="hl-str">"height"</span>: 16,
+    <span class="hl-str">"spacing"</span>: 0,
+    <span class="hl-str">"margin"</span>: 0
+  },
+  <span class="hl-str">"animations"</span>: [
+    {
+      <span class="hl-str">"name"</span>: <span class="hl-str">"burn"</span>,
+      <span class="hl-str">"fps"</span>: 12,
+      <span class="hl-str">"loop"</span>: <span class="hl-keyword">true</span>,
+      <span class="hl-str">"flipX"</span>: <span class="hl-keyword">false</span>,
+      <span class="hl-str">"flipY"</span>: <span class="hl-keyword">false</span>,
+      <span class="hl-str">"frames"</span>: [0, 1, 2, 3]
+    }
+  ],
+  <span class="hl-str">"defaultAnimation"</span>: <span class="hl-str">"burn"</span>
 }</code></pre>
           </div>
 
-          <h2>2. Data Types (<code>mklib.animation.AnimationTypes</code>)</h2>
-          <div class="table-container">
-            <table class="api-table">
-              <thead><tr><th>Type</th><th>Fields</th><th>Description</th></tr></thead>
-              <tbody>
-                <tr><td><code>FrameConfig</code></td><td><code>width</code>, <code>height</code>, <code>spacing</code>, <code>margin</code></td><td>Grid layout of spritesheet frames.</td></tr>
-                <tr><td><code>AnimationClip</code></td><td><code>name</code>, <code>fps</code>, <code>loop</code>, <code>flipX</code>, <code>flipY</code>, <code>frames</code></td><td>Single animation sequence with frame indices.</td></tr>
-                <tr><td><code>SpriteSheetData</code></td><td><code>imagePath</code>, <code>config</code>, <code>animations</code>, <code>defaultAnimation</code></td><td>Complete spritesheet configuration.</td></tr>
-              </tbody>
-            </table>
+          <h3>2. Registry Class (<code>source/AnimationRegistry.hx</code>)</h3>
+          <p>Definiert die zentrale Datenbank <code>db</code>, die beim Kompilieren mit allen Animationen befüllt wird:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> mklib.animation.AnimationTypes;
+<span class="hl-keyword">import</span> mklib.macro.AnimationBuilder;
+
+<span class="hl-keyword">@:keep</span>
+<span class="hl-keyword">class</span> <span class="hl-type">AnimationRegistry</span> {
+    <span class="hl-comment">// Liest alle JSON-Dateien aus "assets/data/animations" zur Compile-Zeit ein</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">static</span> <span class="hl-keyword">var</span> db:<span class="hl-type">Map</span>&lt;<span class="hl-type">String</span>, <span class="hl-type">SpriteSheetData</span>&gt; = <span class="hl-type">AnimationBuilder</span>.<span class="hl-func">buildDatabase</span>(<span class="hl-str">"assets/data/animations"</span>);
+}</code></pre>
+          </div>
+
+          <h3>3. LDtk Workflow: The <code>Animations</code> Enum (Best Practice)</h3>
+          <p>
+            Um Tippfehler zu vermeiden und im Level-Editor ein komfortables Dropdown-Menü bereitzustellen, empfiehlt sich in LDtk die Verwendung eines Enums:
+          </p>
+          <ol style="margin-left: 1.25rem; margin-bottom: 1.25rem;">
+            <li><strong>Enum anlegen:</strong> Erstelle in LDtk unter <em>Project Settings &rarr; Enums</em> ein Enum namens <code>Animations</code> mit den Namen der Animationsdateien (z.&nbsp;B. <code>Fire</code>, <code>Hero</code>, <code>Platform</code>).</li>
+            <li><strong>Entity-Feld definieren:</strong> Füge der gewünschten Entity-Definition ein Feld namens <code>Animations</code> vom Typ <code>Enum.Animations</code> hinzu.</li>
+            <li><strong>Level platzieren:</strong> Wähle beim Platzieren der Entity im Level-Editor einfach die gewünschte Animation aus dem Dropdown-Menü aus.</li>
+          </ol>
+
+          <div class="callout callout-info">
+            <span class="callout-icon">ℹ️</span>
+            <div>
+              <strong>Automatische Bindung:</strong> <code>EntitySprite</code> und <code>EntityNapeSprite</code> prüfen im Basis-Konstruktor automatisch mit <code>hasField("Animations")</code>, lesen den gewählten Enum-Wert als String aus (z.&nbsp;B. <code>"Fire"</code>) und laden die Grafik sowie Clips direkt aus <code>AnimationRegistry.db</code>.
+            </div>
+          </div>
+
+          <h3>4. Entity Class in Code (<code>source/entities/Fire.hx</code>)</h3>
+          <p>
+            Durch das gesetzte LDtk-Feld <code>Animations</code> ist im Code keinerlei manuelle Animationsinitialisierung nötig:
+          </p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span> entities;
+ 
+<span class="hl-keyword">import</span> mklib.entity.EntitySprite;
+<span class="hl-keyword">import</span> ldtk.Entity;
+ 
+<span class="hl-keyword">@:keep</span>
+<span class="hl-keyword">class</span> <span class="hl-type">Fire</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntitySprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:ldtk.<span class="hl-type">Entity</span>) {
+        <span class="hl-comment">// super(entity) liest getField("Animations") ("Fire") </span>
+        <span class="hl-comment">// und lädt Grafik + Clips vollautomatisch aus AnimationRegistry.db!</span>
+        <span class="hl-keyword">super</span>(entity);
+    }
+}</code></pre>
+          </div>
+
+          <h3>5. Manual Loading & Switching on Entities</h3>
+          <p>Animationen können jederzeit auch manuell über den Schlüssel zugewiesen oder gewechselt werden:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-comment">// Lädt nachträglich oder wechselt das Animationsset auf "Fire":</span>
+myEntity.<span class="hl-func">initAnimation</span>(<span class="hl-str">"Fire"</span>);
+
+<span class="hl-comment">// Manueller Wechsel des aktuellen Animationsclips:</span>
+myEntity.animation.<span class="hl-func">play</span>(<span class="hl-str">"burn"</span>);</code></pre>
+          </div>
+
+          <h3>6. Direct Access to Raw Animation Data</h3>
+          <p>Für eigene Sprites oder Flixel-Objekte kann direkt auf die typisierte Map zugegriffen werden:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> AnimationRegistry;
+
+<span class="hl-keyword">var</span> fireData = <span class="hl-type">AnimationRegistry</span>.db.<span class="hl-func">get</span>(<span class="hl-str">"Fire"</span>);
+<span class="hl-keyword">if</span> (fireData != <span class="hl-keyword">null</span>) {
+    trace(<span class="hl-str">"Grafikpfad: "</span> + fireData.imagePath);          <span class="hl-comment">// "assets/tilesets/Fire.png"</span>
+    trace(<span class="hl-str">"Frame-Breite: "</span> + fireData.config.width);     <span class="hl-comment">// 16</span>
+    trace(<span class="hl-str">"Default: "</span> + fireData.defaultAnimation);      <span class="hl-comment">// "burn"</span>
+}</code></pre>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#entities" class="nav-page-btn">← Entities & Sprites</a>
+            <a href="#physics" class="nav-page-btn">Physik & Sensoren →</a>
           </div>
         </div>
       </section>
@@ -1789,28 +2545,133 @@ class AnimationRegistry {
           </div>
         </div>
         <div data-lang="en">
-          <h1>⚡ Physics & Sensors (<code>mklib.physic.*</code> & <code>mklib.tools.Tags</code>)</h1>
-          <p class="section-desc">Clean, string-based collision and sensor callbacks connecting LDtk tags with Nape Physics.</p>
+<h1>⚡ Physics & Sensors (<code>mklib.physic.*</code> & <code>mklib.tools.Tags</code>)</h1>
+          <p class="section-desc">Einfache Registrierung von Kollisionen und Sensor-Überlappungen ohne manuelle CbType-Verwaltung.</p>
 
-          <h2>1. Tags (<code>mklib.tools.Tags</code>)</h2>
-          <div class="code-block-wrapper">
-            <pre><code class="language-haxe">// Retrieve a registered CbType by name:
-var playerTag:CbType = Tags.get("Player");
-var solidTag:CbType = Tags.get("Solid");</code></pre>
+          <h2>1. <code>Tags</code> (<code>mklib.tools.Tags</code>)</h2>
+          <p>Statische Hilfsklasse zum Abfragen von <code>CbType</code>-Objekten aus dem aktuellen `State`.</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>get</code></td>
+                  <td><code>(tag:String):nape.callbacks.CbType</code></td>
+                  <td><code>CbType</code></td>
+                  <td>Gibt den registrierten <code>CbType</code> für einen Tag-Namen zurück (oder <code>null</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>exist</code></td>
+                  <td><code>(tag:String):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob der Tag im aktuellen State registriert ist.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <h2>2. Listener (<code>mklib.physic.Listener</code>)</h2>
-          <p>Registers physical collision and sensor overlap callbacks between tag types:</p>
-          <div class="code-block-wrapper">
-            <pre><code class="language-haxe">// Physical collision between Player and Solid ground:
-Listener.addCollisionBeginListener("Player", "Solid", (cb:InteractionCallback) -&gt; {
-    trace("Player touched the ground!");
-});
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
 
-// Sensor overlap (e.g. collecting a Coin):
-Listener.addSensorBeginListener("Player", "Coin", (cb:InteractionCallback) -&gt; {
-    trace("Coin collected!");
-});</code></pre>
+          <h2>2. <code>Listener</code> (<code>mklib.physic.Listener</code>)</h2>
+          <p>Statische Methoden zur Registrierung aller Kollisions- und Sensor-Events.</p>
+
+          <h3>Physical Collisions (<code>InteractionType.COLLISION</code>)</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Ereignis</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>addCollisionBeginListener</code></td>
+                  <td><code>(t1:String, t2:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.BEGIN</code></td>
+                  <td>Wird aufgerufen, sobald sich zwei Körper mit <code>t1</code> und <code>t2</code> berühren.</td>
+                </tr>
+                <tr>
+                  <td><code>addCollisionEndListener</code></td>
+                  <td><code>(t1:String, t2:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.END</code></td>
+                  <td>Wird aufgerufen, sobald der Kontakt zwischen <code>t1</code> und <code>t2</code> abreißt.</td>
+                </tr>
+                <tr>
+                  <td><code>addCollisionOngoingListener</code></td>
+                  <td><code>(t1:String, t2:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.ONGOING</code></td>
+                  <td>Wird in jedem Physik-Tick aufgerufen, solange <code>t1</code> und <code>t2</code> in Kontakt stehen.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Sensor Overlaps (<code>InteractionType.SENSOR</code>)</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Ereignis</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>addSensorBeginListener</code></td>
+                  <td><code>(t1:String, t2:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.BEGIN</code></td>
+                  <td>Überlappung zwischen <code>t1</code> und <code>t2</code> beginnt.</td>
+                </tr>
+                <tr>
+                  <td><code>addSensorEndListener</code></td>
+                  <td><code>(t1:String, t2:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.END</code></td>
+                  <td>Überlappung zwischen <code>t1</code> und <code>t2</code> endet.</td>
+                </tr>
+                <tr>
+                  <td><code>addSensorOngoingListener</code></td>
+                  <td><code>(t1:String, t2:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.ONGOING</code></td>
+                  <td>Überlappung zwischen <code>t1</code> und <code>t2</code> dauert an.</td>
+                </tr>
+                <tr>
+                  <td><code>addSensorBeginListenerANY</code></td>
+                  <td><code>(t1:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.BEGIN</code></td>
+                  <td><code>t1</code> überlappt mit beliebigem anderen Körper (<code>CbType.ANY_BODY</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>addSensorEndListenerANY</code></td>
+                  <td><code>(t1:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.END</code></td>
+                  <td><code>t1</code> verlässt Überlappung mit beliebigem anderen Körper.</td>
+                </tr>
+                <tr>
+                  <td><code>addSensorOngoingListenerANY</code></td>
+                  <td><code>(t1:String, handler:InteractionCallback-&gt;Void)</code></td>
+                  <td><code>CbEvent.ONGOING</code></td>
+                  <td><code>t1</code> überlappt andauernd mit beliebigem anderen Körper.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#animation" class="nav-page-btn">← Animationen & Makros</a>
+            <a href="#pathfinding" class="nav-page-btn">Pathfinding & A* →</a>
           </div>
         </div>
       </section>
@@ -2199,10 +3060,10 @@ Listener.addSensorBeginListener("Player", "Coin", (cb:InteractionCallback) -&gt;
             <table class="api-table">
               <thead>
                 <tr>
-                  <th>Eigenschaft</th>
-                  <th>Typ</th>
-                  <th>Modifizierer</th>
-                  <th>Beschreibung</th>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
                 </tr>
               </thead>
               <tbody>
@@ -2239,10 +3100,10 @@ Listener.addSensorBeginListener("Player", "Coin", (cb:InteractionCallback) -&gt;
             <table class="api-table">
               <thead>
                 <tr>
-                  <th>Methode</th>
-                  <th>Signatur</th>
+                  <th>Method</th>
+                  <th>Signature</th>
                   <th>Rückgabe</th>
-                  <th>Beschreibung</th>
+                  <th>Description</th>
                 </tr>
               </thead>
               <tbody>
@@ -2355,10 +3216,10 @@ Listener.addSensorBeginListener("Player", "Coin", (cb:InteractionCallback) -&gt;
             <table class="api-table">
               <thead>
                 <tr>
-                  <th>Methode</th>
-                  <th>Signatur</th>
+                  <th>Method</th>
+                  <th>Signature</th>
                   <th>Rückgabe</th>
-                  <th>Beschreibung</th>
+                  <th>Description</th>
                 </tr>
               </thead>
               <tbody>
@@ -2425,7 +3286,7 @@ Listener.addSensorBeginListener("Player", "Coin", (cb:InteractionCallback) -&gt;
                 <tr>
                   <th>Element</th>
                   <th>Typ / Signatur</th>
-                  <th>Beschreibung</th>
+                  <th>Description</th>
                 </tr>
               </thead>
               <tbody>
@@ -2465,7 +3326,7 @@ Listener.addSensorBeginListener("Player", "Coin", (cb:InteractionCallback) -&gt;
                 <tr>
                   <th>Element</th>
                   <th>Typ / Signatur</th>
-                  <th>Beschreibung</th>
+                  <th>Description</th>
                 </tr>
               </thead>
               <tbody>
@@ -2861,45 +3722,366 @@ spot.lookAt(targetEnemy);</code></pre>
           </div>
         </div>
         <div data-lang="en">
-          <h1>💡 GPU-Shader-Lighting-System (<code>mklib.light.*</code>)</h1>
-          <p class="section-desc">Hardware-accelerated 2D dynamic lighting with raymarched soft shadows, smooth falloff, and direct LDtk entity integration.</p>
+<h1>💡 GPU-Shader-Lighting-System (<code>mklib.light.*</code>)</h1>
+          <p class="section-desc">Hardwarebeschleunigte 2D-Echtzeitbeleuchtung auf GPU-Shader-Basis mit Viewport-Culling, 5 Licht-Typen und nativer LDtk Custom-Properties-Steuerung.</p>
 
-          <h2>✨ Features & Highlights</h2>
-          <div class="card-grid">
-            <div class="card">
-              <div class="card-icon">⚡</div>
-              <div class="card-title">High Performance</div>
-              <div class="card-desc">Multi-light rendering via GPU fragment shaders with camera viewport culling.</div>
+          <h2>🌟 Features & Highlights</h2>
+          <ul>
+            <li><strong>⚡ GLSL-Shader auf der GPU:</strong> Berechnet bis zu 32 dynamische Lichter gleichzeitig in einem einzigen Render-Pass mit sanften Hermite-Dämpfungskurven (<code>smoothstep</code>).</li>
+            <li><strong>🎯 5 Spezialisierte Licht-Typen:</strong>
+              <ul>
+                <li><strong><code>PointLight</code>:</strong> 360°-Rundumlicht mit anpassbarem 100%-Helligkeitskern (<code>innerRadius</code>).</li>
+                <li><strong><code>SpotLight</code>:</strong> Gerichteter Scheinwerfer mit Abstrahlwinkel, Gesamtkegel und weichem Fokusübergang (<code>innerAngle</code>).</li>
+                <li><strong><code>TorchLight</code>:</strong> Naturgetreues Fackelflackern durch multi-harmonische Wellen und Flammen-Wobble (<code>flameJitter</code>).</li>
+                <li><strong><code>GlowLight</code>:</strong> Sanft atmendes Magie-/Aura-Licht mit konfigurierbaren Min/Max-Bereichen und Puls-Geschwindigkeit.</li>
+                <li><strong><code>DirectionalLight</code>:</strong> Globales Sonnen-, Mond- und Umgebungslicht mit Einfallswinkel.</li>
+              </ul>
+            </li>
+            <li><strong>🚀 Automatisches Frustum-Culling:</strong> In großen Welten werden pro Frame nur die aktuell im Kamerabereich sichtbaren Lichter an die GPU gesendet.</li>
+            <li><strong>🧲 Zielverfolgung (<code>follow</code>):</strong> Lichter folgen Spielfiguren oder Objekten automatisch mit konfigurierbarem Versatz.</li>
+            <li><strong>🗺️ Volle LDtk-Integration:</strong> Alle Lichteigenschaften können direkt in LDtk als <em>Custom Fields</em> definiert und automatisiert geladen werden.</li>
+          </ul>
+
+          <h2>🚀 Code-Beispiele</h2>
+
+          <h3>1. Basic Setup in PlayState</h3>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
             </div>
-            <div class="card">
-              <div class="card-icon">👥</div>
-              <div class="card-title">Dynamic Soft Shadows</div>
-              <div class="card-desc">Real-time raymarched shadows with configurable step count and edge softness.</div>
-            </div>
-            <div class="card">
-              <div class="card-icon">🔦</div>
-              <div class="card-title">5 Specialized Light Types</div>
-              <div class="card-desc">PointLight, SpotLight, TorchLight (organic flicker), GlowLight (pulsing), and DirectionalLight.</div>
-            </div>
-            <div class="card">
-              <div class="card-icon">🗺️</div>
-              <div class="card-title">Direct LDtk Integration</div>
-              <div class="card-desc">Place lights and shadow casters directly inside the LDtk level editor.</div>
-            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> mklib.state.State;
+<span class="hl-keyword">import</span> mklib.light.LightingSystem;
+
+<span class="hl-keyword">class</span> <span class="hl-type">PlayState</span> <span class="hl-keyword">extends</span> <span class="hl-type">State</span>&lt;Data.Data_Level&gt; {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> lighting:<span class="hl-type">LightingSystem</span>;
+
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">create</span>():<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.create();
+
+        <span class="hl-comment">// 1. LightingSystem mit dunkler Nacht-Atmosphäre erstellen (Overlay-Sprite)</span>
+        lighting = <span class="hl-keyword">new</span> <span class="hl-type">LightingSystem</span>(<span class="hl-num">0xFF141424</span>, <span class="hl-num">0.2</span>);
+
+        <span class="hl-comment">// 2. Fackellicht erzeugen</span>
+        <span class="hl-keyword">var</span> torch = lighting.createTorchLight(<span class="hl-num">100</span>, <span class="hl-num">100</span>, <span class="hl-num">120</span>, <span class="hl-num">0xFFFFAA44</span>, <span class="hl-num">1.0</span>);
+
+        <span class="hl-comment">// 3. Scheinwerfer erzeugen</span>
+        <span class="hl-keyword">var</span> spot = lighting.createSpotLight(<span class="hl-num">200</span>, <span class="hl-num">80</span>, <span class="hl-num">160</span>, <span class="hl-num">90</span>, <span class="hl-num">45</span>, <span class="hl-num">0xFFFFFFFF</span>);
+
+        <span class="hl-comment">// 4. Pulsierenden Kristall erzeugen</span>
+        <span class="hl-keyword">var</span> glow = lighting.createGlowLight(<span class="hl-num">350</span>, <span class="hl-num">120</span>, <span class="hl-num">30</span>, <span class="hl-num">70</span>, <span class="hl-num">0xFF55AAFF</span>, <span class="hl-num">0.3</span>, <span class="hl-num">1.0</span>, <span class="hl-num">2.0</span>);
+
+        <span class="hl-comment">// 5. Zum State hinzufügen</span>
+        add(lighting);
+    }
+}</code></pre>
           </div>
 
-          <h2>💻 Code Examples</h2>
-          <div class="code-block-wrapper">
-            <pre><code class="language-haxe">// Basic lighting setup in PlayState:
-var lighting = new LightingSystem(0xFF141424, 0.15);
-lighting.shadowsEnabled = true;
-lighting.loadFromLevel(data);
-add(lighting);
+          <h3>2. Attach Light to Player Entity</h3>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-comment">// Fackel folgt der Spielerfigur automatisch</span>
+<span class="hl-keyword">var</span> playerLight = lighting.createTorchLight(<span class="hl-num">0</span>, <span class="hl-num">0</span>, <span class="hl-num">120</span>, <span class="hl-num">0xFFFF9933</span>, <span class="hl-num">1.0</span>);
+playerLight.follow(heroSprite, <span class="hl-num">0</span>, <span class="hl-num">0</span>, <span class="hl-keyword">true</span>);</code></pre>
+          </div>
 
-// Attach a torch light to the player:
-var torch = new TorchLight(player.x, player.y, 140, 0xFFFFAA44, 0.9);
-torch.follow(player);
-lighting.addLight(torch);</code></pre>
+          <h3>3. Aim Spotlight at Target</h3>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-comment">// In der update()-Schleife: Scheinwerfer folgt der Maus oder einem Objekt</span>
+spot.pointAt(FlxG.mouse.x, FlxG.mouse.y);
+<span class="hl-comment">// oder:</span>
+spot.lookAt(targetEnemy);</code></pre>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🗺️ LDtk Custom Properties (Editor Configuration)</h2>
+          <p>Lichter können komplett im LDtk-Editor über benutzerdefinierte Entity-Felder (Custom Fields) konfiguriert werden. <code>LightingSystem.loadFromLevel(data)</code> liest alle Licht-Entities automatisch ein:</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>LDtk-Feldname</th>
+                  <th>Type</th>
+                  <th>Betroffene Lichter</th>
+                  <th>Beschreibung & Standardwert</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>type</code> / <code>light_type</code></td>
+                  <td><code>String</code> / <code>Enum</code></td>
+                  <td>Alle</td>
+                  <td><code>"point"</code>, <code>"spot"</code>, <code>"torch"</code>, <code>"glow"</code>, <code>"directional"</code> (Fallback: Entity-Identifier).</td>
+                </tr>
+                <tr>
+                  <td><code>radius</code> / <code>light_radius</code></td>
+                  <td><code>Float</code> / <code>Int</code></td>
+                  <td>Alle</td>
+                  <td>Lichtradius in Pixeln (Standard: <code>100.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>color</code> / <code>light_color</code></td>
+                  <td><code>Color</code> / <code>Int</code> / <code>Hex</code></td>
+                  <td>Alle</td>
+                  <td>Lichtfarbe (Standard: Weiß <code>0xFFFFFFFF</code> bzw. Fackel <code>0xFFFFAA44</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>intensity</code> / <code>light_intensity</code></td>
+                  <td><code>Float</code></td>
+                  <td>Alle</td>
+                  <td>Helligkeit (Standard: <code>1.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>falloff</code> / <code>light_falloff</code></td>
+                  <td><code>Float</code></td>
+                  <td>Alle</td>
+                  <td>Dämpfungsexponent (Standard: <code>1.0</code> für weiche Kante).</td>
+                </tr>
+                <tr>
+                  <td><code>innerRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>PointLight</code></td>
+                  <td>Radius für 100% Leuchtkraft vor Beginn des Helligkeitsabfalls (Standard: <code>0.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>angle</code> / <code>direction</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>SpotLight</code>, <code>Directional</code></td>
+                  <td>Abstrahlwinkel in Grad (0° = rechts, 90° = unten, Standard: <code>0.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>spotAngle</code> / <code>coneAngle</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>SpotLight</code></td>
+                  <td>Gesamtöffnungswinkel des Strahls in Grad (Standard: <code>45.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>innerAngle</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>SpotLight</code></td>
+                  <td>Innerer Fokuswinkel für sanfte Strahlränder (Standard: <code>15.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flickerSpeed</code> / <code>speed</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>TorchLight</code></td>
+                  <td>Frequenz des Flackerns in Hz (Standard: <code>8.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flickerIntensity</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>TorchLight</code></td>
+                  <td>Helligkeits-Schwankung der Flamme (Standard: <code>0.15</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flickerRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>TorchLight</code></td>
+                  <td>Radius-Schwankung in Pixeln (Standard: <code>10.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flameJitter</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>TorchLight</code></td>
+                  <td>Docht-Wobble / Flammenverschiebung in Pixeln (Standard: <code>2.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>minRadius</code> / <code>maxRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>GlowLight</code></td>
+                  <td>Minimaler und maximaler Radius beim Pulsieren.</td>
+                </tr>
+                <tr>
+                  <td><code>minIntensity</code> / <code>maxIntensity</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>GlowLight</code></td>
+                  <td>Minimale und maximale Helligkeit beim Pulsieren.</td>
+                </tr>
+                <tr>
+                  <td><code>pulseSpeed</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>GlowLight</code></td>
+                  <td>Geschwindigkeit des Pulsierens (Standard: <code>2.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>active</code> / <code>enabled</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Alle</td>
+                  <td>Ob das Licht initial aktiv ist (Standard: <code>true</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>offsetX</code> / <code>offsetY</code></td>
+                  <td><code>Float</code></td>
+                  <td>Alle</td>
+                  <td>Versatz relativ zur Entity (Standard: Entity-Zentrum).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🏛️ Detaillierte API-Referenz</h2>
+
+          <h3>1. <code>LightingSystem</code> (<code>mklib.light.LightingSystem</code>)</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>ambientColor</code></td>
+                  <td><code>FlxColor</code> (Standard: <code>0xFF141424</code>)</td>
+                  <td>Grundfarbe der Umgebung / Dunkelheit.</td>
+                </tr>
+                <tr>
+                  <td><code>ambientIntensity</code></td>
+                  <td><code>Float</code> (Standard: <code>0.2</code>)</td>
+                  <td>Grundhelligkeit der Umgebung (0.0 = stockdunkel, 1.0 = voll ausgeleuchtet).</td>
+                </tr>
+                <tr>
+                  <td><code>autoCull</code></td>
+                  <td><code>Bool</code> (Standard: <code>true</code>)</td>
+                  <td>Aktiviert automatisches Frustum-Culling für maximale GPU-Performance.</td>
+                </tr>
+                <tr>
+                  <td><code>lights</code></td>
+                  <td><code>Array&lt;Light&gt;</code></td>
+                  <td>Liste aller registrierten Lichter.</td>
+                </tr>
+                <tr>
+                  <td><code>addLight</code></td>
+                  <td><code>&lt;T:Light&gt;(light:T):T</code></td>
+                  <td>Registriert ein Licht im System.</td>
+                </tr>
+                <tr>
+                  <td><code>removeLight</code></td>
+                  <td><code>&lt;T:Light&gt;(light:T, destroy:Bool = false):T</code></td>
+                  <td>Entfernt ein Licht aus dem System.</td>
+                </tr>
+                <tr>
+                  <td><code>createPointLight</code></td>
+                  <td><code>(x, y, radius, color, intensity, innerRadius, falloff):PointLight</code></td>
+                  <td>Erzeugt und registriert ein Punktlicht.</td>
+                </tr>
+                <tr>
+                  <td><code>createSpotLight</code></td>
+                  <td><code>(x, y, radius, angle, spotAngle, color, intensity, innerAngle, falloff):SpotLight</code></td>
+                  <td>Erzeugt und registriert einen Scheinwerfer.</td>
+                </tr>
+                <tr>
+                  <td><code>createTorchLight</code></td>
+                  <td><code>(x, y, radius, color, intensity, flickerSpeed, flickerIntensity, flickerRadius, flameJitter):TorchLight</code></td>
+                  <td>Erzeugt und registriert eine flackernde Fackel.</td>
+                </tr>
+                <tr>
+                  <td><code>createGlowLight</code></td>
+                  <td><code>(x, y, minRadius, maxRadius, color, minIntensity, maxIntensity, pulseSpeed, pulsePhase):GlowLight</code></td>
+                  <td>Erzeugt und registriert ein pulsierendes Magielicht.</td>
+                </tr>
+                <tr>
+                  <td><code>createDirectionalLight</code></td>
+                  <td><code>(directionAngle, color, intensity):DirectionalLight</code></td>
+                  <td>Erzeugt und registriert ein globales Sonnen-/Mondlicht.</td>
+                </tr>
+                <tr>
+                  <td><code>loadFromLevel</code></td>
+                  <td><code>(levelData:Dynamic):Int</code></td>
+                  <td>Lädt alle Licht-Entities aus einem LDtk-Level automatisch.</td>
+                </tr>
+                <tr>
+                  <td><code>fromEntity</code></td>
+                  <td><code>(entity:ldtk.Entity):Null&lt;Light&gt;</code></td>
+                  <td>Parst eine LDtk-Entity anhand ihrer Custom-Properties.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>2. <code>Light</code> Basisklasse (<code>mklib.light.Light</code>)</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>x</code>, <code>y</code></td>
+                  <td><code>Float</code></td>
+                  <td>Weltkoordinaten der Lichtquelle in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>radius</code></td>
+                  <td><code>Float</code></td>
+                  <td>Radius des Lichts in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>color</code></td>
+                  <td><code>FlxColor</code></td>
+                  <td>Farbe des Lichts.</td>
+                </tr>
+                <tr>
+                  <td><code>intensity</code></td>
+                  <td><code>Float</code></td>
+                  <td>Helligkeits-Multiplikator (1.0 = Standard).</td>
+                </tr>
+                <tr>
+                  <td><code>falloff</code></td>
+                  <td><code>Float</code></td>
+                  <td>Dämpfungsexponent (1.0 = sanfter Standardabfall).</td>
+                </tr>
+                <tr>
+                  <td><code>active</code> / <code>visible</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Aktivierungs- und Sichtbarkeitsstatus.</td>
+                </tr>
+                <tr>
+                  <td><code>follow</code></td>
+                  <td><code>(target:FlxObject, offsetX:Float = 0, offsetY:Float = 0, center:Bool = true):Light</code></td>
+                  <td>Bindet das Licht an ein Spielobjekt / Sprite.</td>
+                </tr>
+                <tr>
+                  <td><code>stopFollowing</code></td>
+                  <td><code>():Light</code></td>
+                  <td>Löst die Bindung an das Zielobjekt.</td>
+                </tr>
+                <tr>
+                  <td><code>setPosition</code></td>
+                  <td><code>(x:Float, y:Float):Light</code></td>
+                  <td>Setzt die Weltposition manuell.</td>
+                </tr>
+                <tr>
+                  <td><code>setColor</code></td>
+                  <td><code>(color:FlxColor, ?intensity:Float):Light</code></td>
+                  <td>Setzt Farbe und optionale Intensität.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#pathfinding" class="nav-page-btn">← Pathfinding & A*</a>
+            <a href="#effects" class="nav-page-btn">Wasser & Wellen-Shader →</a>
           </div>
         </div>
       </section>
@@ -3370,38 +4552,466 @@ FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type"
           </div>
         </div>
         <div data-lang="en">
-          <h1>🌊 Water Reflection & Wave Shaders (<code>mklib.effect.*</code>)</h1>
-          <p class="section-desc">Real-time dynamic water wave distortion and reflection shaders for HaxeFlixel.</p>
+<h1>🌊 Water Reflection & Wave Shaders (<code>mklib.effect.*</code>)</h1>
+          <p class="section-desc">Hardwarebeschleunigte GPU-Shader und spezialisierte Spielobjekte für dynamische Wasseroberflächen, Wellenverzerrungen und Entity-Reflexionen.</p>
 
-          <h2>✨ 3 Operating Modes</h2>
-          <div class="card-grid">
-            <div class="card">
-              <div class="card-icon">🌊</div>
-              <div class="card-title">VERTICAL_WATER_PLANE</div>
-              <div class="card-desc">Full water body mirroring everything above a configurable waterline.</div>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>GPU Fragment Shader</h3>
+              <p>Berechnet Multi-Sinus- und Cosinus-Wellenverzerrungen direkt auf der Grafikkarte für maximale Frameraten.</p>
             </div>
-            <div class="card">
-              <div class="card-icon">🪞</div>
-              <div class="card-title">HORIZONTAL_MIRROR</div>
-              <div class="card-desc">Mirror surfaces (wet floors, polished tiles, mirror puzzles).</div>
+            <div class="feature-card">
+              <div class="feature-icon">📐</div>
+              <h3>Dedicated Water Planes</h3>
+              <p><code>setWaterArea(x, y, w, h)</code> definiert ein fixes Wasser-Rechteck in Weltkoordinaten mit automatischem Kamera-Tracking.</p>
             </div>
-            <div class="card">
-              <div class="card-icon">💨</div>
-              <div class="card-title">WAVE_DISTORTION_ONLY</div>
-              <div class="card-desc">Underwater ripple distortion and heat-haze effects without reflection.</div>
+            <div class="feature-card">
+              <div class="feature-icon">🔄</div>
+              <h3>3 Operating Modes</h3>
+              <p>Vertikale Wasseroberfläche, horizontaler Spiegel (Portale/Wände) und reine Wellenverzerrung für Sprites.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🦆</div>
+              <h3>Entity Companion Reflection</h3>
+              <p><code>EntityWaterReflection</code> spiegelt Spielfiguren automatisch an deren Fußkante und synchronisiert Animationen.</p>
             </div>
           </div>
 
-          <h2>💻 Code Examples</h2>
-          <div class="code-block-wrapper">
-            <pre><code class="language-haxe">// Fullscreen water reflection plane:
-var water = new WaterReflectionPlane(0, 480, 1280, 240);
-water.setWaveParams(0.015, 8.0, 3.5);
-add(water);
+          <h2>🧭 Welcher Ansatz für welchen Zweck?</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Werkzeug / Komponente</th>
+                  <th>Einsatzbereich</th>
+                  <th>Vorteil</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong><code>WaterReflectionShader</code></strong><br><small>(Kamera-Filter)</small></td>
+                  <td><strong>Seen, Teiche, Flüsse, Meere</strong> im Level mit definierter Position & Größe (<code>setWaterArea</code>) oder Vollbild-Wasserlinie.</td>
+                  <td><strong>GPU-Echtzeit:</strong> Spiegelt alle Kacheln, Entities, Deko und Lichter automatisch mit 0 CPU-Overhead.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>EntityWaterReflection</code></strong><br><small>(Begleiter-Sprite)</small></td>
+                  <td><strong>Einzelne Spielfiguren (<code>Hero</code>, NPCs, Monster)</strong>, die im Wasser waten oder schwimmen.</td>
+                  <td><strong>Exakte Kontrolle:</strong> Spiegelt Frames und Animationen live unter den Füßen mit sanftem Wogen.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>WaterReflectionPlane</code></strong><br><small>(Platziertes FlxSprite)</small></td>
+                  <td><strong>Eigenständiges Spielobjekt</strong> (<code>FlxSprite</code>) an festen Weltkoordinaten.</td>
+                  <td>Verhält sich wie ein normales Flixel-Sprite in Gruppen und Render-Hierarchien.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-// Per-entity reflection (e.g. Player standing in water):
-var playerReflection = new EntityWaterReflection(player);
-add(playerReflection);</code></pre>
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🚀 Code-Beispiele & Schnellstart</h2>
+
+          <h3>1. Bounded Water Area with Position & Size (Camera Filter)</h3>
+          <p>Definiert ein fixes Wasser-Rechteck in Weltkoordinaten. Außerhalb bleibt die Spielwelt völlig normal, innerhalb spiegelt sich alles oberhalb mit Wellen:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> flixel.FlxG;
+<span class="hl-keyword">import</span> openfl.filters.ShaderFilter;
+<span class="hl-keyword">import</span> mklib.state.State;
+<span class="hl-keyword">import</span> mklib.effect.shader.WaterReflectionShader;
+
+<span class="hl-keyword">class</span> <span class="hl-type">PlayState</span> <span class="hl-keyword">extends</span> <span class="hl-type">State</span>&lt;Data.Data_Level&gt; {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> waterShader:<span class="hl-type">WaterReflectionShader</span>;
+
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">create</span>():<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.create();
+
+        <span class="hl-comment">// 1. Shader instanziieren</span>
+        waterShader = <span class="hl-keyword">new</span> <span class="hl-type">WaterReflectionShader</span>();
+
+        <span class="hl-comment">// 2. Wasserfläche definieren: Welt-X=0, Welt-Y=120, Breite=320px, Tiefe=80px</span>
+        waterShader.setWaterArea(<span class="hl-num">0</span>, <span class="hl-num">120</span>, <span class="hl-num">320</span>, <span class="hl-num">80</span>);
+
+        <span class="hl-comment">// 3. Wellen-Dynamik einstellen (Speed, Frequenz, Amplitude, Kreuzwellen)</span>
+        waterShader.setWaveParams(<span class="hl-num">2.8</span>, <span class="hl-num">30.0</span>, <span class="hl-num">0.012</span>, <span class="hl-num">0.5</span>);
+
+        <span class="hl-comment">// 4. Wassertönung und Schaumkante einstellen</span>
+        waterShader.setWaterColor(<span class="hl-num">0x3366AA</span>, <span class="hl-num">0.45</span>);
+        waterShader.setFoam(<span class="hl-num">0.008</span>, <span class="hl-num">0xFFFFFF</span>);
+
+        <span class="hl-comment">// 5. Als Kamerafilter aktivieren</span>
+        FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type">ShaderFilter</span>(waterShader)];
+    }
+
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">update</span>(elapsed:<span class="hl-type">Float</span>):<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.update(elapsed);
+
+        <span class="hl-comment">// WICHTIG: Zählt Wellenzeit hoch und synchronisiert Kamera-Scroll/Zoom automatisch</span>
+        <span class="hl-keyword">if</span> (waterShader != <span class="hl-keyword">null</span>) {
+            waterShader.update(elapsed);
+        }
+    }
+}</code></pre>
+          </div>
+
+          <h3>2. Fullscreen Water Reflection (From Relative Waterline)</h3>
+          <p>Ideal für 2D-Platformer mit durchgehendem Meer/Wasser am unteren Bildschirmrand:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-comment">// Wasserlinie bei 65% der Bildschirmhöhe festlegen (0.0 = oben, 1.0 = unten)</span>
+waterShader.setWaterLevel(<span class="hl-num">0.65</span>);
+waterShader.setWaveParams(<span class="hl-num">3.0</span>, <span class="hl-num">35.0</span>, <span class="hl-num">0.01</span>, <span class="hl-num">0.5</span>);
+waterShader.setWaterColor(<span class="hl-num">0x103060</span>, <span class="hl-num">0.5</span>);
+
+FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type">ShaderFilter</span>(waterShader)];</code></pre>
+          </div>
+
+          <h3>3. Entity Water Reflection (Character Companion)</h3>
+          <p>Erzeugt eine dynamische Wasser-Reflexion für den Spieler (<code>Hero</code>) oder NPCs:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span> entities;
+
+<span class="hl-keyword">import</span> mklib.entity.EntityNapeSprite;
+<span class="hl-keyword">import</span> mklib.effect.EntityWaterReflection;
+<span class="hl-keyword">import</span> ldtk.Entity;
+
+<span class="hl-keyword">class</span> <span class="hl-type">Hero</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntityNapeSprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> waterReflection:<span class="hl-type">EntityWaterReflection</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:ldtk.<span class="hl-type">Entity</span>) {
+        <span class="hl-keyword">super</span>(entity);
+
+        <span class="hl-comment">// 1. Wasserreflexion für diesen Hero erstellen (Alpha=0.6, Farbe=0x3366AA)</span>
+        waterReflection = <span class="hl-keyword">new</span> <span class="hl-type">EntityWaterReflection</span>(<span class="hl-keyword">this</span>, <span class="hl-num">0.6</span>, <span class="hl-num">0x3366AA</span>);
+
+        <span class="hl-comment">// 2. Wellenparameter für die Spielfigur einstellen</span>
+        waterReflection.setWaveParams(<span class="hl-num">4.0</span>, <span class="hl-num">20.0</span>, <span class="hl-num">0.08</span>);
+
+        <span class="hl-comment">// 3. Perspektivische Stauchung (z. B. 0.85)</span>
+        waterReflection.verticalScale = <span class="hl-num">0.85</span>;
+
+        <span class="hl-comment">// 4. Zum State hinzufügen</span>
+        <span class="hl-keyword">if</span> (state != <span class="hl-keyword">null</span>) {
+            state.add(waterReflection);
+        }
+    }
+}</code></pre>
+          </div>
+
+          <h3>4. Horizontaler Spiegel-Modus (<code>HORIZONTAL_MIRROR</code>)</h3>
+          <p>Für magische Wandspiegel, Raumportale oder seitliche Wasserwände:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> mklib.effect.WaterReflectionMode;
+
+<span class="hl-keyword">var</span> mirrorShader = <span class="hl-keyword">new</span> <span class="hl-type">WaterReflectionShader</span>();
+
+<span class="hl-comment">// 1. Modus auf horizontalen Spiegel schalten:</span>
+mirrorShader.setMode(WaterReflectionMode.HORIZONTAL_MIRROR);
+
+<span class="hl-comment">// 2. Spiegelachse bei 50% der Bildschirmbreite (X-Achse):</span>
+mirrorShader.setWaterLevel(<span class="hl-num">0.5</span>);
+mirrorShader.setWaveParams(<span class="hl-num">2.0</span>, <span class="hl-num">20.0</span>, <span class="hl-num">0.006</span>);
+
+FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type">ShaderFilter</span>(mirrorShader)];</code></pre>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🏛️ Detaillierte API-Referenz</h2>
+
+          <h3>1. <code>WaterReflectionShader</code> (<code>mklib.effect.shader.WaterReflectionShader</code>)</h3>
+          <p>Erbt von <code>flixel.system.FlxAssets.FlxShader</code>. Bietet komfortable Methoden zur Konfiguration aller Uniform-Parameter:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode / Eigenschaft</th>
+                  <th>Signatur / Typ</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Erstellt den Shader mit ausgewogenen Standardwerten für Wellengeschwindigkeit, Amplitude und Tönung.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaterArea</code></td>
+                  <td><code>(x:Float, y:Float, width:Float, height:Float, isWorldCoords:Bool = true, ?camera:FlxCamera):Void</code></td>
+                  <td>Definiert ein begrenztes Wasser-Rechteck in Weltkoordinaten. Außerhalb bleibt das Bild normal.</td>
+                </tr>
+                <tr>
+                  <td><code>clearWaterArea</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Deaktiviert die Flächenbegrenzung und schaltet zurück in den Vollbild-Modus.</td>
+                </tr>
+                <tr>
+                  <td><code>update</code></td>
+                  <td><code>(elapsed:Float, ?camera:FlxCamera):Void</code></td>
+                  <td>Aktualisiert den Zeitzähler (<code>u_time</code>) und synchronisiert automatisch Kamera-Scroll und Zoom.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaterLevel</code></td>
+                  <td><code>(level:Float):Void</code></td>
+                  <td>Setzt die relative Position der Wasserlinie im UV-Raum (<code>0.0</code> bis <code>1.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>syncWithCamera</code></td>
+                  <td><code>(worldY:Float, ?camera:FlxCamera):Void</code></td>
+                  <td>Verankert die Wasserlinie an einer absoluten Weltkoordinate und synchronisiert Scroll/Zoom.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaveParams</code></td>
+                  <td><code>(speed:Float, frequency:Float, amplitude:Float, secondaryWave:Float = 0.5):Void</code></td>
+                  <td>Konfiguriert Geschwindigkeit, Dichte, Amplitude und Kreuzwellen-Wichtung.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaterColor</code></td>
+                  <td><code>(color:FlxColor, tintIntensity:Float = 0.4):Void</code></td>
+                  <td>Setzt Grundfarbe und Mischfaktor des Wassers.</td>
+                </tr>
+                <tr>
+                  <td><code>setFoam</code></td>
+                  <td><code>(thickness:Float, ?color:FlxColor):Void</code></td>
+                  <td>Aktiviert und konfiguriert die Schaum- / Glanzkante an der Wasseroberfläche.</td>
+                </tr>
+                <tr>
+                  <td><code>setFade</code></td>
+                  <td><code>(depthFactor:Float, minAlpha:Float = 0.15):Void</code></td>
+                  <td>Steuert das Ausblenden der Reflexion mit zunehmender Wassertiefe.</td>
+                </tr>
+                <tr>
+                  <td><code>setMode</code></td>
+                  <td><code>(mode:WaterReflectionMode):Void</code></td>
+                  <td>Wählt zwischen vertikaler Wasseroberfläche (0), horizontalem Spiegel (1) und reiner Verzerrung (2).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>2. <code>EntityWaterReflection</code> (<code>mklib.effect.EntityWaterReflection</code>)</h3>
+          <p>Begleiter-Sprite zur Darstellung animierter Wasser-Reflexionen unter Spielfiguren:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>target</code></td>
+                  <td><code>FlxSprite</code></td>
+                  <td>Das überwachte Quell-Sprite (z. B. <code>Hero</code> oder NPC).</td>
+                </tr>
+                <tr>
+                  <td><code>offsetX</code> / <code>offsetY</code></td>
+                  <td><code>Float</code></td>
+                  <td>Zusätzlicher Positionsversatz relativ zum Quell-Entity.</td>
+                </tr>
+                <tr>
+                  <td><code>verticalScale</code></td>
+                  <td><code>Float</code> (Standard: <code>1.0</code>)</td>
+                  <td>Perspektivische Stauchung der Reflexionshöhe (z. B. <code>0.85</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(?target:FlxSprite, alpha:Float = 0.6, waterColor:FlxColor = 0x66104080)</code></td>
+                  <td>Erstellt das Reflexions-Sprite und richtet den Wellen-Shader ein.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaveParams</code></td>
+                  <td><code>(speed:Float, frequency:Float, amplitude:Float, secondaryWave:Float = 0.5):Void</code></td>
+                  <td>Konfiguriert die Wellenbewegung des Entity-Begleiters.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaterColor</code></td>
+                  <td><code>(color:FlxColor, tintIntensity:Float = 0.35):Void</code></td>
+                  <td>Setzt Grundfarbe und Mischfaktor der Entity-Reflexion.</td>
+                </tr>
+                <tr>
+                  <td><code>syncWithTarget</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Synchronisiert Frames, Animationen und Koordinaten mit dem Quell-Sprite.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>3. <code>WaterReflectionPlane</code> (<code>mklib.effect.WaterReflectionPlane</code>)</h3>
+          <p>Ein einsatzbereites <code>FlxSprite</code> für platzierte Wasserflächen in der Welt:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>shaderInstance</code></td>
+                  <td><code>WaterReflectionShader</code></td>
+                  <td>Die zugeordnete Shader-Instanz für direkte Feineinstellungen.</td>
+                </tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(x:Float, y:Float, width:Int, height:Int, waterColor:FlxColor = 0x66104080)</code></td>
+                  <td>Erzeugt die Wasserfläche an den angegebenen Weltkoordinaten.</td>
+                </tr>
+                <tr>
+                  <td><code>addReflectTarget</code></td>
+                  <td><code>(target:Dynamic):Void</code></td>
+                  <td>Fügt ein spezifisches Ziel (z. B. <code>TileLayer</code>, <code>Hero</code>) zur Spiegelung hinzu.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaveParams</code></td>
+                  <td><code>(speed:Float, frequency:Float, amplitude:Float, secondaryWave:Float = 0.5):Void</code></td>
+                  <td>Schnellkonfiguration der Wellenbewegung.</td>
+                </tr>
+                <tr>
+                  <td><code>setFoam</code></td>
+                  <td><code>(thickness:Float, ?color:FlxColor):Void</code></td>
+                  <td>Konfiguration der Schaumlinie an der Wasseroberkante.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🎛️ Feintuning & Shader-Uniforms</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Uniform / Eigenschaft</th>
+                  <th>Method</th>
+                  <th>Typ / Bereich</th>
+                  <th>Standard</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>u_waterArea</code> / <code>u_hasArea</code></td>
+                  <td><code>setWaterArea(...)</code></td>
+                  <td><code>vec4 (X, Y, W, H)</code></td>
+                  <td><code>[0, 0, 0, 0]</code></td>
+                  <td>Definiert eine feste Bounding-Box für die Wasserfläche in Weltpixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>u_time</code></td>
+                  <td><code>update(elapsed)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.0</code></td>
+                  <td>Fortlaufender Zeitzähler in Sekunden für die Wellenanimation.</td>
+                </tr>
+                <tr>
+                  <td><code>u_mode</code></td>
+                  <td><code>setMode(mode)</code></td>
+                  <td><code>Int (0..2)</code></td>
+                  <td><code>0</code></td>
+                  <td>Betriebsmodus: Vertikal (0), Horizontal (1) oder Verzerrung (2).</td>
+                </tr>
+                <tr>
+                  <td><code>u_waterLevel</code></td>
+                  <td><code>setWaterLevel(val)</code></td>
+                  <td><code>Float (0.0..1.0)</code></td>
+                  <td><code>0.65</code></td>
+                  <td>Normierte Position der Wasser- oder Spiegelachse im Viewport.</td>
+                </tr>
+                <tr>
+                  <td><code>u_waveSpeed</code></td>
+                  <td><code>setWaveParams(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>2.8</code></td>
+                  <td>Geschwindigkeit der Hauptwellenbewegung.</td>
+                </tr>
+                <tr>
+                  <td><code>u_waveFrequency</code></td>
+                  <td><code>setWaveParams(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>35.0</code></td>
+                  <td>Raumfrequenz (Dichte der Wellenkämme).</td>
+                </tr>
+                <tr>
+                  <td><code>u_waveAmplitude</code></td>
+                  <td><code>setWaveParams(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.012</code></td>
+                  <td>Maximale Verzerrungsstärke (Auslenkung der Pixel).</td>
+                </tr>
+                <tr>
+                  <td><code>u_secondaryWave</code></td>
+                  <td><code>setWaveParams(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.5</code></td>
+                  <td>Wichtung der überlagerten Kreuzwelle für natürlichere Bewegung.</td>
+                </tr>
+                <tr>
+                  <td><code>u_waterColor</code></td>
+                  <td><code>setWaterColor(...)</code></td>
+                  <td><code>vec4 (RGBA)</code></td>
+                  <td><code>[0.08, 0.35, 0.65, 0.4]</code></td>
+                  <td>RGB-Farbfilter und Mischfaktor der Wassertiefe.</td>
+                </tr>
+                <tr>
+                  <td><code>u_fadeDepth</code></td>
+                  <td><code>setFade(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>2.0</code></td>
+                  <td>Dämpfungsfaktor für das Ausblenden der Reflexion mit zunehmender Tiefe.</td>
+                </tr>
+                <tr>
+                  <td><code>u_minAlpha</code></td>
+                  <td><code>setFade(...)</code></td>
+                  <td><code>Float (0.0..1.0)</code></td>
+                  <td><code>0.15</code></td>
+                  <td>Minimale Resttransparenz der Reflexion.</td>
+                </tr>
+                <tr>
+                  <td><code>u_foamThickness</code></td>
+                  <td><code>setFoam(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.006</code></td>
+                  <td>Breite der Schaumkante an der Wasseroberfläche (<code>0.0</code> = aus).</td>
+                </tr>
+                <tr>
+                  <td><code>u_foamColor</code></td>
+                  <td><code>setFoam(...)</code></td>
+                  <td><code>vec4 (RGBA)</code></td>
+                  <td><code>[0.95, 0.98, 1.0, 0.75]</code></td>
+                  <td>Farbe und Deckkraft der Schaumlinie.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#lighting" class="nav-page-btn">← GPU Lighting System</a>
+            <a href="#tools-math" class="nav-page-btn">Tools & Mathe →</a>
           </div>
         </div>
       </section>
@@ -3521,25 +5131,115 @@ add(playerReflection);</code></pre>
           </div>
         </div>
         <div data-lang="en">
-          <h1>📐 Tools & Mathematics (<code>mklib.tools.*</code> & <code>mklib.math.*</code>)</h1>
-          <p class="section-desc">Display aspect ratio calculations and floating-point precision utilities.</p>
+<h1>🛠️ Tools & Mathematik (<code>mklib.tools.*</code> & <code>mklib.math.*</code>)</h1>
+          <p class="section-desc">Hilfsklassen für responsive Auflösungen und mathematische Berechnungen.</p>
 
-          <h2>1. AspectRatio (<code>mklib.tools.AspectRatio</code>)</h2>
-          <div class="table-container">
+          <h2>1. <code>AspectRatio</code> (<code>mklib.tools.AspectRatio</code>)</h2>
+          <p>Berechnet anhand der Bildschirmauflösung automatisch die optimale Spielbreite für eine feste vertikale Design-Höhe:</p>
+
+          <h3>Properties</h3>
+          <div class="api-table-wrapper">
             <table class="api-table">
-              <thead><tr><th>Property / Method</th><th>Type / Signature</th><th>Description</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
               <tbody>
-                <tr><td><code>screenRatio</code></td><td><code>Float</code></td><td>Calculated aspect ratio (width / height).</td></tr>
-                <tr><td><code>calc</code></td><td><code>(w:Float, h:Float):Float</code></td><td>Calculates aspect ratio for arbitrary dimensions.</td></tr>
-                <tr><td><code>isInRange</code></td><td><code>(minRatio:Float, maxRatio:Float):Bool</code></td><td>Checks whether current screen ratio is within range.</td></tr>
+                <tr>
+                  <td><code>width</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Die berechnete Spielbreite in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>height</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Die berechnete Spielhöhe in Pixeln (Standard: <code>180</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>isDefault</code></td>
+                  <td><code>Bool</code></td>
+                  <td><code>public</code></td>
+                  <td>Gibt an, ob die Fallback-Maße (<code>400x180</code>) verwendet wurden.</td>
+                </tr>
+                <tr>
+                  <td><code>screenRatio</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>private</code></td>
+                  <td>Das tatsächliche Seitenverhältnis des Displays.</td>
+                </tr>
               </tbody>
             </table>
           </div>
 
-          <h2>2. MathTool (<code>mklib.math.MathTool</code>)</h2>
-          <div class="code-block-wrapper">
-            <pre><code class="language-haxe">// Fixes floating point precision issues (e.g. 0.1 + 0.2 = 0.30000000000000004):
-var cleanFloat = MathTool.floatFix(myFloatValue, 4); // Rounds to 4 decimal places</code></pre>
+          <h3>Methods</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(?screenWidth:Float = 0, ?screenHeight:Float = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt die Instanz und berechnet sofort die Maße via <code>calc()</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>calc</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Führt die interne Berechnung von `width` und `height` durch.</td>
+                </tr>
+                <tr>
+                  <td><code>isInRange</code></td>
+                  <td><code>():Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob das Seitenverhältnis im Breitbildbereich (1.77 bis 2.22) liegt.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>MathTool</code> (<code>mklib.math.MathTool</code>)</h2>
+          <p>Hilfsfunktion zur Rundung von Gleitkommazahlen auf feste Nachkommastellen:</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>floatFix</code></td>
+                  <td><code>(v:Float, length:Int):Float</code></td>
+                  <td><code>Float</code></td>
+                  <td>Rundet <code>v</code> auf <code>length</code> Nachkommastellen (z. B. <code>MathTool.floatFix(3.1415, 2) == 3.14</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="#effects" class="nav-page-btn">← Wasser & Wellen-Shader</a>
+            <a href="#overview" class="nav-page-btn">Zurück zur Übersicht ↺</a>
           </div>
         </div>
       </section>

@@ -70,7 +70,7 @@ function initLanguage() {
 
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const lang = btn.getAttribute('data-lang');
+      const lang = btn.getAttribute('data-set-lang');
       if (lang) {
         setLanguage(lang);
       }
@@ -85,7 +85,7 @@ function setLanguage(lang) {
 
   // Update button active state
   document.querySelectorAll('.lang-btn').forEach(btn => {
-    if (btn.getAttribute('data-lang') === currentLang) {
+    if (btn.getAttribute('data-set-lang') === currentLang) {
       btn.classList.add('active');
     } else {
       btn.classList.remove('active');
