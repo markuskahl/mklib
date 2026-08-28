@@ -9,7 +9,8 @@ import mklib.effect.WaterReflectionMode;
 /**
  * Hardware-beschleunigter 2D Wasser-Reflexions- und Wellen-GPU-Fragment-Shader für `mklib`.
  *
- * Unterstützt vertikale Wasserspiegelungen, horizontale Spiegelungen sowie reine Wellenverzerrungen.
+ * Unterstützt definierte Wasserflächen (Position X, Y, Breite, Höhe in Welt- oder Bildschirmkoordinaten),
+ * vertikale Wasserspiegelungen, horizontale Spiegelungen sowie reine Wellenverzerrungen.
  * Bietet konfigurierbare Mehrfach-Sinuswellen, Wassertönung (Tint), Tiefenausblendung (Fade),
  * Oberflächen-Schaumkanten (Foam) und automatische Weltsynchronisation mit Kamera-Scroll und -Zoom.
  */
@@ -30,15 +31,78 @@ class WaterReflectionShader extends FlxShader {
 		uniform vec4 u_foamColor;         // RGB: Schaumfarbe, A: Schaumdeckkraft
 		uniform float u_foamThickness;    // Dicke der Schaumkante in UV-Einheiten
 
+		// Begrenzte Wasserfläche (Position X, Y, Breite W, Höhe H)
+		uniform int u_hasArea;            // 1 = Bounding-Box aktiv, 0 = Vollbild-/Achsenmodus
+		uniform vec4 u_waterArea;         // X, Y, Width, Height
+
 		// Welt- und Kamera-Transformation
 		uniform vec2 u_resolution;        // Viewport-Auflösung
 		uniform vec2 u_camScroll;         // Kamera-Scroll X, Y
 		uniform float u_camZoom;          // Kamera-Zoomfaktor
-		uniform int u_useWorldCoords;     // 1 = Weltkoordinaten aktiv, 0 = Relative UV-Werte
+		uniform int u_useWorldCoords;     // 1 = Weltkoordinaten aktiv, 0 = Relative UV- / Screen-Werte
 		uniform float u_worldWaterLevel;  // Absolute Y-Koordinate der Wasserlinie im Level
 
 		void main() {
 			vec2 uv = openfl_TextureCoordv;
+			vec2 screenPixel = uv * u_resolution;
+
+			// Welt- oder Bildschirm-Koordinate des aktuellen Fragments ermitteln
+			vec2 pos = (u_useWorldCoords == 1 && u_camZoom > 0.0) ? (u_camScroll + (screenPixel / u_camZoom)) : screenPixel;
+
+			// -----------------------------------------------------------------
+			// FALL 1: Begrenzte Wasserfläche (Position & Größe definiert)
+			// -----------------------------------------------------------------
+			if (u_hasArea == 1) {
+				vec4 area = u_waterArea; // X, Y, Width, Height
+
+				// Pixel liegt außerhalb der definierten Wasserfläche -> normales Bild zeichnen
+				if (pos.x < area.x || pos.x > (area.x + area.z) || pos.y < area.y || pos.y > (area.y + area.w)) {
+					gl_FragColor = flixel_texture2D(bitmap, uv);
+					return;
+				}
+
+				// Abstand unterhalb der Wasseroberkante (area.y)
+				float distFromSurface = pos.y - area.y;
+
+				// Horizontale und vertikale Sinuswellenverzerrung in Weltpixeln
+				float waveX = sin(pos.y * (u_waveFrequency * 0.08) + u_time * u_waveSpeed) * (u_waveAmplitude * 25.0);
+				if (u_secondaryWave > 0.0) {
+					waveX += cos(pos.x * (u_waveFrequency * 0.05) - u_time * (u_waveSpeed * 1.3)) * (u_waveAmplitude * 25.0 * u_secondaryWave);
+				}
+				float waveY = cos(pos.x * (u_waveFrequency * 0.06) + u_time * (u_waveSpeed * 0.9)) * (u_waveAmplitude * 8.0);
+
+				// Gespiegelte Weltposition oberhalb der Wasserkante
+				vec2 reflPos = vec2(pos.x + waveX, area.y - distFromSurface + waveY);
+
+				// In Bildschirm-UVs umrechnen
+				vec2 reflScreenPixel = (u_useWorldCoords == 1 && u_camZoom > 0.0) ? ((reflPos - u_camScroll) * u_camZoom) : reflPos;
+				vec2 reflUV = clamp(reflScreenPixel / u_resolution, 0.0, 1.0);
+
+				vec4 reflColor = flixel_texture2D(bitmap, reflUV);
+				vec3 tinted = mix(reflColor.rgb, u_waterColor.rgb, u_waterColor.a);
+
+				// Tiefenausblendung nach unten
+				float normDist = distFromSurface / max(1.0, area.w);
+				float alphaFade = clamp(1.0 - (normDist * u_fadeDepth), u_minAlpha, 1.0);
+
+				// Subtiler Licht-Ripple
+				float ripple = (sin((pos.y * 0.15) + (u_time * u_waveSpeed * 1.5)) * 0.06) + 0.94;
+				float finalAlpha = reflColor.a * alphaFade * ripple;
+
+				// Schaum- / Glanzlinie an der Wasseroberfläche
+				float foamPx = max(1.5, u_foamThickness * 200.0);
+				if (distFromSurface < foamPx) {
+					float foamBlend = (1.0 - (distFromSurface / foamPx)) * u_foamColor.a;
+					tinted = mix(tinted, u_foamColor.rgb, foamBlend);
+				}
+
+				gl_FragColor = vec4(tinted * finalAlpha, finalAlpha);
+				return;
+			}
+
+			// -----------------------------------------------------------------
+			// FALL 2: Vollbild- / Achsenspiegelung
+			// -----------------------------------------------------------------
 
 			// Effektive Spiegelungsachse berechnen
 			float splitAxis = u_waterLevel;
@@ -49,15 +113,29 @@ class WaterReflectionShader extends FlxShader {
 
 			// Modus 2: Reine Wellenverzerrung (für Wasser-Texturen oder geflippte Sprites)
 			if (u_mode == 2) {
-				float wave = sin(uv.y * u_waveFrequency + u_time * u_waveSpeed) * u_waveAmplitude;
+				float waveX = sin(uv.y * u_waveFrequency + u_time * u_waveSpeed) * u_waveAmplitude;
 				if (u_secondaryWave > 0.0) {
-					wave += cos(uv.x * (u_waveFrequency * 0.7) - u_time * (u_waveSpeed * 1.3)) * (u_waveAmplitude * u_secondaryWave);
+					waveX += cos(uv.x * (u_waveFrequency * 0.7) - u_time * (u_waveSpeed * 1.3)) * (u_waveAmplitude * u_secondaryWave);
+				}
+				float waveY = cos(uv.x * (u_waveFrequency * 0.8) + u_time * (u_waveSpeed * 0.9)) * (u_waveAmplitude * 0.35);
+
+				vec2 sampleUV = vec2(uv.x + waveX, uv.y + waveY);
+
+				// Außerhalb der Textur transparent machen, damit Ränder von Sprites wellenförmig oszillieren
+				if (sampleUV.x < 0.0 || sampleUV.x > 1.0 || sampleUV.y < 0.0 || sampleUV.y > 1.0) {
+					gl_FragColor = vec4(0.0);
+					return;
 				}
 
-				vec2 sampleUV = clamp(vec2(uv.x + wave, uv.y), 0.0, 1.0);
 				vec4 texColor = flixel_texture2D(bitmap, sampleUV);
 				vec3 tinted = mix(texColor.rgb, u_waterColor.rgb, u_waterColor.a);
-				gl_FragColor = vec4(tinted * texColor.a, texColor.a);
+
+				// Sanfter Licht-Ripple und Tiefenfading
+				float ripple = (sin((uv.y * u_waveFrequency * 1.2) + (u_time * u_waveSpeed * 1.5)) * 0.15) + 0.85;
+				float depthFade = clamp(1.0 - (uv.y * u_fadeDepth * 0.5), u_minAlpha, 1.0);
+				float finalAlpha = texColor.a * depthFade * ripple;
+
+				gl_FragColor = vec4(tinted * finalAlpha, finalAlpha);
 				return;
 			}
 
@@ -150,6 +228,9 @@ class WaterReflectionShader extends FlxShader {
 		data.u_foamColor.value = [0.95, 0.98, 1.0, 0.75];
 		data.u_foamThickness.value = [0.006];
 
+		data.u_hasArea.value = [0];
+		data.u_waterArea.value = [0.0, 0.0, 0.0, 0.0];
+
 		data.u_resolution.value = [FlxG.width, FlxG.height];
 		data.u_camScroll.value = [0.0, 0.0];
 		data.u_camZoom.value = [1.0];
@@ -158,13 +239,52 @@ class WaterReflectionShader extends FlxShader {
 	}
 
 	/**
-	 * Aktualisiert den Zeit-Uniform für kontinuierliche Wellenbewegung.
+	 * Aktualisiert den Zeit-Uniform für kontinuierliche Wellenbewegung und synchronisiert die Kamera-Werte.
 	 *
 	 * @param elapsed Vergangene Frame-Zeit in Sekunden.
+	 * @param camera Optionale Kamera (Standard: `FlxG.camera`).
 	 */
-	public function update(elapsed:Float):Void {
+	public function update(elapsed:Float, ?camera:FlxCamera):Void {
 		totalTime += elapsed;
 		data.u_time.value = [totalTime];
+
+		var cam = (camera != null) ? camera : FlxG.camera;
+		if (cam != null) {
+			data.u_resolution.value = [cam.width, cam.height];
+			data.u_camScroll.value = [cam.scroll.x, cam.scroll.y];
+			data.u_camZoom.value = [cam.zoom];
+		}
+	}
+
+	/**
+	 * Definiert eine begrenzte Wasserfläche mit Position (X, Y) und Größe (Breite, Höhe).
+	 * Außerhalb dieses Rechtecks wird die Spielwelt normal gezeichnet, innerhalb spiegelt sich die Szene mit Wellen.
+	 *
+	 * @param x X-Koordinate der Wasserfläche (Standard: Weltkoordinaten).
+	 * @param y Y-Koordinate der Wasseroberkante.
+	 * @param width Breite der Wasserfläche in Pixeln.
+	 * @param height Tiefe / Höhe der Wasserfläche in Pixeln.
+	 * @param isWorldCoords true = Weltkoordinaten mit automatischem Kamera-Tracking, false = feste Bildschirmkoordinaten.
+	 * @param camera Optionale Kamera (Standard: `FlxG.camera`).
+	 */
+	public function setWaterArea(x:Float, y:Float, width:Float, height:Float, isWorldCoords:Bool = true, ?camera:FlxCamera):Void {
+		data.u_hasArea.value = [1];
+		data.u_useWorldCoords.value = [isWorldCoords ? 1 : 0];
+		data.u_waterArea.value = [x, y, width, height];
+
+		var cam = (camera != null) ? camera : FlxG.camera;
+		if (cam != null) {
+			data.u_resolution.value = [cam.width, cam.height];
+			data.u_camScroll.value = [cam.scroll.x, cam.scroll.y];
+			data.u_camZoom.value = [cam.zoom];
+		}
+	}
+
+	/**
+	 * Deaktiviert die Flächenbegrenzung und schaltet zurück in den Vollbild- / Achsenmodus.
+	 */
+	public function clearWaterArea():Void {
+		data.u_hasArea.value = [0];
 	}
 
 	/**
@@ -175,6 +295,7 @@ class WaterReflectionShader extends FlxShader {
 	public function setWaterLevel(level:Float):Void {
 		data.u_waterLevel.value = [level];
 		data.u_useWorldCoords.value = [0];
+		data.u_hasArea.value = [0];
 	}
 
 	/**

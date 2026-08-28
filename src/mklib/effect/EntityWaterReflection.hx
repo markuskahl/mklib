@@ -51,7 +51,7 @@ class EntityWaterReflection extends FlxSprite {
 
 		shaderInstance = new WaterReflectionShader();
 		shaderInstance.setMode(WaterReflectionMode.WAVE_DISTORTION_ONLY);
-		shaderInstance.setWaveParams(3.5, 25.0, 0.015, 0.4);
+		shaderInstance.setWaveParams(3.5, 20.0, 0.08, 0.5);
 		shaderInstance.setWaterColor(waterColor, 0.35);
 		this.shader = shaderInstance;
 
@@ -136,11 +136,36 @@ class EntityWaterReflection extends FlxSprite {
 	 *
 	 * @param speed Ausbreitungsgeschwindigkeit der Wellen.
 	 * @param frequency Frequenz / Dichte der Wellen.
-	 * @param amplitude Maximale Wellenauslenkung (Verzerrungsstärke).
+	 * @param amplitude Maximale Wellenauslenkung (Verzerrungsstärke, z. B. 0.08 für deutliche Wellen).
+	 * @param secondaryWave Überlagerungsfaktor für Kreuzwellen (Standard: 0.5).
 	 */
-	public function setWaveParams(speed:Float, frequency:Float, amplitude:Float):Void {
+	public function setWaveParams(speed:Float, frequency:Float, amplitude:Float, secondaryWave:Float = 0.5):Void {
 		if (shaderInstance != null) {
-			shaderInstance.setWaveParams(speed, frequency, amplitude);
+			shaderInstance.setWaveParams(speed, frequency, amplitude, secondaryWave);
+		}
+	}
+
+	/**
+	 * Konfiguriert die Wassertönung der Entity-Reflexion.
+	 *
+	 * @param color Farbe des Wassers.
+	 * @param tintIntensity Mischfaktor von 0.0 bis 1.0.
+	 */
+	public function setWaterColor(color:FlxColor, tintIntensity:Float = 0.35):Void {
+		if (shaderInstance != null) {
+			shaderInstance.setWaterColor(color, tintIntensity);
+		}
+	}
+
+	/**
+	 * Konfiguriert das Tiefenausblenden (Fade) der Entity-Reflexion.
+	 *
+	 * @param depthFactor Wie schnell die Reflexion nach unten hin transparenter wird.
+	 * @param minAlpha Minimale Resttransparenz.
+	 */
+	public function setFade(depthFactor:Float, minAlpha:Float = 0.15):Void {
+		if (shaderInstance != null) {
+			shaderInstance.setFade(depthFactor, minAlpha);
 		}
 	}
 

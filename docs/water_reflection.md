@@ -42,6 +42,11 @@ Das **Wasser-Reflexions- & Wellen-Shader-System** von `mklib` bietet hardwarebes
 Wendet den Wasser-Spiegelungseffekt auf die gesamte Kamera an – alle sichtbaren Tiles und Entities oberhalb der Wasserlinie werden automatisch gespiegelt:
 
 ```haxe
+### 1. Begrenzte Wasserfläche mit Position & Größe (Kamera-Filter)
+
+Definiert ein fixes Wasser-Rechteck in Weltkoordinaten. Außerhalb bleibt die Spielwelt völlig normal, innerhalb spiegelt sich alles oberhalb mit Wellen:
+
+```haxe
 package;
 
 import flixel.FlxG;
@@ -57,24 +62,22 @@ class PlayState extends State<Data.Data_Level> {
 
         waterShader = new WaterReflectionShader();
         
-        // Wasserlinie bei 70% der Bildschirmhöhe
-        waterShader.setWaterLevel(0.70);
+        // Wasserfläche an Weltposition X=0, Y=120 mit 320px Breite und 80px Höhe:
+        waterShader.setWaterArea(0, 120, 320, 80);
         
-        // Sanfte Wellen konfigurieren: speed=2.5, frequency=30.0, amplitude=0.01
-        waterShader.setWaveParams(2.5, 30.0, 0.01, 0.5);
-        
-        // Bläuliche Wassertönung mit Schaumkante
+        // Wellen, Tönung und Schaumkante konfigurieren:
+        waterShader.setWaveParams(2.8, 30.0, 0.012, 0.5);
         waterShader.setWaterColor(0x3366AA, 0.45);
-        waterShader.setFoam(0.006, 0xFFFFFF);
+        waterShader.setFoam(0.008, 0xFFFFFF);
 
-        // Als Kamerafilter aktivieren (FlxG.camera.filters ist standardmäßig null)
+        // Als Kamerafilter aktivieren:
         FlxG.camera.filters = [new ShaderFilter(waterShader)];
     }
 
     override public function update(elapsed:Float):Void {
         super.update(elapsed);
 
-        // Zeit für kontinuierliche Wellenbewegung hochzählen
+        // Zeit hochzählen und Kamera-Scroll automatisch synchronisieren:
         waterShader.update(elapsed);
     }
 }
@@ -82,9 +85,20 @@ class PlayState extends State<Data.Data_Level> {
 
 ---
 
-### 2. Platzierte Wasserfläche im Level (`WaterReflectionPlane`)
+### 2. Vollbild-Wasserspiegelung (Ab Wasserlinie)
 
-Ein eigenständiges Spielobjekt, das an festen Weltkoordinaten (z. B. einem See) liegt und automatisch mit der Kamera synchronisiert wird:
+Spiegelt den gesamten unteren Bildschirmbereich ab einer relativen Höhe:
+
+```haxe
+waterShader.setWaterLevel(0.70); // Wasserlinie bei 70% der Bildschirmhöhe
+FlxG.camera.filters = [new ShaderFilter(waterShader)];
+```
+
+---
+
+### 3. Platzierte Wasserfläche im Level (`WaterReflectionPlane`)
+
+Ein eigenständiges Spielobjekt, das an festen Weltkoordinaten (z. B. einem See) liegt:
 
 ```haxe
 import mklib.effect.WaterReflectionPlane;
@@ -98,7 +112,7 @@ add(water);
 
 ---
 
-### 3. Entity-Wasserreflexion (`EntityWaterReflection`)
+### 4. Entity-Wasserreflexion (`EntityWaterReflection`)
 
 Erzeugt eine dynamische Wasser-Reflexion für den Spieler (`Hero`) oder NPCs:
 
@@ -118,7 +132,7 @@ add(heroReflection);
 
 ---
 
-### 4. Horizontaler Spiegel-Modus (`HORIZONTAL_MIRROR`)
+### 5. Horizontaler Spiegel-Modus (`HORIZONTAL_MIRROR`)
 
 Für magische Spiegel, Raumportale oder seitliche Wasserwände:
 
@@ -137,12 +151,13 @@ FlxG.camera.filters = [new ShaderFilter(mirrorShader)];
 
 | Uniform / Eigenschaft | Methode | Typ / Bereich | Standard | Beschreibung |
 | :--- | :--- | :--- | :--- | :--- |
+| `u_waterArea` / `u_hasArea` | `setWaterArea(...)` | `vec4 (X, Y, W, H)` | `[0, 0, 0, 0]` | Definiert eine feste Bounding-Box für die Wasserfläche in Weltpixeln. |
 | `u_time` | `update(elapsed)` | `Float` | `0.0` | Fortlaufender Zeitzähler in Sekunden für die Wellenanimation. |
 | `u_mode` | `setMode(mode)` | `Int (0..2)` | `0` | Betriebsmodus: Vertikal (0), Horizontal (1) oder Verzerrung (2). |
 | `u_waterLevel` | `setWaterLevel(val)` | `Float (0.0..1.0)` | `0.65` | Normierte Position der Wasser- oder Spiegelachse im Viewport. |
 | `u_waveSpeed` | `setWaveParams(...)` | `Float` | `2.8` | Geschwindigkeit der Hauptwellenbewegung. |
 | `u_waveFrequency` | `setWaveParams(...)` | `Float` | `35.0` | Raumfrequenz (Dichte der Wellenkämme). |
-| `u_waveAmplitude` | `setWaveParams(...)` | `Float` | `0.008` | Maximale Verzerrungsstärke (Auslenkung der Pixel). |
+| `u_waveAmplitude` | `setWaveParams(...)` | `Float` | `0.012` | Maximale Verzerrungsstärke (Auslenkung der Pixel). |
 | `u_secondaryWave` | `setWaveParams(...)` | `Float` | `0.5` | Wichtung der überlagerten Kreuzwelle für natürlichere Bewegung. |
 | `u_waterColor` | `setWaterColor(...)` | `vec4 (RGBA)` | `[0.08, 0.35, 0.65, 0.4]` | RGB-Farbfilter und Mischfaktor der Wassertiefe. |
 | `u_fadeDepth` | `setFade(...)` | `Float` | `2.0` | Dämpfungsfaktor für das Ausblenden der Reflexion mit zunehmender Tiefe. |
