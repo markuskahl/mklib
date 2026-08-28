@@ -1,15 +1,129 @@
 /**
  * mklib Documentation Web Application
- * Single Page App Navigation, Search, Theme Switching & Interactive A* Simulator
+ * Single Page App Navigation, Search, Multilingual (DE/EN), Theme Switching & Interactive A* Simulator
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initLanguage();
   initNavigation();
   initTheme();
   initSearch();
   initCodeCopy();
   initAStarSimulator();
 });
+
+/* ==========================================================================
+   Language Switching (i18n: DE / EN)
+   ========================================================================== */
+let currentLang = 'de';
+
+const i18nStrings = {
+  de: {
+    title: 'mklib — Vollständige Dokumentation & API-Referenz',
+    searchPlaceholder: 'Klasse, Methode oder Feld suchen...',
+    themeToggle: 'Thema wechseln',
+    mobileMenu: 'Menü öffnen',
+    copied: 'Kopiert!',
+    copy: 'Kopieren',
+    navIntro: 'Einführung',
+    navModules: 'Kern-Module & Klassen',
+    navOverview: 'Übersicht & API-Matrix',
+    navGettingStarted: 'Schnellstart',
+    navState: 'State Management',
+    navLayers: 'Layer System',
+    navEntities: 'Entities & Sprites',
+    navAnimation: 'Animationen & Makros',
+    navPhysics: 'Physik & Sensoren',
+    navPathfinding: 'Pathfinding & A*',
+    navLighting: 'GPU Lighting System',
+    navEffects: 'Wasser & Wellen-Shader',
+    navToolsMath: 'Tools & Mathematik',
+    goalChar: 'Z'
+  },
+  en: {
+    title: 'mklib — Complete Documentation & API Reference',
+    searchPlaceholder: 'Search class, method, or field...',
+    themeToggle: 'Toggle theme',
+    mobileMenu: 'Open menu',
+    copied: 'Copied!',
+    copy: 'Copy',
+    navIntro: 'Introduction',
+    navModules: 'Core Modules & Classes',
+    navOverview: 'Overview & API Matrix',
+    navGettingStarted: 'Quick Start',
+    navState: 'State Management',
+    navLayers: 'Layer System',
+    navEntities: 'Entities & Sprites',
+    navAnimation: 'Animations & Macros',
+    navPhysics: 'Physics & Sensors',
+    navPathfinding: 'Pathfinding & A*',
+    navLighting: 'GPU Lighting System',
+    navEffects: 'Water & Wave Shaders',
+    navToolsMath: 'Tools & Mathematics',
+    goalChar: 'G'
+  }
+};
+
+function initLanguage() {
+  const savedLang = localStorage.getItem('mklib-lang') || 'de';
+  setLanguage(savedLang);
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const lang = btn.getAttribute('data-lang');
+      if (lang) {
+        setLanguage(lang);
+      }
+    });
+  });
+}
+
+function setLanguage(lang) {
+  currentLang = lang === 'en' ? 'en' : 'de';
+  document.documentElement.setAttribute('lang', currentLang);
+  localStorage.setItem('mklib-lang', currentLang);
+
+  // Update button active state
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    if (btn.getAttribute('data-lang') === currentLang) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  const t = i18nStrings[currentLang];
+  document.title = t.title;
+
+  const searchInput = document.getElementById('docs-search');
+  if (searchInput) {
+    searchInput.placeholder = t.searchPlaceholder;
+  }
+
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle) {
+    themeToggle.title = t.themeToggle;
+  }
+
+  const mobileBtn = document.querySelector('.mobile-menu-btn');
+  if (mobileBtn) {
+    mobileBtn.setAttribute('aria-label', t.mobileMenu);
+  }
+
+  // Update data-de / data-en elements
+  document.querySelectorAll('[data-de][data-en]').forEach(el => {
+    const txt = el.getAttribute(`data-${currentLang}`);
+    if (txt) {
+      if (el.tagName === 'INPUT') el.placeholder = txt;
+      else el.textContent = txt;
+    }
+  });
+
+  // Re-render A* simulator if initialized
+  if (window.renderAStarSimulator) {
+    window.renderAStarSimulator();
+  }
+}
 
 /* ==========================================================================
    Navigation & Section Switching
@@ -50,36 +164,40 @@ function initNavigation() {
     });
 
     // Close mobile menu if open
-    if (sidebar) sidebar.classList.remove('open');
+    if (sidebar && sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Handle URL hash changes
-  window.addEventListener('hashchange', () => {
-    showSection(window.location.hash);
-  });
-
-  // Handle link clicks
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
-      const targetId = anchor.getAttribute('href');
-      if (targetId && targetId !== '#') {
+  // Intercept nav clicks
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (link) {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
         e.preventDefault();
-        window.location.hash = targetId;
-        showSection(targetId);
+        history.pushState(null, '', href);
+        showSection(href);
       }
-    });
+    }
   });
 
-  // Mobile menu button
+  // Mobile menu toggle
   if (mobileBtn && sidebar) {
     mobileBtn.addEventListener('click', () => {
       sidebar.classList.toggle('open');
     });
   }
 
-  // Initial load
-  showSection(window.location.hash || 'overview');
+  // Handle back/forward navigation
+  window.addEventListener('popstate', () => {
+    showSection(window.location.hash);
+  });
+
+  // Load initial section from hash or default to overview
+  showSection(window.location.hash);
 }
 
 /* ==========================================================================
@@ -87,61 +205,65 @@ function initNavigation() {
    ========================================================================== */
 function initTheme() {
   const themeToggle = document.getElementById('theme-toggle');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const savedTheme = localStorage.getItem('mklib-theme') || (prefersDark ? 'dark' : 'dark');
+  const savedTheme = localStorage.getItem('mklib-theme') || 'dark';
 
   document.documentElement.setAttribute('data-theme', savedTheme);
   updateThemeIcon(savedTheme);
 
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('mklib-theme', next);
-      updateThemeIcon(next);
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('mklib-theme', newTheme);
+      updateThemeIcon(newTheme);
     });
   }
+}
 
-  function updateThemeIcon(theme) {
-    if (!themeToggle) return;
-    themeToggle.innerHTML = theme === 'light' ? '🌙' : '☀️';
-    themeToggle.setAttribute('title', theme === 'light' ? 'Dunkles Thema aktivieren' : 'Helles Thema aktivieren');
-  }
+function updateThemeIcon(theme) {
+  const themeToggle = document.getElementById('theme-toggle');
+  if (!themeToggle) return;
+  themeToggle.innerHTML = theme === 'dark'
+    ? '<span style="font-size: 1.1rem;">☀️</span>'
+    : '<span style="font-size: 1.1rem;">🌙</span>';
 }
 
 /* ==========================================================================
    Code Copy Button
    ========================================================================== */
 function initCodeCopy() {
-  document.querySelectorAll('.code-box').forEach(box => {
-    const copyBtn = box.querySelector('.copy-btn');
-    const codeElem = box.querySelector('pre code') || box.querySelector('pre');
+  document.querySelectorAll('pre code').forEach((codeBlock) => {
+    const pre = codeBlock.parentElement;
+    if (!pre || pre.querySelector('.copy-btn')) return;
 
-    if (copyBtn && codeElem) {
-      copyBtn.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(codeElem.innerText);
-          const originalText = copyBtn.innerHTML;
-          copyBtn.innerHTML = '✓ Kopiert!';
-          copyBtn.style.borderColor = 'var(--accent-emerald)';
-          copyBtn.style.color = 'var(--accent-emerald)';
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'copy-btn';
+    copyBtn.textContent = i18nStrings[currentLang]?.copy || 'Kopieren';
+    copyBtn.title = 'In die Zwischenablage kopieren';
 
-          setTimeout(() => {
-            copyBtn.innerHTML = originalText;
-            copyBtn.style.borderColor = '';
-            copyBtn.style.color = '';
-          }, 2000);
-        } catch (err) {
-          console.error('Failed to copy code: ', err);
-        }
-      });
-    }
+    copyBtn.addEventListener('click', async () => {
+      const code = codeBlock.innerText;
+      try {
+        await navigator.clipboard.writeText(code);
+        copyBtn.textContent = i18nStrings[currentLang]?.copied || 'Kopiert!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = i18nStrings[currentLang]?.copy || 'Kopieren';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+      }
+    });
+
+    pre.style.position = 'relative';
+    pre.appendChild(copyBtn);
   });
 }
 
 /* ==========================================================================
-   Quick Search Filter & Deep Search
+   Search Functionality
    ========================================================================== */
 function initSearch() {
   const searchInput = document.getElementById('docs-search');
@@ -261,11 +383,12 @@ function initAStarSimulator() {
     });
   }
 
-  // Canvas Mouse Interactions
   function getCellCoords(e) {
     const rect = canvas.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left) / cellSize);
-    const y = Math.floor((e.clientY - rect.top) / cellSize);
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = Math.floor((e.clientX - rect.left) * scaleX / cellSize);
+    const y = Math.floor((e.clientY - rect.top) * scaleY / cellSize);
     return {
       x: Math.max(0, Math.min(cols - 1, x)),
       y: Math.max(0, Math.min(rows - 1, y))
@@ -274,19 +397,41 @@ function initAStarSimulator() {
 
   canvas.addEventListener('mousedown', (e) => {
     isDragging = true;
-    const { x, y } = getCellCoords(e);
+    const cell = getCellCoords(e);
 
-    if (x === start.x && y === start.y) {
+    if (cell.x >= start.x && cell.x < start.x + agentSpan && cell.y >= start.y && cell.y < start.y + agentSpan) {
       dragMode = 'start';
-    } else if (x === goal.x && y === goal.y) {
+    } else if (cell.x >= goal.x && cell.x < goal.x + agentSpan && cell.y >= goal.y && cell.y < goal.y + agentSpan) {
       dragMode = 'goal';
     } else {
-      dragMode = grid[y][x] === 1 ? 'erase' : 'draw';
-      grid[y][x] = dragMode === 'draw' ? 1 : 0;
+      dragMode = grid[cell.y][cell.x] === 1 ? 'erase' : 'draw';
+      grid[cell.y][cell.x] = dragMode === 'draw' ? 1 : 0;
+      computePath();
+      render();
     }
+  });
 
-    computePath();
-    render();
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const cell = getCellCoords(e);
+
+    if (dragMode === 'start') {
+      if (cell.x + agentSpan <= cols && cell.y + agentSpan <= rows) {
+        start = { x: cell.x, y: cell.y };
+        computePath();
+        render();
+      }
+    } else if (dragMode === 'goal') {
+      if (cell.x + agentSpan <= cols && cell.y + agentSpan <= rows) {
+        goal = { x: cell.x, y: cell.y };
+        computePath();
+        render();
+      }
+    } else if (dragMode === 'draw' || dragMode === 'erase') {
+      grid[cell.y][cell.x] = dragMode === 'draw' ? 1 : 0;
+      computePath();
+      render();
+    }
   });
 
   window.addEventListener('mouseup', () => {
@@ -294,44 +439,24 @@ function initAStarSimulator() {
     dragMode = null;
   });
 
-  canvas.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    const { x, y } = getCellCoords(e);
-
-    if (dragMode === 'start') {
-      if (grid[y][x] !== 1 && !(x === goal.x && y === goal.y)) {
-        start = { x, y };
-      }
-    } else if (dragMode === 'goal') {
-      if (grid[y][x] !== 1 && !(x === start.x && y === start.y)) {
-        goal = { x, y };
-      }
-    } else if (dragMode === 'draw') {
-      if (!(x === start.x && y === start.y) && !(x === goal.x && y === goal.y)) {
-        grid[y][x] = 1;
-      }
-    } else if (dragMode === 'erase') {
-      grid[y][x] = 0;
-    }
-
-    computePath();
-    render();
-  });
-
   function generateRandomMaze() {
     grid = Array.from({ length: rows }, () => Array(cols).fill(0));
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         if (Math.random() < 0.28) {
-          if (!(c === start.x && r === start.y) && !(c === goal.x && r === goal.y)) {
-            grid[r][c] = 1;
-          }
+          grid[r][c] = 1;
         }
+      }
+    }
+    // Clear start and goal areas
+    for (let dy = 0; dy < 3; dy++) {
+      for (let dx = 0; dx < 3; dx++) {
+        if (start.y + dy < rows && start.x + dx < cols) grid[start.y + dy][start.x + dx] = 0;
+        if (goal.y + dy < rows && goal.x + dx < cols) grid[goal.y + dy][goal.x + dx] = 0;
       }
     }
   }
 
-  // A* Pathfinding Logic matching mklib.path.AStar
   function computePath() {
     path = [];
     const SQRT2 = 1.41421356237;
@@ -380,12 +505,22 @@ function initAStarSimulator() {
     startNode.f = startNode.h;
     openList.push(startNode);
 
-    const dxList = allowDiagonal ? [0, 1, 0, -1, 1, 1, -1, -1] : [0, 1, 0, -1];
-    const dyList = allowDiagonal ? [-1, 0, 1, 0, -1, 1, 1, -1] : [-1, 0, 1, 0];
-    const costList = allowDiagonal ? [1, 1, 1, 1, SQRT2, SQRT2, SQRT2, SQRT2] : [1, 1, 1, 1];
+    const neighbors4 = [
+      { dx: 0, dy: -1, cost: 1.0 },
+      { dx: 0, dy: 1, cost: 1.0 },
+      { dx: -1, dy: 0, cost: 1.0 },
+      { dx: 1, dy: 0, cost: 1.0 }
+    ];
+
+    const neighborsDiag = [
+      { dx: -1, dy: -1, cost: SQRT2 },
+      { dx: 1, dy: -1, cost: SQRT2 },
+      { dx: -1, dy: 1, cost: SQRT2 },
+      { dx: 1, dy: 1, cost: SQRT2 }
+    ];
 
     while (openList.length > 0) {
-      // Find lowest F score
+      // Find node with lowest f
       let lowestIdx = 0;
       for (let i = 1; i < openList.length; i++) {
         if (openList[i].f < openList[lowestIdx].f) {
@@ -404,29 +539,31 @@ function initAStarSimulator() {
           path.unshift({ x: curr.x, y: curr.y });
           curr = curr.parent;
         }
-        return;
+        break;
       }
 
-      for (let i = 0; i < dxList.length; i++) {
-        const nx = current.x + dxList[i];
-        const ny = current.y + dyList[i];
-        const nKey = `${nx},${ny}`;
+      const neighbors = allowDiagonal ? [...neighbors4, ...neighborsDiag] : neighbors4;
+
+      for (const n of neighbors) {
+        const nx = current.x + n.dx;
+        const ny = current.y + n.dy;
 
         if (!isAreaWalkable(nx, ny, agentSpan)) continue;
-        if (closedSet.has(nKey)) continue;
 
-        // Prevent corner cutting in diagonal mode
-        if (allowDiagonal && i >= 4) {
-          if (!isAreaWalkable(current.x + dxList[i], current.y, agentSpan) ||
-              !isAreaWalkable(current.x, current.y + dyList[i], agentSpan)) {
+        // Diagonal corner-cutting check
+        if (n.dx !== 0 && n.dy !== 0) {
+          if (!isAreaWalkable(current.x + n.dx, current.y, agentSpan) || !isAreaWalkable(current.x, current.y + n.dy, agentSpan)) {
             continue;
           }
         }
 
-        const tentativeG = current.g + costList[i];
+        const neighborKey = `${nx},${ny}`;
+        if (closedSet.has(neighborKey)) continue;
+
+        const tentativeG = current.g + n.cost;
         const neighbor = getNode(nx, ny);
 
-        const inOpen = openList.includes(neighbor);
+        let inOpen = openList.includes(neighbor);
         if (!inOpen || tentativeG < neighbor.g) {
           neighbor.parent = current;
           neighbor.g = tentativeG;
@@ -441,7 +578,6 @@ function initAStarSimulator() {
     }
   }
 
-  // Render Grid, Walls, Path & Endpoints
   function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -520,8 +656,13 @@ function initAStarSimulator() {
     ctx.roundRect(gx + 2, gy + 2, gDim - 4, gDim - 4, 6);
     ctx.fill();
     ctx.fillStyle = '#ffffff';
-    ctx.fillText('Z', gx + gDim / 2, gy + gDim / 2);
+    const goalLetter = i18nStrings[currentLang]?.goalChar || 'Z';
+    ctx.fillText(goalLetter, gx + gDim / 2, gy + gDim / 2);
   }
+
+  window.renderAStarSimulator = () => {
+    render();
+  };
 
   // Initial calculation
   computePath();
