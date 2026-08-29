@@ -149,8 +149,7 @@ class Fire extends EntitySprite {
 
 ### 3. Manuelles Laden / Wechseln auf Entities
 
-
-`initAnimation(?animKey:String)` kann jederzeit manuell aufgerufen werden:
+`initAnimation(?animKey:String)` delegiert intern direkt an den `AnimationManager`:
 
 ```haxe
 // Manuelles Laden / Wechseln der Animationen:
@@ -160,9 +159,43 @@ myEntity.initAnimation("Fire");
 myEntity.animation.play("burn");
 ```
 
-### 3. Direkter Zugriff auf die Rohdaten (`AnimationRegistry.db`)
+---
 
-Für eigene Flixel-Sprites oder benutzerdefinierte Logik kann direkt auf die vorkompilierte Map zugegriffen werden:
+## 🛠️ Der `AnimationManager` (`mklib.animation.AnimationManager`)
+
+Der `AnimationManager` kapselt das Laden der Grafik, die Registrierung aller Animationsclips und das Starten der Standardanimation an einer zentralen Stelle für beliebige `FlxSprite`-Instanzen:
+
+### Methoden
+
+| Methode | Signatur | Rückgabewert | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `apply` | `(sprite:FlxSprite, animKey:String, forceGraphic:Bool = false)` | `Bool` | Sucht `animKey` in `AnimationRegistry.db`, lädt die Grafik und registriert alle Clips auf `sprite`. |
+| `applyData` | `(sprite:FlxSprite, data:SpriteSheetData, forceGraphic:Bool = false)` | `Bool` | Wendet ein `SpriteSheetData`-Objekt direkt auf `sprite` an. |
+| `get` | `(animKey:String)` | `Null<SpriteSheetData>` | Liefert den Datensatz aus `AnimationRegistry.db` oder `null`. |
+| `exists` | `(animKey:String)` | `Bool` | Prüft, ob ein Eintrag für `animKey` in `AnimationRegistry.db` vorliegt. |
+
+### Verwendung mit beliebigen `FlxSprite`s
+
+```haxe
+import mklib.animation.AnimationManager;
+import flixel.FlxSprite;
+
+// 1. Direkt über statische Methode:
+var customSprite = new FlxSprite(100, 100);
+AnimationManager.apply(customSprite, "Hero");
+
+// 2. Als Static Extension:
+using mklib.animation.AnimationManager;
+
+var coin = new FlxSprite(50, 50);
+coin.apply("Coin");
+```
+
+---
+
+## 📊 Direkter Zugriff auf die Rohdaten (`AnimationRegistry.db`)
+
+Für benutzerdefinierte Berechnungen kann direkt auf die vorkompilierte Map zugegriffen werden:
 
 ```haxe
 import AnimationRegistry;
@@ -174,4 +207,5 @@ if (fireData != null) {
     trace("Standard-Clip: " + fireData.defaultAnimation); // "burn"
 }
 ```
+
 

@@ -51,6 +51,7 @@ The complete interactive documentation, including a live A* pathfinding simulato
 | `mklib.animation` | `FrameConfig` | `width`, `height`, `spacing`, `margin` |  |
 | `mklib.animation` | `AnimationClip` | `name`, `fps`, `loop`, `flipX`, `flipY`, `frames` |  |
 | `mklib.animation` | `SpriteSheetData` | `imagePath`, `config`, `animations`, `defaultAnimation` |  |
+| `mklib.animation` | `AnimationManager` |  | `apply`, `applyData`, `get`, `exists` |
 | `mklib.macro` | `AnimationBuilder` |  | `buildDatabase` |
 | `mklib.physic` | `Listener` |  | `addCollisionBeginListener`, `addCollisionEndListener`, `addCollisionOngoingListener`, `addSensorBeginListener`, `addSensorEndListener`, `addSensorOngoingListener`, `addSensorBeginListenerANY`, `addSensorEndListenerANY`, `addSensorOngoingListenerANY` |
 | `mklib.tools` | `Tags` |  | `get`, `exist` |

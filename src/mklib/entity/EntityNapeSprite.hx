@@ -5,10 +5,8 @@ import mklib.tools.Tags;
 import mklib.state.State;
 import flixel.FlxG;
 import flixel.addons.nape.FlxNapeSprite;
-import mklib.animation.AnimationTypes.SpriteSheetData;
-import mklib.animation.AnimationTypes.AnimationClip;
+import mklib.animation.AnimationManager;
 import mklib.save.SaveManager;
-import AnimationRegistry;
 
 /**
  * Erweiterte Entity-Klasse mit integriertem Nape-Physikkörper (`FlxNapeSprite`).
@@ -251,25 +249,8 @@ class EntityNapeSprite extends FlxNapeSprite {
 		if (animKey == null) {
 			animKey = getField("Animations");
 		}
-		if (animKey == null) {
-			return;
-		}
-
-		if (AnimationRegistry.db != null && AnimationRegistry.db.exists(animKey)) {
-			var spritesheetData:SpriteSheetData = AnimationRegistry.db.get(animKey);
-			if (spritesheetData != null) {
-				if (graphic == null && spritesheetData.imagePath != null && spritesheetData.config != null) {
-					loadGraphic(spritesheetData.imagePath, true, spritesheetData.config.width, spritesheetData.config.height);
-				}
-				if (spritesheetData.animations != null) {
-					for (sprite in spritesheetData.animations) {
-						animation.add(sprite.name, sprite.frames, sprite.fps, sprite.loop, sprite.flipX, sprite.flipY);
-					}
-				}
-				if (spritesheetData.defaultAnimation != null) {
-					animation.play(spritesheetData.defaultAnimation);
-				}
-			}
+		if (animKey != null) {
+			AnimationManager.apply(this, animKey);
 		}
 	}
 

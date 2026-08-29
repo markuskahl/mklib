@@ -33,7 +33,8 @@
    - Entity IID destruction tracking & `ISaveable` interface
    - Global key-value state & XOR/Base64 obfuscation
 
-6. [**Animation System & Macros (`AnimationBuilder` & `AnimationTypes`)**](animation.md)
+6. [**Animation System & Macros (`AnimationManager`, `AnimationBuilder` & `AnimationTypes`)**](animation.md)
+   - Central spritesheet and animation loader (`AnimationManager.apply`)
    - Build-time compile-safe animation generation (`AnimationBuilder.buildDatabase`)
    - JSON animation configuration & spritesheets
    - `AnimationClip`, `FrameConfig`, and `SpriteSheetData` types
