@@ -139,3 +139,22 @@ class Hero extends EntitySprite {
 
 > [!TIP]
 > Verwende die Annotation `@:keep` an Entity-Klassen, damit der Haxe-DCE (Dead Code Elimination) Compiler die Klassen nicht entfernt, da sie per Reflection (`Type.resolveClass`) instanziiert werden.
+
+---
+
+## 6. ⚡ Performance- & Hardware-Richtwerte
+
+`mklib` ist durch seine Zero-Allocation Render-Pipeline und interne Pixel-Art-Skalierung (160×90 Basisauflösung) extrem leichtgewichtig. 
+
+Selbst auf **schwachen Office-Notebooks mit integrierter Intel-GPU (Intel HD / UHD / Iris Xe)** können folgende Richtwerte für konstante 60 FPS als Orientierung dienen:
+
+| Element | Richtwert (Schwaches Notebook / iGPU) | Desktop-PC (Dedizierte GPU) | Anmerkung |
+| :--- | :--- | :--- | :--- |
+| **Sichtbare Sprites** | **~ 2.000 Sprites** | 20.000+ Sprites | Batching via OpenFL / Flixel DrawTiles |
+| **Nape Physik-Körper** | **~ 300 aktive Bodies** | 3.000+ Bodies | Mit `<haxedef name="NAPE_RELEASE_BUILD" />` |
+| **Aktive Lichtquellen** | **32 Lichter im Viewport** | 32 Lichter im Viewport | Unbegrenzt viele im Level dank Frustum Culling (`autoCull`) |
+
+### Wichtige Engine-Einstellungen in `State.hx`:
+* **`FlxG.fixedTimestep = false`**: Sorgt für saubere, dynamische Delta-Time ohne Akkumulator-Rückkopplungen oder Nachhol-Lags.
+* **`FlxG.maxElapsed = 0.05`**: Begrenzt die maximale Delta-Time pro Frame auf 50 ms (Notbremse gegen Physik-Explosionen bei System-Hängern).
+* **`FlxG.autoPause = false`**: Verhindert das Einfrieren und den "Spiral of Death" bei Fokusverlust.

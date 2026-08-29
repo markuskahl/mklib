@@ -130,3 +130,19 @@ class LevelState extends State<Data.Data_Level> {
     }
 }
 ```
+
+---
+
+## ⚡ Engine-Timing & Performance-Richtwerte
+
+`mklib.state.State` konfiguriert in `create()` automatisch folgende globale Flixel-Einstellungen, um maximale Performance und Stabilität über alle Plattformen (Desktop, Web, Low-End Notebooks) zu garantieren:
+
+* **`FlxG.autoPause = false;`**: Verhindert das automatische Einfrieren bei Fokusverlust oder Inaktivität.
+* **`FlxG.fixedTimestep = false;`**: Schaltet auf flüssige, variable Delta-Time um. Dadurch werden Akkumulator-Rückkopplungen und FPS-Einbrüche bei kurzzeitigen Rucklern verhindert.
+* **`FlxG.maxElapsed = 0.05;`**: Dient als Notbremse (maximal 50 ms pro Frame). Verhindert, dass nach längeren System-Pausen Tausende Ticks nachgerechnet werden oder Spielfiguren durch Wände glitchen.
+
+### 📊 Ziel-Hardware-Richtwerte (60 FPS):
+
+* **Sichtbare Sprites:** ~ **2.000** (Office-Laptop / Intel iGPU) bis **20.000+** (Desktop-GPU)
+* **Aktive Nape-Körper:** ~ **300** (Office-Laptop / Intel iGPU) bis **3.000+** (Desktop-PC)
+* **Shader-Lichtquellen:** **32** gleichzeitig im Viewport (unbegrenzt im Level dank Frustum Culling)

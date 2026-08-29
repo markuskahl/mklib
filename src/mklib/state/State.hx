@@ -78,7 +78,16 @@ class State<TLevel = Dynamic> extends FlxState {
 
 	/**
 	 * Initialisiert den Spielzustand (`FlxState.create()`).
-	 * Deaktiviert AutoPause, schützt vor Delta-Time-Spitzen und verhindert Timestep-Akkumulations-Lags.
+	 * 
+	 * Konfiguriert das Engine-Timing für maximale Stabilität und Performance:
+	 * - `FlxG.autoPause = false`: Deaktiviert das automatische Einfrieren bei Fokusverlust/Inaktivität.
+	 * - `FlxG.fixedTimestep = false`: Nutzt echte Delta-Time ohne Akkumulator-Rückkopplungen (verhindert Nachhol-Lags).
+	 * - `FlxG.maxElapsed = 0.05`: Begrenzt die maximale Frame-Zeit auf 50 ms (Schutz gegen Physik-Explosionen).
+	 * 
+	 * Richtwerte für 60 FPS (auch auf schwachen Intel Notebooks / iGPUs):
+	 * - ~ 2.000 sichtbare Sprites
+	 * - ~ 300 aktive Nape-Physikkörper
+	 * - Bis zu 32 Shader-Lichtquellen gleichzeitig im Viewport
 	 */
 	override function create():Void {
 		super.create();

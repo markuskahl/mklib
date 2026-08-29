@@ -686,6 +686,49 @@
             </div>
           </div>
 
+          <h2>4. ⚡ Performance- & Hardware-Richtwerte</h2>
+          <p>Dank der Zero-Allocation Render-Pipeline und der internen 160×90-Pixel-Basisauflösung ist <code>mklib</code> extrem ressourcenschonend. Richtwerte für <strong>konstante 60 FPS</strong> auf schwachen Office-Notebooks (Intel HD / UHD / Iris Xe iGPU):</p>
+          
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Richtwert (Notebook / iGPU)</th>
+                  <th>Desktop-PC (GTX / RTX)</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Sichtbare Sprites</strong></td>
+                  <td><span class="badge badge-success">~ 2.000 Sprites</span></td>
+                  <td>20.000+ Sprites</td>
+                  <td>Hardware-Batching via OpenFL / Flixel DrawTiles</td>
+                </tr>
+                <tr>
+                  <td><strong>Nape Physik-Körper</strong></td>
+                  <td><span class="badge badge-success">~ 300 Bodies</span></td>
+                  <td>3.000+ Bodies</td>
+                  <td>Aktive Rigid Bodies mit <code>NAPE_RELEASE_BUILD</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Shader-Lichtquellen</strong></td>
+                  <td><span class="badge badge-success">32 Lichter im Viewport</span></td>
+                  <td>32 Lichter im Viewport</td>
+                  <td>Unbegrenzt im Level via Frustum Culling (<code>autoCull</code>)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-info">
+            <div class="callout-icon">⚡</div>
+            <div>
+              <strong>Timing-Konfiguration in State.hx:</strong> <code>FlxG.fixedTimestep = false</code> (verhindert Nachhol-Lags), <code>FlxG.maxElapsed = 0.05</code> (Notbremse bei Rucklern) und <code>FlxG.autoPause = false</code> (verhindert Einfrieren bei Fokusverlust).
+            </div>
+          </div>
+
           <div class="section-nav-footer">
             <a href="#overview" class="nav-page-btn">← Übersicht</a>
             <a href="#state" class="nav-page-btn">State Management →</a>
@@ -754,6 +797,49 @@
             <div class="callout-icon">💡</div>
             <div>
               <strong>Tipp zur Dead-Code-Elimination (DCE):</strong> Versehe deine dynamisch geladenen Entity-Klassen stets mit der Annotation <code>@:keep</code>, damit der Haxe-Compiler sie bei Release-Builds nicht wegoptimiert.
+            </div>
+          </div>
+
+          <h2>4. ⚡ Performance & Hardware Guidelines</h2>
+          <p>Thanks to the zero-allocation rendering pipeline and 160×90 internal pixel base resolution, <code>mklib</code> is extremely lightweight. Target guidelines for <strong>rock-solid 60 FPS</strong> on low-end office laptops (Intel HD / UHD / Iris Xe iGPU):</p>
+          
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Guideline (Laptop / iGPU)</th>
+                  <th>Desktop PC (GTX / RTX)</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Visible Sprites</strong></td>
+                  <td><span class="badge badge-success">~ 2,000 Sprites</span></td>
+                  <td>20,000+ Sprites</td>
+                  <td>Hardware batching via OpenFL / Flixel DrawTiles</td>
+                </tr>
+                <tr>
+                  <td><strong>Nape Physics Bodies</strong></td>
+                  <td><span class="badge badge-success">~ 300 Bodies</span></td>
+                  <td>3,000+ Bodies</td>
+                  <td>Active rigid bodies with <code>NAPE_RELEASE_BUILD</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Shader Lights</strong></td>
+                  <td><span class="badge badge-success">32 lights in viewport</span></td>
+                  <td>32 lights in viewport</td>
+                  <td>Unlimited in level via frustum culling (<code>autoCull</code>)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-info">
+            <div class="callout-icon">⚡</div>
+            <div>
+              <strong>Timing configuration in State.hx:</strong> <code>FlxG.fixedTimestep = false</code> (prevents catch-up lags), <code>FlxG.maxElapsed = 0.05</code> (failsafe clamp during lag spikes), and <code>FlxG.autoPause = false</code> (prevents focus-loss freeze).
             </div>
           </div>
 

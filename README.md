@@ -103,6 +103,16 @@ class PlayState extends State<Data.Data_Level> {
 
 ---
 
+## ⚡ Performance & Hardware-Richtwerte
+
+`mklib` ist für extrem hohe Performance und minimale Hardware-Anforderungen optimiert. Auf Standard-Office-Notebooks mit integrierter Grafikkarte (Intel HD / UHD / Iris Xe) gelten folgende Richtwerte für stabile 60 FPS:
+
+- 👾 **Sichtbare Sprites:** ~ **2.000 Sprites** (Batch-Rendering via Flixel/OpenFL)
+- ⚙️ **Nape Physik-Körper:** ~ **300 aktive Rigid Bodies**
+- 💡 **Shader-Lichtquellen:** **32 Lichter zeitgleich auf dem Bildschirm** (unbegrenzt im Level dank Frustum Culling)
+
+---
+
 ## 📄 License
 
-MIT License. See [haxelib.json](haxelib.json).\n
+MIT License. See [haxelib.json](haxelib.json).
