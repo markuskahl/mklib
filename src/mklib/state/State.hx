@@ -17,6 +17,7 @@ import mklib.save.SaveManager;
  * - Die Konvertierung von LDtk-Tags (Enum "Tags") in Nape-`CbType`-Objekte.
  * - Das automatische, saubere Aufräumen von Nape-Space, CbTypes und LDtk-Referenzen beim State-Wechsel.
  * - Die optionale automatische Persistenz von Level-Zuständen und Spielzeit via `SaveManager`.
+ * - Die Konfiguration von AutoPause, maxElapsed-Deckelung und flüssigem Timestep.
  *
  * @param TLevel Der Typ des LDtk-Levels (z. B. `Data.Data_Level`).
  */
@@ -77,9 +78,22 @@ class State<TLevel = Dynamic> extends FlxState {
 
 	/**
 	 * Initialisiert den Spielzustand (`FlxState.create()`).
+	 * Deaktiviert AutoPause, schützt vor Delta-Time-Spitzen und verhindert Timestep-Akkumulations-Lags.
 	 */
 	override function create():Void {
 		super.create();
+
+		// Verhindert automatisches Einfrieren/Pausemenü bei Fokusverlust und Inaktivität
+		FlxG.autoPause = false;
+
+		// Deaktiviert den starren Timestep-Akkumulator.
+		// Verhindert, dass Flixel bei FPS-Schwankungen oder nach Ruhezustand mehrere Update-Zyklen
+		// pro Frame nachholt (beseitigt die Feedback-Schleife/Verlangsamung komplett).
+		FlxG.fixedTimestep = false;
+
+		// Begrenzt die maximale Delta-Time pro Frame auf 50ms gegen Verzögerungs-Spitzen
+		FlxG.maxElapsed = 0.05;
+
 		if (autoPersistLevel) {
 			SaveManager.restoreLevel(this);
 		}

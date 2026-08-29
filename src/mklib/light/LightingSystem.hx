@@ -96,6 +96,19 @@ class LightingSystem extends FlxSprite {
 	private var _paramsBuffer:Array<Float> = [];
 	private var _spotBuffer:Array<Float> = [];
 
+	private var _ambientBuffer:Array<Float> = [0.0, 0.0, 0.0, 0.0];
+	private var _resolutionBuffer:Array<Float> = [0.0, 0.0];
+	private var _camScrollBuffer:Array<Float> = [0.0, 0.0];
+	private var _camZoomBuffer:Array<Float> = [1.0];
+	private var _lightCountBuffer:Array<Int> = [0];
+
+	private var _shadowsEnabledBuffer:Array<Int> = [0];
+	private var _shadowStepsBuffer:Array<Int> = [32];
+	private var _shadowSoftnessBuffer:Array<Float> = [0.0];
+
+	private var _visibleLights:Array<Light> = [];
+	private var _currentOcclusionInput:BitmapData = null;
+
 	// Puffer für 2D-Schatten-Occlusion
 	private var _occlusionBitmap:BitmapData;
 	private var _dummyBitmap:BitmapData;
@@ -599,10 +612,18 @@ class LightingSystem extends FlxSprite {
 		}
 
 		if (!shadowsEnabled || occluders == null || occluders.length == 0) {
-			shaderInstance.data.u_shadowsEnabled.value = [0];
-			shaderInstance.data.u_shadowSteps.value = [shadowSteps];
-			shaderInstance.data.u_shadowSoftness.value = [shadowSoftness];
-			shaderInstance.data.u_occlusionTexture.input = _dummyBitmap;
+			_shadowsEnabledBuffer[0] = 0;
+			_shadowStepsBuffer[0] = shadowSteps;
+			_shadowSoftnessBuffer[0] = shadowSoftness;
+
+			shaderInstance.data.u_shadowsEnabled.value = _shadowsEnabledBuffer;
+			shaderInstance.data.u_shadowSteps.value = _shadowStepsBuffer;
+			shaderInstance.data.u_shadowSoftness.value = _shadowSoftnessBuffer;
+
+			if (_currentOcclusionInput != _dummyBitmap) {
+				_currentOcclusionInput = _dummyBitmap;
+				shaderInstance.data.u_occlusionTexture.input = _dummyBitmap;
+			}
 			return;
 		}
 
@@ -619,10 +640,18 @@ class LightingSystem extends FlxSprite {
 			renderOccluder(target, cam, camW, camH);
 		}
 
-		shaderInstance.data.u_shadowsEnabled.value = [1];
-		shaderInstance.data.u_shadowSteps.value = [shadowSteps];
-		shaderInstance.data.u_shadowSoftness.value = [shadowSoftness];
-		shaderInstance.data.u_occlusionTexture.input = _occlusionBitmap;
+		_shadowsEnabledBuffer[0] = 1;
+		_shadowStepsBuffer[0] = shadowSteps;
+		_shadowSoftnessBuffer[0] = shadowSoftness;
+
+		shaderInstance.data.u_shadowsEnabled.value = _shadowsEnabledBuffer;
+		shaderInstance.data.u_shadowSteps.value = _shadowStepsBuffer;
+		shaderInstance.data.u_shadowSoftness.value = _shadowSoftnessBuffer;
+
+		if (_currentOcclusionInput != _occlusionBitmap) {
+			_currentOcclusionInput = _occlusionBitmap;
+			shaderInstance.data.u_occlusionTexture.input = _occlusionBitmap;
+		}
 	}
 
 	/**
@@ -761,7 +790,7 @@ class LightingSystem extends FlxSprite {
 		var camRight = camLeft + (camW / cam.zoom);
 		var camBottom = camTop + (camH / cam.zoom);
 
-		var visibleLights:Array<Light> = [];
+		_visibleLights.resize(0);
 
 		for (light in lights) {
 			if (light == null || !light.visible) {
@@ -769,29 +798,29 @@ class LightingSystem extends FlxSprite {
 			}
 
 			if (light.lightType == DIRECTIONAL) {
-				visibleLights.push(light);
+				_visibleLights.push(light);
 			} else if (autoCull) {
 				var lx = light.getRenderX();
 				var ly = light.getRenderY();
 				var lr = light.getRenderRadius();
 
 				if (lx + lr >= camLeft && lx - lr <= camRight && ly + lr >= camTop && ly - lr <= camBottom) {
-					visibleLights.push(light);
+					_visibleLights.push(light);
 				}
 			} else {
-				visibleLights.push(light);
+				_visibleLights.push(light);
 			}
 
-			if (visibleLights.length >= MAX_LIGHTS) {
+			if (_visibleLights.length >= MAX_LIGHTS) {
 				break;
 			}
 		}
 
 		// GPU-Uniforms befüllen
-		var count = visibleLights.length;
+		var count = _visibleLights.length;
 
 		for (i in 0...count) {
-			var l = visibleLights[i];
+			var l = _visibleLights[i];
 			var posIdx = i * 2;
 			var vec4Idx = i * 4;
 
@@ -815,12 +844,26 @@ class LightingSystem extends FlxSprite {
 			_spotBuffer[vec4Idx + 3] = spot[3];
 		}
 
-		// Shader-Uniforms setzen
-		shaderInstance.data.u_ambient.value = [ambientColor.redFloat, ambientColor.greenFloat, ambientColor.blueFloat, ambientIntensity];
-		shaderInstance.data.u_resolution.value = [camW, camH];
-		shaderInstance.data.u_camScroll.value = [cam.scroll.x, cam.scroll.y];
-		shaderInstance.data.u_camZoom.value = [cam.zoom];
-		shaderInstance.data.u_lightCount.value = [count];
+		// Shader-Uniforms setzen (Zero Allocation über wiederverwendete Puffer)
+		_ambientBuffer[0] = ambientColor.redFloat;
+		_ambientBuffer[1] = ambientColor.greenFloat;
+		_ambientBuffer[2] = ambientColor.blueFloat;
+		_ambientBuffer[3] = ambientIntensity;
+
+		_resolutionBuffer[0] = camW;
+		_resolutionBuffer[1] = camH;
+
+		_camScrollBuffer[0] = cam.scroll.x;
+		_camScrollBuffer[1] = cam.scroll.y;
+
+		_camZoomBuffer[0] = cam.zoom;
+		_lightCountBuffer[0] = count;
+
+		shaderInstance.data.u_ambient.value = _ambientBuffer;
+		shaderInstance.data.u_resolution.value = _resolutionBuffer;
+		shaderInstance.data.u_camScroll.value = _camScrollBuffer;
+		shaderInstance.data.u_camZoom.value = _camZoomBuffer;
+		shaderInstance.data.u_lightCount.value = _lightCountBuffer;
 
 		shaderInstance.data.u_lightPos.value = _posBuffer;
 		shaderInstance.data.u_lightColor.value = _colorBuffer;
@@ -839,6 +882,16 @@ class LightingSystem extends FlxSprite {
 		_colorBuffer = null;
 		_paramsBuffer = null;
 		_spotBuffer = null;
+		_ambientBuffer = null;
+		_resolutionBuffer = null;
+		_camScrollBuffer = null;
+		_camZoomBuffer = null;
+		_lightCountBuffer = null;
+		_shadowsEnabledBuffer = null;
+		_shadowStepsBuffer = null;
+		_shadowSoftnessBuffer = null;
+		_visibleLights = null;
+		_currentOcclusionInput = null;
 		shaderInstance = null;
 
 		if (_occlusionBitmap != null) {
