@@ -103,7 +103,6 @@ class EntityLayer extends FlxSpriteGroup {
 			var targetClass:String = packageName + entityName;
 			var cls = Type.resolveClass(targetClass);
 			if (cls != null) {
-				trace(entity.identifier + " hat eine Klasse");
 				var o:Dynamic = Type.createInstance(cls, [entity]);
 				if (Std.isOfType(o, EntitySprite) || Std.isOfType(o, EntityNapeSprite)) {
 					createdSprite = cast o;
@@ -111,11 +110,9 @@ class EntityLayer extends FlxSpriteGroup {
 				}
 			} else {
 				if (isNapeEntity(entity)) {
-					trace(entity.identifier + " hat keine Klasse, wird als NapeSprite hinzugefügt.");
 					createdSprite = new EntityNapeSprite(entity);
 					add(createdSprite);
 				} else {
-					trace(entity.identifier + " hat keine Klasse, wird als Sprite hinzugefügt.");
 					createdSprite = new EntitySprite(entity);
 					add(createdSprite);
 				}
