@@ -662,25 +662,45 @@ class LightingSystem extends FlxSprite {
 			return;
 		}
 
-		// 1. Wenn eine Klasse übergeben wurde (z. B. Wall, EntitySprite)
+		// 1. Wenn eine Klasse übergeben wurde (z. B. Wall, EntitySprite, Platform)
 		if (Std.isOfType(target, Class)) {
 			var targetClass:Class<Dynamic> = cast target;
 			if (FlxG.state != null && FlxG.state.members != null) {
 				for (member in FlxG.state.members) {
-					if (member != null && Std.isOfType(member, targetClass)) {
-						renderOccluder(member, cam, camW, camH);
+					if (member != null) {
+						if (Std.isOfType(member, targetClass)) {
+							renderOccluder(member, cam, camW, camH);
+						} else if (Std.isOfType(member, FlxSpriteGroup)) {
+							var group:FlxSpriteGroup = cast member;
+							if (group.group != null && group.group.members != null) {
+								for (nested in group.group.members) {
+									if (nested != null && Std.isOfType(nested, targetClass)) {
+										renderOccluder(nested, cam, camW, camH);
+									}
+								}
+							}
+						} else if (Std.isOfType(member, FlxTypedGroup)) {
+							var group:FlxTypedGroup<Dynamic> = cast member;
+							if (group.members != null) {
+								for (nested in group.members) {
+									if (nested != null && Std.isOfType(nested, targetClass)) {
+										renderOccluder(nested, cam, camW, camH);
+									}
+								}
+							}
+						}
 					}
 				}
 			}
 			return;
 		}
 
-		// 2. TileLayer oder FlxSpriteGroup
+		// 2. TileLayer, EntityLayer oder FlxSpriteGroup
 		if (Std.isOfType(target, FlxSpriteGroup)) {
 			var spriteGroup:FlxSpriteGroup = cast target;
-			if (spriteGroup.exists && spriteGroup.visible && spriteGroup.group != null) {
+			if (spriteGroup.exists && spriteGroup.group != null) {
 				for (member in spriteGroup.group.members) {
-					if (member != null && member.exists && member.visible && member.alpha > 0.01) {
+					if (member != null && member.exists) {
 						renderSpriteOcclusion(member, cam, camW, camH);
 					}
 				}
@@ -691,7 +711,7 @@ class LightingSystem extends FlxSprite {
 		// 3. Generische FlxTypedGroup oder FlxGroup
 		if (Std.isOfType(target, FlxTypedGroup)) {
 			var typedGroup:FlxTypedGroup<Dynamic> = cast target;
-			if (typedGroup.exists && typedGroup.visible && typedGroup.members != null) {
+			if (typedGroup.exists && typedGroup.members != null) {
 				for (member in typedGroup.members) {
 					if (member != null) {
 						renderOccluder(member, cam, camW, camH);
@@ -704,7 +724,7 @@ class LightingSystem extends FlxSprite {
 		// 4. Einzelnes FlxSprite
 		if (Std.isOfType(target, FlxSprite)) {
 			var sprite:FlxSprite = cast target;
-			if (sprite.exists && sprite.visible && sprite.alpha > 0.01) {
+			if (sprite.exists) {
 				renderSpriteOcclusion(sprite, cam, camW, camH);
 			}
 			return;
@@ -713,7 +733,7 @@ class LightingSystem extends FlxSprite {
 		// 5. FlxObject (Bounding-Box)
 		if (Std.isOfType(target, FlxObject)) {
 			var obj:FlxObject = cast target;
-			if (obj.exists && obj.visible) {
+			if (obj.exists) {
 				var sx = (obj.x - cam.scroll.x * obj.scrollFactor.x) * cam.zoom;
 				var sy = (obj.y - cam.scroll.y * obj.scrollFactor.y) * cam.zoom;
 				var sw = obj.width * cam.zoom;
@@ -728,7 +748,7 @@ class LightingSystem extends FlxSprite {
 	}
 
 	/**
-	 * Zeichnet die Bounding-Box eines sichtbaren Sprites in die Occlusion-Maske.
+	 * Zeichnet die Bounding-Box eines Schattenwerfers in die Occlusion-Maske.
 	 */
 	private inline function renderSpriteOcclusion(sprite:FlxSprite, cam:FlxCamera, camW:Float, camH:Float):Void {
 		var sx = (sprite.x - cam.scroll.x * sprite.scrollFactor.x) * cam.zoom;
