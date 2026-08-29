@@ -837,11 +837,7 @@ class LightingSystem extends FlxSprite {
 			_paramsBuffer[vec4Idx + 2] = cast(l.lightType, Int);
 			_paramsBuffer[vec4Idx + 3] = l.getShaderExtraParam();
 
-			var spot = l.getShaderSpotData();
-			_spotBuffer[vec4Idx] = spot[0];
-			_spotBuffer[vec4Idx + 1] = spot[1];
-			_spotBuffer[vec4Idx + 2] = spot[2];
-			_spotBuffer[vec4Idx + 3] = spot[3];
+			l.fillShaderSpotData(_spotBuffer, vec4Idx);
 		}
 
 		// Shader-Uniforms setzen (Zero Allocation über wiederverwendete Puffer)

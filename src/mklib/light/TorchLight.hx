@@ -98,7 +98,7 @@ class TorchLight extends Light {
 			return;
 		}
 
-		_time += elapsed * flickerSpeed;
+		_time = (_time + elapsed * flickerSpeed) % 6283.1853; // Modulo 2000 * PI für unendliche Laufzeitstabilität
 		var t = _time + _seed;
 
 		// Überlagerte multi-frequente Oszillation für organische Flammenbewegung

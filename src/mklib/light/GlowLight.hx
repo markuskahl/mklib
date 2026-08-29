@@ -87,7 +87,7 @@ class GlowLight extends Light {
 			return;
 		}
 
-		_time += elapsed * pulseSpeed;
+		_time = (_time + elapsed * pulseSpeed) % (Math.PI * 2);
 		var wave = (Math.sin(_time + pulsePhase) + 1.0) * 0.5; // [0.0 .. 1.0]
 
 		_currentRadius = minRadius + (wave * (maxRadius - minRadius));

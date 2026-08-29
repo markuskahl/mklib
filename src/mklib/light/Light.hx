@@ -212,6 +212,16 @@ class Light implements IFlxDestroyable {
 	}
 
 	/**
+	 * Schreibt Scheinwerfer-Vektordaten direkt in den übergebenen Puffer (Zero-Allocation): `[dirX, dirY, cosOuter, cosInner]`.
+	 */
+	public function fillShaderSpotData(buffer:Array<Float>, offset:Int):Void {
+		buffer[offset] = 0.0;
+		buffer[offset + 1] = 1.0;
+		buffer[offset + 2] = -1.0;
+		buffer[offset + 3] = -1.0;
+	}
+
+	/**
 	 * Gibt Scheinwerfer-Vektordaten für den Shader zurück: `[dirX, dirY, cosOuter, cosInner]`.
 	 */
 	public function getShaderSpotData():Array<Float> {

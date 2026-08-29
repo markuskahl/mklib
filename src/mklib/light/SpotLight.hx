@@ -75,6 +75,23 @@ class SpotLight extends Light {
 		return this;
 	}
 
+	override public function fillShaderSpotData(buffer:Array<Float>, offset:Int):Void {
+		var rad = angle * (Math.PI / 180.0);
+		var dirX = Math.cos(rad);
+		var dirY = Math.sin(rad);
+
+		var outerRad = Math.max(0.1, spotAngle) * 0.5 * (Math.PI / 180.0);
+		var innerRad = Math.max(0.0, Math.min(innerAngle, spotAngle)) * 0.5 * (Math.PI / 180.0);
+
+		var cosOuter = Math.cos(outerRad);
+		var cosInner = Math.cos(innerRad);
+
+		buffer[offset] = dirX;
+		buffer[offset + 1] = dirY;
+		buffer[offset + 2] = cosOuter;
+		buffer[offset + 3] = cosInner;
+	}
+
 	override public function getShaderSpotData():Array<Float> {
 		var rad = angle * (Math.PI / 180.0);
 		var dirX = Math.cos(rad);
