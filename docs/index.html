@@ -163,14 +163,14 @@
                   <td><code>mklib.entity</code></td>
                   <td><strong><code>EntitySprite</code></strong></td>
                   <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code></td>
-                  <td><code>new</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>initAnimation</code></td>
+                  <td><code>new</code>, <code>resolveTilesetPath</code>, <code>loadTileRectGraphic</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>initAnimation</code></td>
                   <td><a href="#entities">Entities →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.entity</code></td>
                   <td><strong><code>EntityNapeSprite</code></strong></td>
                   <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code>, <code>body</code></td>
-                  <td><code>new</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>sensorEnabled</code>, <code>addCbType</code>, <code>updateShapePosition</code>, <code>initAnimation</code>, <code>markDestroyed</code>, <code>isSaveDestroyed</code></td>
+                  <td><code>new</code>, <code>resolveTilesetPath</code>, <code>loadTileRectGraphic</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>sensorEnabled</code>, <code>addCbType</code>, <code>updateShapePosition</code>, <code>initAnimation</code>, <code>markDestroyed</code>, <code>isSaveDestroyed</code></td>
                   <td><a href="#entities">Entities →</a></td>
                 </tr>
                 <tr>
@@ -438,14 +438,14 @@
                   <td><code>mklib.entity</code></td>
                   <td><strong><code>EntitySprite</code></strong></td>
                   <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code></td>
-                  <td><code>new</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>initAnimation</code></td>
+                  <td><code>new</code>, <code>resolveTilesetPath</code>, <code>loadTileRectGraphic</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>initAnimation</code></td>
                   <td><a href="#entities">Entities →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.entity</code></td>
                   <td><strong><code>EntityNapeSprite</code></strong></td>
                   <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code>, <code>body</code></td>
-                  <td><code>new</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>sensorEnabled</code>, <code>addCbType</code>, <code>updateShapePosition</code>, <code>initAnimation</code></td>
+                  <td><code>new</code>, <code>resolveTilesetPath</code>, <code>loadTileRectGraphic</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>sensorEnabled</code>, <code>addCbType</code>, <code>updateShapePosition</code>, <code>initAnimation</code>, <code>markDestroyed</code>, <code>isSaveDestroyed</code></td>
                   <td><a href="#entities">Entities →</a></td>
                 </tr>
                 <tr>
@@ -1582,13 +1582,25 @@
                   <td><code>new</code></td>
                   <td><code>(entity:ldtk.Entity)</code></td>
                   <td><code>Void</code></td>
-                  <td>Erstellt das Nape-Sprite und synchronisiert Position, Entity, State, <code>graphicPath</code> und <code>hasGraphic</code>.</td>
+                  <td>Erstellt das Nape-Sprite. Bei vorhandenem <code>TileRect</code>-Feld wird der Tileset-Ausschnitt geladen, die Größe angepasst, ein statischer Nape-Körper (<code>BodyType.STATIC</code>) erzeugt und optional als Sensor konfiguriert.</td>
+                </tr>
+                <tr>
+                  <td><code>resolveTilesetPath</code></td>
+                  <td><code>(tilesetUid:Int):Null&lt;String&gt;</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td>Löst den relativen Asset-Pfad einer Tileset-Grafik anhand ihrer UID im LDtk-Projekt auf.</td>
+                </tr>
+                <tr>
+                  <td><code>loadTileRectGraphic</code></td>
+                  <td><code>(path:String, tileX:Int, tileY:Int, tileW:Int, tileH:Int):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Schneidet den angegebenen Bereich aus der Tileset-Textur aus, cacht diesen in <code>FlxG.bitmap</code> und weist ihn dem Sprite zu.</td>
                 </tr>
                 <tr>
                   <td><code>getGraphicPath</code></td>
                   <td><code>():Null&lt;String&gt;</code></td>
                   <td><code>Null&lt;String&gt;</code></td>
-                  <td>Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile in LDtk definiert ist.</td>
+                  <td>Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile oder <code>TileRect</code> in LDtk definiert ist.</td>
                 </tr>
                 <tr>
                   <td><code>getField</code></td>
@@ -1606,7 +1618,7 @@
                   <td><code>sensorEnabled</code></td>
                   <td><code>(?enable:Null&lt;Bool&gt;):Void</code></td>
                   <td><code>Void</code></td>
-                  <td>Setzt die <code>sensorEnabled</code>-Eigenschaft für alle Shapes des Körpers. Ohne Parameter wird der Wert aus dem LDtk-Feld <code>"sensorEnabled"</code> ausgelesen.</td>
+                  <td>Setzt die <code>sensorEnabled</code>-Eigenschaft für alle Shapes des Körpers. Ohne Parameter wird der Wert aus dem LDtk-Feld <code>"sensor"</code> bzw. <code>"sensorEnabled"</code> ausgelesen.</td>
                 </tr>
                 <tr>
                   <td><code>addCbType</code></td>
@@ -1618,7 +1630,7 @@
                   <td><code>updateShapePosition</code></td>
                   <td><code>():Void</code></td>
                   <td><code>Void</code></td>
-                  <td>Zentriert den Nape-Körper im Mittelpunkt der LDtk-Entity (<code>pixelX + width/2, pixelY + height/2</code>).</td>
+                  <td>Zentriert den Nape-Körper im Mittelpunkt der Entity- bzw. Sprite-Maße (<code>pixelX + width/2, pixelY + height/2</code>).</td>
                 </tr>
                 <tr>
                   <td><code>initAnimation</code></td>
@@ -1807,49 +1819,61 @@
                   <td><code>new</code></td>
                   <td><code>(entity:ldtk.Entity)</code></td>
                   <td><code>Void</code></td>
-                  <td>Erstellt das Nape-Sprite und synchronisiert Position, Entity, State, <code>graphicPath</code> und <code>hasGraphic</code>.</td>
+                  <td>Creates the Nape sprite. If a non-null <code>TileRect</code> field is present, loads the tileset crop, adjusts size, creates a static Nape body (<code>BodyType.STATIC</code>), and optionally configures it as a sensor.</td>
+                </tr>
+                <tr>
+                  <td><code>resolveTilesetPath</code></td>
+                  <td><code>(tilesetUid:Int):Null&lt;String&gt;</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td>Resolves the relative asset path for a tileset graphic based on its UID in the LDtk project.</td>
+                </tr>
+                <tr>
+                  <td><code>loadTileRectGraphic</code></td>
+                  <td><code>(path:String, tileX:Int, tileY:Int, tileW:Int, tileH:Int):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Crops the specified region from the tileset texture, caches it in <code>FlxG.bitmap</code>, and assigns it to the sprite.</td>
                 </tr>
                 <tr>
                   <td><code>getGraphicPath</code></td>
                   <td><code>():Null&lt;String&gt;</code></td>
                   <td><code>Null&lt;String&gt;</code></td>
-                  <td>Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile in LDtk definiert ist.</td>
+                  <td>Resolves and normalizes the path to the graphic file (starting with <code>assets/</code>), if a tile or <code>TileRect</code> is defined in LDtk.</td>
                 </tr>
                 <tr>
                   <td><code>getField</code></td>
                   <td><code>(identifier:String):Dynamic</code></td>
                   <td><code>Dynamic</code></td>
-                  <td>Liest den Wert eines benutzerdefinierten LDtk-Feldes (<code>fieldInstances</code>) aus oder <code>null</code>.</td>
+                  <td>Reads the value of a custom LDtk field (<code>fieldInstances</code>) or <code>null</code>.</td>
                 </tr>
                 <tr>
                   <td><code>hasField</code></td>
                   <td><code>(identifier:String):Bool</code></td>
                   <td><code>Bool</code></td>
-                  <td>Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert.</td>
+                  <td>Checks if a custom LDtk field exists for this entity.</td>
                 </tr>
                 <tr>
                   <td><code>sensorEnabled</code></td>
                   <td><code>(?enable:Null&lt;Bool&gt;):Void</code></td>
                   <td><code>Void</code></td>
-                  <td>Setzt die <code>sensorEnabled</code>-Eigenschaft für alle Shapes des Körpers. Ohne Parameter wird der Wert aus dem LDtk-Feld <code>"sensorEnabled"</code> ausgelesen.</td>
+                  <td>Sets the <code>sensorEnabled</code> property for all shapes of the body. Without parameters, reads the value from the LDtk field <code>"sensor"</code> or <code>"sensorEnabled"</code>.</td>
                 </tr>
                 <tr>
                   <td><code>addCbType</code></td>
                   <td><code>(name:String = null):Void</code></td>
                   <td><code>Void</code></td>
-                  <td>Weist dem Nape-Körper Tags zu. Liest bei <code>name == null</code> automatisch die LDtk-Felder <code>"Tag"</code> oder <code>"Tags"</code> aus. Setzt <code>body.userData.instance = this</code>.</td>
+                  <td>Assigns tags to the Nape body. Automatically reads LDtk fields <code>"Tag"</code> or <code>"Tags"</code> if <code>name == null</code>. Sets <code>body.userData.instance = this</code>.</td>
                 </tr>
                 <tr>
                   <td><code>updateShapePosition</code></td>
                   <td><code>():Void</code></td>
                   <td><code>Void</code></td>
-                  <td>Zentriert den Nape-Körper im Mittelpunkt der LDtk-Entity (<code>pixelX + width/2, pixelY + height/2</code>).</td>
+                  <td>Centers the Nape body on the entity / sprite center (<code>pixelX + width/2, pixelY + height/2</code>).</td>
                 </tr>
                 <tr>
                   <td><code>initAnimation</code></td>
                   <td><code>(?animKey:String):Void</code></td>
                   <td><code>Void</code></td>
-                  <td>Lädt alle Animationsclips aus <code>AnimationRegistry.db</code> und startet die Standardanimation.</td>
+                  <td>Loads all animation clips from <code>AnimationRegistry.db</code> and starts the default animation.</td>
                 </tr>
               </tbody>
             </table>

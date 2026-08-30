@@ -35,8 +35,8 @@ The complete interactive documentation, including a live A* pathfinding simulato
 | `mklib.layer` | `TileLayer` | `levelName`, `layerName`, `state` | `new`, `render` |
 | `mklib.layer` | `EntityLayer` | `layerName`, `packageName`, `state` | `new`, `addEntities`, `isNapeEntity` |
 | `mklib.layer` | `EntityLayerSource<T>` | `identifier`, `getAllUntyped` |  |
-| `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic` | `new`, `getGraphicPath`, `getField`, `hasField`, `initAnimation`, `markDestroyed`, `isSaveDestroyed` |
-| `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic`, `body` | `new`, `getGraphicPath`, `getField`, `hasField`, `sensorEnabled`, `addCbType`, `updateShapePosition`, `initAnimation`, `markDestroyed`, `isSaveDestroyed` |
+| `mklib.entity` | `EntitySprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic` | `new`, `resolveTilesetPath`, `loadTileRectGraphic`, `getGraphicPath`, `getField`, `hasField`, `initAnimation`, `markDestroyed`, `isSaveDestroyed` |
+| `mklib.entity` | `EntityNapeSprite` | `_entity`, `iid`, `state`, `graphicPath`, `hasGraphic`, `body` | `new`, `resolveTilesetPath`, `loadTileRectGraphic`, `getGraphicPath`, `getField`, `hasField`, `sensorEnabled`, `addCbType`, `updateShapePosition`, `initAnimation`, `markDestroyed`, `isSaveDestroyed` |
 | `mklib.light` | `LightingSystem` | `lights`, `ambientColor`, `ambientIntensity`, `autoCull`, `shadowsEnabled`, `shadowSteps`, `shadowSoftness`, `occluders`, `shaderInstance` | `new`, `addLight`, `removeLight`, `clearLights`, `addOccluder`, `addOccluders`, `addOccluderClass`, `removeOccluder`, `removeOccluderClass`, `clearOccluders`, `createPointLight`, `createSpotLight`, `createTorchLight`, `createGlowLight`, `createDirectionalLight`, `loadFromLevel`, `loadFromEntityLayer`, `fromEntity` |
 | `mklib.light` | `Light` | `x`, `y`, `radius`, `color`, `intensity`, `falloff`, `active`, `visible`, `target` | `new`, `follow`, `stopFollowing`, `setPosition`, `setColor`, `update`, `destroy` |
 | `mklib.light` | `PointLight` | `innerRadius` | `new` |

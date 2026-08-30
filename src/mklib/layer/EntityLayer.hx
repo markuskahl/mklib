@@ -126,15 +126,22 @@ class EntityLayer extends FlxSpriteGroup {
 	}
 
 	/**
-	 * Prüft, ob eine LDtk-Entity ein benutzerdefiniertes Feld "Tag" besitzt.
+	 * Prüft, ob eine LDtk-Entity ein physikrelevantes Feld (z. B. "Tag", "Tags", "TileRect", "sensor", "sensorEnabled") besitzt.
 	 *
 	 * @param entity Die zu prüfende LDtk-Entity.
-	 * @return `true`, wenn das Feld "Tag" vorhanden und nicht `null` ist, andernfalls `false`.
+	 * @return `true`, wenn mindestens ein relevantes Feld vorhanden und nicht `null` ist, andernfalls `false`.
 	 */
 	public function hasTag(entity:ldtk.Entity):Bool {
 		if (entity != null && entity.json != null && entity.json.fieldInstances != null) {
 			for (inst in entity.json.fieldInstances) {
-				if (inst.__identifier == "Tag" && inst.__value != null) {
+				if ((inst.__identifier == "Tag"
+					|| inst.__identifier == "Tags"
+					|| inst.__identifier == "TileRect"
+					|| inst.__identifier == "tileRect"
+					|| inst.__identifier == "sensor"
+					|| inst.__identifier == "sensorEnabled"
+					|| inst.__identifier == "allowMovement")
+					&& inst.__value != null) {
 					return true;
 				}
 			}
@@ -143,7 +150,11 @@ class EntityLayer extends FlxSpriteGroup {
 	}
 
 	/**
-	 * Kompatibilitäts-Alias für `hasTag`.
+	 * Prüft, ob eine Entity als Nape-Physikobjekt (`EntityNapeSprite`) oder als rein visuelles Sprite (`EntitySprite`)
+	 * instanziiert werden soll.
+	 *
+	 * @param entity Die zu prüfende LDtk-Entity.
+	 * @return `true`, wenn die Entity als `EntityNapeSprite` instanziiert werden soll, andernfalls `false`.
 	 */
 	public inline function isNapeEntity(entity:ldtk.Entity):Bool {
 		return hasTag(entity);

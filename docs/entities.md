@@ -25,8 +25,10 @@ Erbt von `flixel.FlxSprite`. Position (`pixelX`, `pixelY`), Abmessungen (`width`
 
 | Methode | Signatur | Rückgabewert | Beschreibung |
 | :--- | :--- | :--- | :--- |
-| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntitySprite`, setzt Position (`pixelX`, `pixelY`), `width`, `height`, `iid`, bindet den aktuellen `State`, initialisiert `graphicPath` sowie `hasGraphic` und startet automatisch Animationen, falls das Feld `"Animations"` vorhanden ist. |
-| `getGraphicPath` | `()` | `Null<String>` | Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`), falls ein Tile in LDtk definiert ist, und setzt `hasGraphic`. |
+| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntitySprite`, setzt Position (`pixelX`, `pixelY`), `width`, `height`, `iid`, bindet den aktuellen `State`, initialisiert `graphicPath` sowie `hasGraphic` (inkl. Zuschnitt bei `TileRect`) und startet automatisch Animationen, falls das Feld `"Animations"` vorhanden ist. |
+| `resolveTilesetPath` | `(tilesetUid:Int)` | `Null<String>` | Löst den relativen Asset-Pfad einer Tileset-Grafik anhand ihrer UID im LDtk-Projekt auf. |
+| `loadTileRectGraphic` | `(path:String, tileX:Int, tileY:Int, tileW:Int, tileH:Int)` | `Void` | Schneidet den angegebenen Bereich aus der Tileset-Textur aus, cacht diesen in `FlxG.bitmap` und weist ihn dem Sprite zu. |
+| `getGraphicPath` | `()` | `Null<String>` | Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`), falls ein Tile oder `TileRect` in LDtk definiert ist, und setzt `hasGraphic`. |
 | `getField` | `(identifier:String)` | `Dynamic` | Liest den Wert eines benutzerdefinierten LDtk-Feldes (`fieldInstances`) aus oder `null`. |
 | `hasField` | `(identifier:String)` | `Bool` | Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert. |
 | `initAnimation` | `(?animKey:String)` | `Void` | Lädt und registriert alle Animationsclips aus `AnimationRegistry.db` und startet die Standardanimation. Falls `animKey` nicht angegeben wird, wird `getField("Animations")` verwendet. |
@@ -53,7 +55,7 @@ class Fire extends EntitySprite {
 
 ## ⚡ `EntityNapeSprite` (`mklib.entity.EntityNapeSprite`)
 
-Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur nahtlosen Kopplung an LDtk-Felder, LDtk-Tags (`CbType`), Sensoren und Nape-Schwerpunkte.
+Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur nahtlosen Kopplung an LDtk-Felder, LDtk-Tags (`CbType`), Single Value Tile-Ausschnitte (`TileRect`), Sensoren und Nape-Schwerpunkte.
 
 ### Eigenschaften (Properties)
 
@@ -62,7 +64,7 @@ Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur
 | `_entity` | `ldtk.Entity` | `public` | Die zugrundeliegende LDtk-Entity-Instanz mit Rohdaten und Feldern. |
 | `iid` | `String` | `public` | Die eindeutige Instanz-ID (IID) der Entity aus LDtk. |
 | `state` | `mklib.state.State` | `public` | Referenz auf den aktuellen `mklib.state.State`. |
-| `graphicPath` | `Null<String>` | `public` | Der aufgelöste Pfad zur Grafikdatei (beginnend mit `assets/`, z. B. `assets/tilesets/Platform.png`), falls ein Tile zugewiesen ist, sonst `null`. |
+| `graphicPath` | `Null<String>` | `public` | Der aufgelöste Pfad zur Grafikdatei (beginnend mit `assets/`, z. B. `assets/tilesets/Platform.png`), falls ein Tile oder `TileRect` zugewiesen ist, sonst `null`. |
 | `hasGraphic` | `Bool` | `public` | Gibt an, ob der Entity in LDtk eine gültige Grafikdatei zugewiesen ist (`true`), andernfalls `false`. |
 | `body` | `nape.phys.Body` | `public` | *(Ererbt von FlxNapeSprite)* Der physikalische Nape-Körper der Entity. |
 | *Ererbte Felder* | `Float`, `Bool` etc. | `public` | Alle Standardfelder von `flixel.addons.nape.FlxNapeSprite` und `flixel.FlxSprite`. |
@@ -71,15 +73,24 @@ Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur
 
 | Methode | Signatur | Rückgabewert | Beschreibung |
 | :--- | :--- | :--- | :--- |
-| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntityNapeSprite`, initialisiert `_entity`, `iid`, Position, den `state`, `graphicPath` und `hasGraphic`. |
-| `getGraphicPath` | `()` | `Null<String>` | Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`), falls ein Tile in LDtk definiert ist. |
+| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntityNapeSprite`. Bei Vorhandensein eines nicht-leeren `TileRect`-Feldes wird der Tileset-Ausschnitt geladen, die Größe angepasst, ein statischer Nape-Körper (`BodyType.STATIC`) erzeugt und optional als Sensor konfiguriert. |
+| `resolveTilesetPath` | `(tilesetUid:Int)` | `Null<String>` | Löst den relativen Asset-Pfad einer Tileset-Grafik anhand ihrer UID im LDtk-Projekt auf. |
+| `loadTileRectGraphic` | `(path:String, tileX:Int, tileY:Int, tileW:Int, tileH:Int)` | `Void` | Schneidet den angegebenen Bereich aus der Tileset-Textur aus, cacht diesen in `FlxG.bitmap` und weist ihn dem Sprite zu. |
+| `getGraphicPath` | `()` | `Null<String>` | Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`), falls ein Tile oder `TileRect` in LDtk definiert ist. |
 | `getField` | `(identifier:String)` | `Dynamic` | Liest den Wert eines benutzerdefinierten LDtk-Feldes (`fieldInstances`) aus oder `null`. |
 | `hasField` | `(identifier:String)` | `Bool` | Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert. |
-| `sensorEnabled` | `(?enable:Null<Bool>)` | `Void` | Setzt die `sensorEnabled`-Eigenschaft für alle Shapes. Ohne Parameter wird der Wert aus dem LDtk-Feld `"sensorEnabled"` ausgelesen. |
+| `sensorEnabled` | `(?enable:Null<Bool>)` | `Void` | Setzt die `sensorEnabled`-Eigenschaft für alle Shapes. Ohne Parameter wird der Wert aus dem LDtk-Feld `"sensor"` bzw. `"sensorEnabled"` ausgelesen. |
 | `addCbType` | `(name:String = null)` | `Void` | Weist dem Nape-Physikkörper (`body`) CbType-Tags zu. Ist `name == null`, werden die Entity-Felder `Tag` bzw. `Tags` aus LDtk automatisch ausgelesen. Setzt zudem `body.userData.instance = this`. |
-| `updateShapePosition` | `()` | `Void` | Positioniert den Nape-Körper im Mittelpunkt der LDtk-Entity (`pixelX + width/2`, `pixelY + height/2`), um die Nape-Schwerpunktsausrichtung auszugleichen. |
+| `updateShapePosition` | `()` | `Void` | Positioniert den Nape-Körper im Mittelpunkt der LDtk-Entity bzw. Sprite-Maße (`pixelX + width/2`, `pixelY + height/2`), um die Nape-Schwerpunktsausrichtung auszugleichen. |
 
 ### Detailerklärung der Methoden
+
+#### `TileRect` Single Value Tile
+Wenn in LDtk ein Single Value Tile-Feld mit dem Bezeichner `"TileRect"` definiert und nicht `null` ist:
+- Der Bildausschnitt (`x, y, w, h`) aus dem referenzierten Tileset (`tilesetUid`) wird automatisch als Sprite-Grafik ausgeschnitten und zugewiesen.
+- Die Abmessungen (`width`, `height`) der Entity werden exakt auf `tileW` und `tileH` angepasst.
+- Es wird automatisch ein fester Nape-Physikkörper (`BodyType.STATIC`) mit den Maßen des Ausschnitts erzeugt.
+- Ist zusätzlich ein Feld `sensor: true` oder `sensorEnabled: true` vorhanden, wird der Körper direkt als Sensor initialisiert (`shape.sensorEnabled = true`).
 
 #### `addCbType(name:String = null):Void`
 - **Parameter:** `name` *(optional, Standard: `null`)* – Der Name des spezifischen Tags (z. B. `"Player"` oder `"Solid"`).

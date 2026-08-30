@@ -1,10 +1,17 @@
 package mklib.entity;
 
 import nape.geom.Vec2;
+import nape.phys.Body;
+import nape.phys.BodyType;
+import nape.shape.Polygon;
+import openfl.display.BitmapData;
+import openfl.geom.Rectangle;
+import openfl.geom.Point;
 import mklib.tools.Tags;
 import mklib.state.State;
 import flixel.FlxG;
 import flixel.addons.nape.FlxNapeSprite;
+import flixel.addons.nape.FlxNapeSpace;
 import mklib.animation.AnimationManager;
 import mklib.save.SaveManager;
 
@@ -12,8 +19,9 @@ import mklib.save.SaveManager;
  * Erweiterte Entity-Klasse mit integriertem Nape-Physikkörper (`FlxNapeSprite`).
  *
  * Ermöglicht das automatische Auslesen von Tags/Kollisionstypen (`CbType`) direkt aus den
- * LDtk-Feldern (`Tag` oder `Tags`), den Zugriff auf den Grafikpfad (`graphicPath`) sowie
- * die exakte Zentrierung von Nape-Shapes auf Basis der LDtk-Entity-Maße.
+ * LDtk-Feldern (`Tag` oder `Tags`), den Zugriff auf den Grafikpfad (`graphicPath`),
+ * das automatische Zuschneiden von Tile-Ausschnitten (`TileRect`) mit festem Nape-Körper (`BodyType.STATIC`)
+ * sowie die exakte Zentrierung von Nape-Shapes auf Basis der Entity- bzw. Sprite-Maße.
  */
 class EntityNapeSprite extends FlxNapeSprite {
 	/**
@@ -45,24 +53,52 @@ class EntityNapeSprite extends FlxNapeSprite {
 	/**
 	 * Erstellt eine neue Instanz von `EntityNapeSprite` anhand einer LDtk-Entity.
 	 *
+	 * Wenn in LDtk ein Single Value Tile mit dem Namen "TileRect" definiert und nicht `null` ist,
+	 * wird der entsprechende Ausschnitt aus dem Tileset geladen, die Sprite-Größe angepasst,
+	 * ein neuer statischer Nape-Körper (`BodyType.STATIC`) erzeugt und optional als Sensor konfiguriert.
+	 *
 	 * @param entity Die aus dem LDtk-Level geladene Entity-Definition.
 	 */
 	public function new(entity:ldtk.Entity) {
 		iid = entity.iid;
 		_entity = entity;
-		super(entity.pixelX, entity.pixelY);
-
-		createRectangularBody(entity.width, entity.height);
-		body.allowRotation = false;
+		super(entity.pixelX, entity.pixelY, null, false, false);
 
 		if (FlxG.state != null && Std.isOfType(FlxG.state, State)) {
 			state = cast FlxG.state;
 		}
 
-		graphicPath = getGraphicPath();
+		var tileRectField:Dynamic = getField("TileRect");
+		if (tileRectField == null) {
+			tileRectField = getField("tileRect");
+		}
 
-		if (hasGraphic) {
-			loadGraphic(graphicPath, true, _entity.tileInfos.w, _entity.tileInfos.h);
+		if (tileRectField != null) {
+			var tilesetUid:Int = Reflect.hasField(tileRectField, "tilesetUid") ? Reflect.field(tileRectField, "tilesetUid") : 0;
+			var tileX:Int = Reflect.hasField(tileRectField, "x") ? Reflect.field(tileRectField, "x") : 0;
+			var tileY:Int = Reflect.hasField(tileRectField, "y") ? Reflect.field(tileRectField, "y") : 0;
+			var tileW:Int = Reflect.hasField(tileRectField, "w") ? Reflect.field(tileRectField, "w") : (Reflect.hasField(tileRectField, "width") ? Reflect.field(tileRectField, "width") : Std.int(entity.width));
+			var tileH:Int = Reflect.hasField(tileRectField, "h") ? Reflect.field(tileRectField, "h") : (Reflect.hasField(tileRectField, "height") ? Reflect.field(tileRectField, "height") : Std.int(entity.height));
+
+			var resolvedPath:Null<String> = resolveTilesetPath(tilesetUid);
+			if (resolvedPath != null) {
+				graphicPath = resolvedPath;
+				hasGraphic = true;
+				loadTileRectGraphic(resolvedPath, tileX, tileY, tileW, tileH);
+			} else {
+				width = tileW;
+				height = tileH;
+			}
+
+			createRectangularBody(tileW, tileH, BodyType.STATIC);
+		} else {
+			createRectangularBody(entity.width, entity.height, BodyType.DYNAMIC);
+
+			graphicPath = getGraphicPath();
+
+			if (hasGraphic && _entity.tileInfos != null) {
+				loadGraphic(graphicPath, true, _entity.tileInfos.w, _entity.tileInfos.h);
+			}
 		}
 
 		if (hasField("Animations")) {
@@ -71,6 +107,8 @@ class EntityNapeSprite extends FlxNapeSprite {
 
 		if (hasField("sensor")) {
 			sensorEnabled(getField("sensor"));
+		} else if (hasField("sensorEnabled")) {
+			sensorEnabled(getField("sensorEnabled"));
 		}
 
 		if (hasField("visible")) {
@@ -83,9 +121,11 @@ class EntityNapeSprite extends FlxNapeSprite {
 
 		if (hasField("Tag")) {
 			addCbType(getField("Tag"));
+		} else if (hasField("Tags")) {
+			addCbType();
 		}
 
-		if (hasField("allowMovement")) {
+		if (hasField("allowMovement") && body != null) {
 			body.allowMovement = getField("allowMovement");
 		}
 
@@ -93,9 +133,47 @@ class EntityNapeSprite extends FlxNapeSprite {
 	}
 
 	/**
+	 * Erstellt einen rechteckigen Nape-Physikkörper für dieses Sprite.
+	 * Fügt die Shapes vor der Registrierung im Physikraum hinzu, um Broadphase-Fehler (z. B. bei STATIC Bodies) zu verhindern.
+	 *
+	 * @param Width Breite des Körpers (Standard: Sprite-Breite).
+	 * @param Height Höhe des Körpers (Standard: Sprite-Höhe).
+	 * @param _Type Nape-Körpertyp (Standard: DYNAMIC).
+	 */
+	override public function createRectangularBody(Width:Float = 0, Height:Float = 0, ?_Type:BodyType):Void {
+		if (body != null) {
+			destroyPhysObjects();
+		}
+
+		if (Width <= 0) {
+			Width = (width > 0) ? width : frameWidth;
+		}
+		if (Height <= 0) {
+			Height = (height > 0) ? height : frameHeight;
+		}
+
+		centerOffsets(false);
+		var targetType:BodyType = (_Type != null) ? _Type : BodyType.DYNAMIC;
+		var initialX:Float = (_entity != null) ? _entity.pixelX + (Width / 2) : x + (Width / 2);
+		var initialY:Float = (_entity != null) ? _entity.pixelY + (Height / 2) : y + (Height / 2);
+
+		var newBody = new Body(targetType, Vec2.weak(initialX, initialY));
+		newBody.shapes.add(new Polygon(Polygon.box(Width, Height)));
+		newBody.allowRotation = false;
+		newBody.userData.instance = this;
+
+		this.body = newBody;
+		this.physicsEnabled = true;
+		if (FlxNapeSpace.space != null) {
+			this.body.space = FlxNapeSpace.space;
+		}
+		setBodyMaterial();
+	}
+
+	/**
 	 * Liest den Wert eines benutzerdefinierten LDtk-Feldes (`fieldInstances`) aus.
 	 *
-	 * @param identifier Der Bezeichner des Feldes in LDtk (z. B. "sensorEnabled" oder "image").
+	 * @param identifier Der Bezeichner des Feldes in LDtk (z. B. "sensorEnabled", "TileRect" oder "image").
 	 * @return Der Wert des Feldes oder `null`, falls nicht vorhanden.
 	 */
 	public function getField(identifier:String):Dynamic {
@@ -128,13 +206,16 @@ class EntityNapeSprite extends FlxNapeSprite {
 
 	/**
 	 * Aktiviert oder deaktiviert die Sensor-Eigenschaft für alle Shapes des Körpers.
-	 * Wird kein Parameter übergeben (`null`), wird das LDtk-Feld `"sensorEnabled"` ausgelesen.
+	 * Wird kein Parameter übergeben (`null`), wird das LDtk-Feld `"sensor"` oder `"sensorEnabled"` ausgelesen.
 	 * 
 	 * @param enable Optional: `true`, um alle Shapes als Sensoren zu markieren, `false` andernfalls.
 	 */
 	public function sensorEnabled(?enable:Null<Bool>):Void {
 		if (enable == null) {
 			var fieldVal = getField("sensor");
+			if (fieldVal == null) {
+				fieldVal = getField("sensorEnabled");
+			}
 			enable = (fieldVal == true);
 		}
 
@@ -146,15 +227,13 @@ class EntityNapeSprite extends FlxNapeSprite {
 	}
 
 	/**
-	 * Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`),
-	 * falls der Entity in LDtk ein Tile zugewiesen ist. Setzt zudem das Flag `hasGraphic`.
+	 * Ermittelt und normalisiert den Pfad zur Tileset-Grafikdatei anhand der Tileset-UID aus dem LDtk-Projekt.
 	 *
-	 * @return Der aufgelöste Asset-Pfad zur Bilddatei oder `null`.
+	 * @param tilesetUid Die UID des Tilesets im LDtk-Projekt.
+	 * @return Der aufgelöste relative Asset-Pfad (z. B. "assets/tilesets/dungeon.png") oder `null`.
 	 */
-	public function getGraphicPath():Null<String> {
-		hasGraphic = false;
-
-		if (_entity == null || _entity.tileInfos == null) {
+	public function resolveTilesetPath(tilesetUid:Int):Null<String> {
+		if (_entity == null) {
 			return null;
 		}
 
@@ -163,7 +242,7 @@ class EntityNapeSprite extends FlxNapeSprite {
 			return null;
 		}
 
-		var tilesetDef = proj.getTilesetDefJson(_entity.tileInfos.tilesetUid);
+		var tilesetDef = proj.getTilesetDefJson(tilesetUid);
 		if (tilesetDef == null || tilesetDef.relPath == null) {
 			return null;
 		}
@@ -177,8 +256,85 @@ class EntityNapeSprite extends FlxNapeSprite {
 				normalized = "assets/" + normalized;
 			}
 		}
-		hasGraphic = true;
 		return normalized;
+	}
+
+	/**
+	 * Schneidet einen spezifischen rechteckigen Ausschnitt aus einer Tilemap/Tileset-Grafik
+	 * aus und weist ihn diesem Sprite zu.
+	 *
+	 * @param path Relativer Asset-Pfad zur Tileset-Grafikdatei.
+	 * @param tileX X-Koordinate des Ausschnitts im Tileset (in Pixeln).
+	 * @param tileY Y-Koordinate des Ausschnitts im Tileset (in Pixeln).
+	 * @param tileW Breite des Ausschnitts (in Pixeln).
+	 * @param tileH Höhe des Ausschnitts (in Pixeln).
+	 */
+	public function loadTileRectGraphic(path:String, tileX:Int, tileY:Int, tileW:Int, tileH:Int):Void {
+		var cacheKey:String = path + "_tileRect_" + tileX + "_" + tileY + "_" + tileW + "_" + tileH;
+		if (FlxG.bitmap != null && FlxG.bitmap.checkCache(cacheKey)) {
+			loadGraphic(FlxG.bitmap.get(cacheKey));
+		} else {
+			var sourceBmd:openfl.display.BitmapData = null;
+			if (FlxG.bitmap != null) {
+				var sourceGraphic = FlxG.bitmap.add(path);
+				if (sourceGraphic != null && sourceGraphic.bitmap != null) {
+					sourceBmd = sourceGraphic.bitmap;
+				}
+			}
+			if (sourceBmd == null && openfl.utils.Assets.exists(path)) {
+				sourceBmd = openfl.utils.Assets.getBitmapData(path);
+			}
+
+			if (sourceBmd != null) {
+				var cropBmd = new openfl.display.BitmapData(tileW, tileH, true, 0x00000000);
+				cropBmd.copyPixels(sourceBmd, new openfl.geom.Rectangle(tileX, tileY, tileW, tileH), new openfl.geom.Point(0, 0));
+				if (FlxG.bitmap != null) {
+					var croppedGraphic = FlxG.bitmap.add(cropBmd, false, cacheKey);
+					loadGraphic(croppedGraphic);
+				} else {
+					loadGraphic(cropBmd);
+				}
+			}
+		}
+		width = tileW;
+		height = tileH;
+	}
+
+	/**
+	 * Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`),
+	 * falls der Entity in LDtk ein Tile oder TileRect zugewiesen ist. Setzt zudem das Flag `hasGraphic`.
+	 *
+	 * @return Der aufgelöste Asset-Pfad zur Bilddatei oder `null`.
+	 */
+	public function getGraphicPath():Null<String> {
+		hasGraphic = false;
+
+		if (_entity == null) {
+			return null;
+		}
+
+		var tileRect:Dynamic = getField("TileRect");
+		if (tileRect == null) {
+			tileRect = getField("tileRect");
+		}
+		if (tileRect != null) {
+			var tilesetUid:Int = Reflect.hasField(tileRect, "tilesetUid") ? Reflect.field(tileRect, "tilesetUid") : 0;
+			var path = resolveTilesetPath(tilesetUid);
+			if (path != null) {
+				hasGraphic = true;
+				return path;
+			}
+		}
+
+		if (_entity.tileInfos != null) {
+			var path = resolveTilesetPath(_entity.tileInfos.tilesetUid);
+			if (path != null) {
+				hasGraphic = true;
+				return path;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -229,13 +385,15 @@ class EntityNapeSprite extends FlxNapeSprite {
 	}
 
 	/**
-	 * Positioniert den Nape-Körper im Mittelpunkt der LDtk-Entity-Dimensionen.
+	 * Positioniert den Nape-Körper im Mittelpunkt der LDtk-Entity-Dimensionen bzw. Sprite-Maße.
 	 * Hilfreich nach dem Erstellen von Nape-Shapes, da Nape-Körper standardmäßig
 	 * ihren Ursprung im Schwerpunkt/Mittelpunkt haben.
 	 */
 	public function updateShapePosition():Void {
 		if (body != null && _entity != null) {
-			body.position.setxy(_entity.pixelX + (_entity.width / 2), _entity.pixelY + (_entity.height / 2));
+			var targetW:Float = (width > 0) ? width : _entity.width;
+			var targetH:Float = (height > 0) ? height : _entity.height;
+			body.position.setxy(_entity.pixelX + (targetW / 2), _entity.pixelY + (targetH / 2));
 		}
 	}
 
