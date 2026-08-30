@@ -2,6 +2,7 @@ package mklib.physic;
 
 import flixel.addons.nape.FlxNapeSpace;
 import mklib.tools.Tags;
+import mklib.entity.EntityNapeSprite;
 import nape.callbacks.CbEvent;
 import nape.callbacks.CbType;
 import nape.callbacks.InteractionCallback;
@@ -195,5 +196,57 @@ class Listener
 		}
 		var listener:InteractionListener = new InteractionListener(CbEvent.ONGOING, InteractionType.SENSOR, cb1, CbType.ANY_BODY, handler);
 		FlxNapeSpace.space.listeners.add(listener);
+	}
+
+	/**
+	 * Registriert eine pixelgenaue Kollisionsüberwachung zwischen zwei Tag-Typen (`tag1` und `tag2`).
+	 * Löst bei Pixel-Überlappung (`FlxG.pixelPerfectOverlap`) automatisch das Zurücksetzen und Stoppen
+	 * von `tag1` gegenüber `tag2` (inkl. Wall-Sliding) über `EntityNapeSprite.resolvePixelCollision` aus.
+	 *
+	 * @param tag1 Name des sich bewegenden Akteurs (z. B. "Hero", "Player").
+	 * @param tag2 Name des Hindernisses (z. B. "Obstacle", "Solid").
+	 * @param onCollision Optionaler Callback, der bei Pixel-Kollision aufgerufen wird: `(actor, obstacle) -> Void`.
+	 */
+	public static function addPixelCollisionListener(tag1:String, tag2:String, ?onCollision:EntityNapeSprite->EntityNapeSprite->Void):Void
+	{
+		var cb1 = Tags.get(tag1);
+		var cb2 = Tags.get(tag2);
+		if (cb1 == null || cb2 == null || FlxNapeSpace.space == null)
+		{
+			trace('Warning: Could not register PixelCollisionListener for "$tag1" and "$tag2" (CbType or space is null)');
+			return;
+		}
+
+		addSensorOngoingListener(tag1, tag2, function(cb:InteractionCallback) {
+			var entA = EntityNapeSprite.getFromInteractor(cb.int1);
+			var entB = EntityNapeSprite.getFromInteractor(cb.int2);
+			if (entA == null || entB == null)
+			{
+				return;
+			}
+
+			var actor:EntityNapeSprite = null;
+			var obstacle:EntityNapeSprite = null;
+
+			var int1HasTag1 = cb.int1.cbTypes.has(cb1) || (cb.int1.isShape() && cb.int1.castShape.body != null && cb.int1.castShape.body.cbTypes.has(cb1));
+			if (int1HasTag1)
+			{
+				actor = entA;
+				obstacle = entB;
+			}
+			else
+			{
+				actor = entB;
+				obstacle = entA;
+			}
+
+			if (actor.resolvePixelCollision(obstacle))
+			{
+				if (onCollision != null)
+				{
+					onCollision(actor, obstacle);
+				}
+			}
+		});
 	}
 }

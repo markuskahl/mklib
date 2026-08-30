@@ -1,5 +1,6 @@
 package mklib.entity;
 
+import nape.callbacks.CbType;
 import nape.geom.Vec2;
 import nape.phys.Body;
 import nape.phys.BodyType;
@@ -77,8 +78,12 @@ class EntityNapeSprite extends FlxNapeSprite {
 			var tilesetUid:Int = Reflect.hasField(tileRectField, "tilesetUid") ? Reflect.field(tileRectField, "tilesetUid") : 0;
 			var tileX:Int = Reflect.hasField(tileRectField, "x") ? Reflect.field(tileRectField, "x") : 0;
 			var tileY:Int = Reflect.hasField(tileRectField, "y") ? Reflect.field(tileRectField, "y") : 0;
-			var tileW:Int = Reflect.hasField(tileRectField, "w") ? Reflect.field(tileRectField, "w") : (Reflect.hasField(tileRectField, "width") ? Reflect.field(tileRectField, "width") : Std.int(entity.width));
-			var tileH:Int = Reflect.hasField(tileRectField, "h") ? Reflect.field(tileRectField, "h") : (Reflect.hasField(tileRectField, "height") ? Reflect.field(tileRectField, "height") : Std.int(entity.height));
+			var tileW:Int = Reflect.hasField(tileRectField,
+				"w") ? Reflect.field(tileRectField,
+					"w") : (Reflect.hasField(tileRectField, "width") ? Reflect.field(tileRectField, "width") : Std.int(entity.width));
+			var tileH:Int = Reflect.hasField(tileRectField,
+				"h") ? Reflect.field(tileRectField,
+					"h") : (Reflect.hasField(tileRectField, "height") ? Reflect.field(tileRectField, "height") : Std.int(entity.height));
 
 			var resolvedPath:Null<String> = resolveTilesetPath(tilesetUid);
 			if (resolvedPath != null) {
@@ -130,6 +135,285 @@ class EntityNapeSprite extends FlxNapeSprite {
 		}
 
 		updateShapePosition();
+
+		setUserData();
+	}
+
+	public function setUserData():Void {
+		if (body != null) {
+			body.userData.obj = this;
+			body.userData.instance = this;
+			if (body.shapes != null) {
+				for (shape in body.shapes) {
+					shape.userData.obj = this;
+					shape.userData.instance = this;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Erzeugt vollautomatisch Nape-Polygon-Shapes aus der sichtbaren Pixelgrafik dieses Sprites
+	 * und weist sie dem Nape-Körper zu.
+	 *
+	 * @param alphaThreshold Schwellenwert für die Sichtbarkeit (0-255). Standard: 128.
+	 * @param simplify Grad der Glättung/Vereinfachung in Pixeln. Standard: 1.0.
+	 * @param sensor Sollen die Shapes als Sensoren deklariert werden? Standard: false.
+	 * @param cbType Optionaler CbType für die erzeugten Shapes.
+	 * @param clearExisting Vorhandene Shapes vorher löschen? Standard: true.
+	 * @return Array der erzeugten `Polygon`-Shapes.
+	 */
+	public function createShapesFromGraphic(alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType,
+			clearExisting:Bool = true):Array<Polygon> {
+		if (body == null) {
+			return [];
+		}
+
+		var wasSpace = body.space;
+		if (wasSpace != null) {
+			body.space = null;
+		}
+
+		if (clearExisting) {
+			body.shapes.clear();
+		}
+
+		var shapes = mklib.physic.ShapeBuilder.createShapesFromSprite(this, body, alphaThreshold, simplify, sensor, cbType);
+		setUserData();
+
+		if (wasSpace != null) {
+			body.space = wasSpace;
+		}
+
+		return shapes;
+	}
+
+	/**
+	 * Ermittelt die `EntityNapeSprite`-Instanz aus einem Nape-`Interactor` (Shape oder Body).
+	 *
+	 * @param interactor Der Nape-Interactor (z. B. `cb.int1` oder `cb.int2` aus einem `InteractionCallback`).
+	 * @return Die zugehörige `EntityNapeSprite`-Instanz oder `null`.
+	 */
+	public static function getFromInteractor(interactor:nape.phys.Interactor):Null<EntityNapeSprite> {
+		if (interactor == null) {
+			return null;
+		}
+		if (interactor.userData != null && interactor.userData.obj != null) {
+			return interactor.userData.obj;
+		}
+		if (interactor.userData != null && interactor.userData.instance != null) {
+			return interactor.userData.instance;
+		}
+		if (interactor.isShape() && interactor.castShape.body != null && interactor.castShape.body.userData != null) {
+			if (interactor.castShape.body.userData.obj != null) {
+				return interactor.castShape.body.userData.obj;
+			}
+			return interactor.castShape.body.userData.instance;
+		}
+		if (interactor.isBody() && interactor.castBody.userData != null) {
+			if (interactor.castBody.userData.obj != null) {
+				return interactor.castBody.userData.obj;
+			}
+			return interactor.castBody.userData.instance;
+		}
+		return null;
+	}
+
+	/**
+	 * Die Nape-Körperposition zu Beginn des aktuellen Frames (vor dem Physik-Schritt).
+	 */
+	public var prevBodyX:Float = 0;
+
+	public var prevBodyY:Float = 0;
+
+	/**
+	 * Zuletzt berührtes Hindernis für vorausschauende, jitterfreie Kollisionsprüfung.
+	 */
+	public var lastCollidedObstacle:Null<flixel.FlxSprite> = null;
+
+	/**
+	 * Aktualisiert das Sprite und speichert die Vorher-Position des Nape-Körpers
+	 * für präzise und jitterfreie Kollisionsauflösung.
+	 */
+	override public function update(elapsed:Float):Void {
+		if (body != null) {
+			prevBodyX = body.position.x;
+			prevBodyY = body.position.y;
+		}
+		super.update(elapsed);
+	}
+
+	/**
+	 * Wird aufgerufen, wenn die Position des Sprites (z. B. durch `resolvePixelCollision`)
+	 * manuell korrigiert wurde. Kann in Unterklassen (wie `Hero`) überschrieben werden.
+	 */
+	public function onPositionCorrected():Void {}
+
+	/**
+	 * Prüft vorausschauend, ob eine Bewegung in die angegebene Richtung (`dirX`, `dirY`)
+	 * zu einer Pixel-Überlappung mit dem Hindernis führen würde.
+	 *
+	 * @param dirX Horizontale Bewegungsrichtung (-1, 0, 1 oder Geschwindigkeit).
+	 * @param dirY Vertikale Bewegungsrichtung (-1, 0, 1 oder Geschwindigkeit).
+	 * @return `true`, falls die Richtung durch Pixel-Grafik blockiert ist, sonst `false`.
+	 */
+	public function isPixelBlocked(dirX:Float, dirY:Float):Bool {
+		if (lastCollidedObstacle == null || body == null) {
+			return false;
+		}
+
+		var stepX:Float = (dirX > 0) ? 1.0 : ((dirX < 0) ? -1.0 : 0.0);
+		var stepY:Float = (dirY > 0) ? 1.0 : ((dirY < 0) ? -1.0 : 0.0);
+
+		if (stepX == 0 && stepY == 0) {
+			return false;
+		}
+
+		var origX:Float = body.position.x;
+		var origY:Float = body.position.y;
+
+		body.position.setxy(origX + stepX, origY + stepY);
+		x = body.position.x - origin.x;
+		y = body.position.y - origin.y;
+
+		var blocked:Bool = FlxG.pixelPerfectOverlap(this, lastCollidedObstacle);
+
+		body.position.setxy(origX, origY);
+		x = body.position.x - origin.x;
+		y = body.position.y - origin.y;
+
+		return blocked;
+	}
+
+	/**
+	 * Löst eine pixelgenaue Überlappung (`FlxG.pixelPerfectOverlap`) mit einem anderen Sprite
+	 * verzögerungsfrei, präzise und mit flüssigem Wall-Sliding auf.
+	 *
+	 * @param obstacle Das kollidierende Hindernis oder Ziel-Sprite.
+	 * @return `true`, wenn eine Pixel-Kollision vorlag und aufgelöst wurde, sonst `false`.
+	 */
+	public function resolvePixelCollision(obstacle:flixel.FlxSprite):Bool {
+		if (obstacle == null || body == null) {
+			return false;
+		}
+
+		lastCollidedObstacle = obstacle;
+
+		if (!FlxG.pixelPerfectOverlap(this, obstacle)) {
+			return false;
+		}
+
+		var targetX:Float = body.position.x;
+		var targetY:Float = body.position.y;
+		var startX:Float = (prevBodyX != 0) ? prevBodyX : targetX;
+		var startY:Float = (prevBodyY != 0) ? prevBodyY : targetY;
+
+		// 1. Versuche Y-Bewegung beizubehalten (Sliding entlang X-Wand):
+		// Schiebe X von startX so nah wie möglich an targetX heran (ohne Lücke)
+		body.position.setxy(startX, targetY);
+		x = body.position.x - origin.x;
+		y = body.position.y - origin.y;
+
+		if (!FlxG.pixelPerfectOverlap(this, obstacle)) {
+			var stepX:Float = (targetX >= startX) ? 1.0 : -1.0;
+			var curX:Float = startX;
+			while ((stepX > 0 ? curX + stepX <= targetX : curX + stepX >= targetX)) {
+				body.position.setxy(curX + stepX, targetY);
+				x = body.position.x - origin.x;
+				y = body.position.y - origin.y;
+				if (FlxG.pixelPerfectOverlap(this, obstacle)) {
+					break;
+				}
+				curX += stepX;
+			}
+			body.position.setxy(curX, targetY);
+			x = body.position.x - origin.x;
+			y = body.position.y - origin.y;
+			body.velocity.x = 0;
+			onPositionCorrected();
+			return true;
+		}
+
+		// 2. Versuche X-Bewegung beizubehalten (Sliding entlang Y-Wand):
+		// Schiebe Y von startY so nah wie möglich an targetY heran (ohne Lücke)
+		body.position.setxy(targetX, startY);
+		x = body.position.x - origin.x;
+		y = body.position.y - origin.y;
+
+		if (!FlxG.pixelPerfectOverlap(this, obstacle)) {
+			var stepY:Float = (targetY >= startY) ? 1.0 : -1.0;
+			var curY:Float = startY;
+			while ((stepY > 0 ? curY + stepY <= targetY : curY + stepY >= targetY)) {
+				body.position.setxy(targetX, curY + stepY);
+				x = body.position.x - origin.x;
+				y = body.position.y - origin.y;
+				if (FlxG.pixelPerfectOverlap(this, obstacle)) {
+					break;
+				}
+				curY += stepY;
+			}
+			body.position.setxy(targetX, curY);
+			x = body.position.x - origin.x;
+			y = body.position.y - origin.y;
+			body.velocity.y = 0;
+			onPositionCorrected();
+			return true;
+		}
+
+		// 3. Wenn beides kollidiert (Ecke): Bis zum Kontakt heranrücken
+		body.position.setxy(startX, startY);
+		x = body.position.x - origin.x;
+		y = body.position.y - origin.y;
+
+		if (!FlxG.pixelPerfectOverlap(this, obstacle)) {
+			var stepX:Float = (targetX >= startX) ? 1.0 : -1.0;
+			var stepY:Float = (targetY >= startY) ? 1.0 : -1.0;
+			var curX:Float = startX;
+			var curY:Float = startY;
+
+			while ((stepX > 0 ? curX + stepX <= targetX : curX + stepX >= targetX)) {
+				body.position.setxy(curX + stepX, curY);
+				x = body.position.x - origin.x;
+				y = body.position.y - origin.y;
+				if (FlxG.pixelPerfectOverlap(this, obstacle))
+					break;
+				curX += stepX;
+			}
+			while ((stepY > 0 ? curY + stepY <= targetY : curY + stepY >= targetY)) {
+				body.position.setxy(curX, curY + stepY);
+				x = body.position.x - origin.x;
+				y = body.position.y - origin.y;
+				if (FlxG.pixelPerfectOverlap(this, obstacle))
+					break;
+				curY += stepY;
+			}
+
+			body.position.setxy(curX, curY);
+			x = body.position.x - origin.x;
+			y = body.position.y - origin.y;
+			body.velocity.setxy(0, 0);
+			onPositionCorrected();
+			return true;
+		}
+
+		// 4. Fallback: Bei verbleibender Überlappung minimal herausdrücken
+		body.velocity.setxy(0, 0);
+		var diffX:Float = (x + width * 0.5) - (obstacle.x + obstacle.width * 0.5);
+		var diffY:Float = (y + height * 0.5) - (obstacle.y + obstacle.height * 0.5);
+		var pushX:Float = (diffX >= 0) ? 1.0 : -1.0;
+		var pushY:Float = (diffY >= 0) ? 1.0 : -1.0;
+
+		var iterations:Int = 0;
+		while (iterations < 16 && FlxG.pixelPerfectOverlap(this, obstacle)) {
+			body.position.x += pushX;
+			body.position.y += pushY;
+			x = body.position.x - origin.x;
+			y = body.position.y - origin.y;
+			iterations++;
+		}
+
+		onPositionCorrected();
+		return true;
 	}
 
 	/**
