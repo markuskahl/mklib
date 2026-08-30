@@ -11,7 +11,11 @@
    - Project configuration (`Project.xml` & `Data.hx`)
    - Complete minimal example
 
-2. [**State Management (`mklib.state.State`)**](state.md)
+2. [**LDtk Level-Editor Guide & Properties**](ldtk_guide.md)
+   - Complete reference of all custom fields, enums, tags, layers, and light properties
+   - Step-by-step level creation tutorial and best practices
+
+3. [**State Management (`mklib.state.State`)**](state.md)
    - Generic base state `State<TLevel>`
    - Typed level access (`data`)
    - Nape physics initialization & collision tag registration
