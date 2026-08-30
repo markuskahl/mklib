@@ -161,10 +161,11 @@ class EntityNapeSprite extends FlxNapeSprite {
 	 * @param sensor Sollen die Shapes als Sensoren deklariert werden? Standard: false.
 	 * @param cbType Optionaler CbType für die erzeugten Shapes.
 	 * @param clearExisting Vorhandene Shapes vorher löschen? Standard: true.
+	 * @param cellSizeVal Zellengröße für MarchingSquares in Pixeln. Standard: 1.0 (exakte Pixelauflösung).
 	 * @return Array der erzeugten `Polygon`-Shapes.
 	 */
 	public function createShapesFromGraphic(alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType,
-			clearExisting:Bool = true):Array<Polygon> {
+			clearExisting:Bool = true, cellSizeVal:Float = 1.0):Array<Polygon> {
 		if (body == null) {
 			return [];
 		}
@@ -178,7 +179,20 @@ class EntityNapeSprite extends FlxNapeSprite {
 			body.shapes.clear();
 		}
 
-		var shapes = mklib.physic.ShapeBuilder.createShapesFromSprite(this, body, alphaThreshold, simplify, sensor, cbType);
+		var shapes = mklib.physic.ShapeBuilder.createShapesFromSprite(this, body, alphaThreshold, simplify, sensor, cbType, cellSizeVal);
+
+		// Fallback: Falls keine Shapes aus Pixeln erzeugt werden konnten (z. B. 0 sichtbare Pixel oder extrem dünn),
+		// erzeuge eine rechteckige Bounding-Box, damit das Objekt nicht kollisionslos wird.
+		if (body.shapes.length == 0 && width > 0 && height > 0) {
+			var fallbackShape = new Polygon(Polygon.box(width, height), new nape.phys.Material(0, 0, 0, 1, 0));
+			fallbackShape.sensorEnabled = sensor;
+			if (cbType != null) {
+				fallbackShape.cbTypes.add(cbType);
+			}
+			fallbackShape.body = body;
+			shapes.push(fallbackShape);
+		}
+
 		setUserData();
 
 		if (wasSpace != null) {

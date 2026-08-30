@@ -112,7 +112,7 @@ class LightingShader extends FlxShader {
 						vec2 lightUV = lightScreen / u_resolution;
 
 						float shadow = 1.0;
-						float steps = float(max(4, min(u_shadowSteps, 64)));
+						float steps = clamp(float(u_shadowSteps), 4.0, 64.0);
 						float stepSize = 1.0 / steps;
 
 						// Startpunkt mit kleinem Versatz zur Vermeidung von Selbstverschattung an der Lichtquelle
@@ -152,7 +152,7 @@ class LightingShader extends FlxShader {
 			}
 
 			// Ergebnis: Lichtakkumulation multipliziert mit Textur-/Szene-Farbe
-			gl_FragColor = vec4(clamp(lightAcc, 0.0, 1.0), 1.0) * sceneColor;
+			gl_FragColor = vec4(clamp(lightAcc, vec3(0.0), vec3(1.0)), 1.0) * sceneColor;
 		}
 	')
 	public function new() {
