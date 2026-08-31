@@ -2635,6 +2635,42 @@
                   <td><code>public</code></td>
                   <td>*(Ererbt)* Der physikalische Nape-Körper.</td>
                 </tr>
+                <tr>
+                  <td><code>prevBodyX</code> / <code>prevBodyY</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public</code></td>
+                  <td>Nape-Körperposition vor dem aktuellen Physik-Schritt.</td>
+                </tr>
+                <tr>
+                  <td><code>lastCollidedObstacle</code></td>
+                  <td><code>Null&lt;flixel.FlxSprite&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Zuletzt berührtes Hindernis für vorausschauende Pixel-Blockade-Prüfungen (<code>isPixelBlocked</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>facingX</code> / <code>facingY</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Aktuelle diskrete Blickrichtung der Entity (-1, 0, 1).</td>
+                </tr>
+                <tr>
+                  <td><code>gridSize</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Standard-Rastergröße für Gitterabfragen in Pixeln (Standard: <code>8</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>recoilTimer</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public</code></td>
+                  <td>Verbleibende Rückstoß-Dauer (Recoil / Knockback) in Sekunden.</td>
+                </tr>
+                <tr>
+                  <td><code>recoilVx</code> / <code>recoilVy</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public</code></td>
+                  <td>Aktuelle Rückstoß-Geschwindigkeit in X- bzw. Y-Richtung.</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -2710,6 +2746,78 @@
                   <td><code>(?animKey:String):Void</code></td>
                   <td><code>Void</code></td>
                   <td>Lädt alle Animationsclips aus <code>AnimationRegistry.db</code> und startet die Standardanimation.</td>
+                </tr>
+                <tr>
+                  <td><code>applyRecoil</code></td>
+                  <td><code>(dirX:Float, dirY:Float, speed:Float = 65, duration:Float = 0.12):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Löst einen physikalischen Rückstoß-Impuls (Recoil / Knockback / Zelda-Bounce) in die angegebene Richtung aus.</td>
+                </tr>
+                <tr>
+                  <td><code>isRecoiling</code></td>
+                  <td><code>():Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Gibt an, ob sich die Entity aktuell in einer aktiven Rückstoß-Phase befindet (<code>recoilTimer &gt; 0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>getGridX</code></td>
+                  <td><code>(gSize:Int = -1, offsetX:Float = 0):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Berechnet die diskrete Raster-Spalte (X) auf Basis der Körperposition und eines optionalen Offsets.</td>
+                </tr>
+                <tr>
+                  <td><code>getGridY</code></td>
+                  <td><code>(gSize:Int = -1, offsetY:Float = 0):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Berechnet die diskrete Raster-Zeile (Y) auf Basis der Körperposition und eines optionalen Fußpunkt-Offsets.</td>
+                </tr>
+                <tr>
+                  <td><code>getActiveState</code></td>
+                  <td><code>():Null&lt;State&lt;Dynamic&gt;&gt;</code></td>
+                  <td><code>Null&lt;State&lt;Dynamic&gt;&gt;</code></td>
+                  <td>Liefert dynamisch und sicher die aktive <code>State</code>-Instanz aus der Instanz-Referenz oder <code>FlxG.state</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasEntityAtGrid</code></td>
+                  <td><code>(cx:Int, cy:Int, ?tags:Dynamic, ?entityClass:Class&lt;Dynamic&gt;, gSize:Int = -1):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob sich in der Rasterzelle <code>(cx, cy)</code> eine Entity mit bestimmtem Tag (String oder Array, z. B. <code>["Obstacle", "Platform", "Wall", "Solid"]</code>) oder Klassentyp befindet.</td>
+                </tr>
+                <tr>
+                  <td><code>hasObstacleInFacingCell</code></td>
+                  <td><code>(dirX:Int = 0, dirY:Int = 0, ?tags:Dynamic, gSize:Int = -1, footOffsetY:Float = 0):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob die Nachbarzelle in Blickrichtung durch ein Hindernis oder eine Wand (prüft standardmäßig <code>["Obstacle", "Platform", "Wall", "Solid"]</code>) belegt ist.</td>
+                </tr>
+                <tr>
+                  <td><code>createShapesFromGraphic</code></td>
+                  <td><code>(alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, clearExisting:Bool = true, cellSizeVal:Float = 1.0):Array&lt;Polygon&gt;</code></td>
+                  <td><code>Array&lt;Polygon&gt;</code></td>
+                  <td>Erzeugt Nape-Polygon-Shapes vollautomatisch aus der sichtbaren Pixelgrafik des Sprites via Marching Squares.</td>
+                </tr>
+                <tr>
+                  <td><code>resolvePixelCollision</code></td>
+                  <td><code>(obstacle:flixel.FlxSprite):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Löst eine pixelgenaue Überlappung (<code>FlxG.pixelPerfectOverlap</code>) verzögerungsfrei auf (Positionskorrektur, Geschwindigkeitsstopp, Wall-Sliding). Gibt <code>true</code> zurück, wenn eine Kollision vorlag.</td>
+                </tr>
+                <tr>
+                  <td><code>isPixelBlocked</code></td>
+                  <td><code>(dirX:Float, dirY:Float):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft vorausschauend, ob eine Bewegung in die angegebene Richtung zu einer Pixel-Überlappung mit <code>lastCollidedObstacle</code> führen würde.</td>
+                </tr>
+                <tr>
+                  <td><code>onPositionCorrected</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Callback-Hook nach einer Positionskorrektur durch <code>resolvePixelCollision</code> (kann in Unterklassen überschrieben werden).</td>
+                </tr>
+                <tr>
+                  <td><code>getFromInteractor</code></td>
+                  <td><code>(interactor:nape.phys.Interactor):Null&lt;EntityNapeSprite&gt;</code></td>
+                  <td><code>Null&lt;EntityNapeSprite&gt;</code></td>
+                  <td>Statische Hilfsmethode: Ermittelt die <code>EntityNapeSprite</code>-Instanz aus einem Nape-Interactor (Shape oder Body).</td>
                 </tr>
               </tbody>
             </table>
@@ -2870,7 +2978,43 @@
                   <td><code>body</code></td>
                   <td><code>nape.phys.Body</code></td>
                   <td><code>public</code></td>
-                  <td>*(Ererbt)* Der physikalische Nape-Körper.</td>
+                  <td>*(Inherited)* The physical Nape body.</td>
+                </tr>
+                <tr>
+                  <td><code>prevBodyX</code> / <code>prevBodyY</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public</code></td>
+                  <td>Nape body position before the current physics step.</td>
+                </tr>
+                <tr>
+                  <td><code>lastCollidedObstacle</code></td>
+                  <td><code>Null&lt;flixel.FlxSprite&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Last collided obstacle for predictive pixel blockage checks (<code>isPixelBlocked</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>facingX</code> / <code>facingY</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Current discrete facing direction of the entity (-1, 0, 1).</td>
+                </tr>
+                <tr>
+                  <td><code>gridSize</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Default raster grid size in pixels (default: <code>8</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>recoilTimer</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public</code></td>
+                  <td>Remaining recoil / knockback duration in seconds.</td>
+                </tr>
+                <tr>
+                  <td><code>recoilVx</code> / <code>recoilVy</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public</code></td>
+                  <td>Current recoil velocity along X or Y axis.</td>
                 </tr>
               </tbody>
             </table>
@@ -2947,6 +3091,48 @@
                   <td><code>(?animKey:String):Void</code></td>
                   <td><code>Void</code></td>
                   <td>Loads all animation clips from <code>AnimationRegistry.db</code> and starts the default animation.</td>
+                </tr>
+                <tr>
+                  <td><code>applyRecoil</code></td>
+                  <td><code>(dirX:Float, dirY:Float, speed:Float = 65, duration:Float = 0.12):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Triggers a physical recoil / knockback impulse in the specified direction.</td>
+                </tr>
+                <tr>
+                  <td><code>isRecoiling</code></td>
+                  <td><code>():Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Returns whether the entity is currently in an active recoil phase (<code>recoilTimer &gt; 0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>getGridX</code></td>
+                  <td><code>(gSize:Int = -1, offsetX:Float = 0):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Calculates the discrete raster column (X) from the body position and optional offset.</td>
+                </tr>
+                <tr>
+                  <td><code>getGridY</code></td>
+                  <td><code>(gSize:Int = -1, offsetY:Float = 0):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Calculates the discrete raster row (Y) from the body position and optional foot offset.</td>
+                </tr>
+                <tr>
+                  <td><code>getActiveState</code></td>
+                  <td><code>():Null&lt;State&lt;Dynamic&gt;&gt;</code></td>
+                  <td><code>Null&lt;State&lt;Dynamic&gt;&gt;</code></td>
+                  <td>Dynamically and safely resolves the active <code>State</code> instance from the reference or <code>FlxG.state</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasEntityAtGrid</code></td>
+                  <td><code>(cx:Int, cy:Int, ?tags:Dynamic, ?entityClass:Class&lt;Dynamic&gt;, gSize:Int = -1):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Checks if a specific entity tag (string or array, e.g. <code>["Obstacle", "Platform", "Wall", "Solid"]</code>) or class occupies the raster grid cell <code>(cx, cy)</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasObstacleInFacingCell</code></td>
+                  <td><code>(dirX:Int = 0, dirY:Int = 0, ?tags:Dynamic, gSize:Int = -1, footOffsetY:Float = 0):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Checks whether the neighbor cell in the facing direction contains an obstacle or wall (defaults to <code>["Obstacle", "Platform", "Wall", "Solid"]</code>).</td>
                 </tr>
                 <tr>
                   <td><code>createShapesFromGraphic</code></td>

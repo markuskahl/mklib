@@ -246,7 +246,280 @@ class EntityNapeSprite extends FlxNapeSprite {
 	public var lastCollidedObstacle:Null<flixel.FlxSprite> = null;
 
 	/**
-	 * Aktualisiert das Sprite und speichert die Vorher-Position des Nape-Körpers
+	 * Aktuelle Blickrichtung der Entity (X: -1 = Links, 0 = Neutral, 1 = Rechts).
+	 */
+	public var facingX:Int = 1;
+
+	/**
+	 * Aktuelle Blickrichtung der Entity (Y: -1 = Oben, 0 = Neutral, 1 = Unten).
+	 */
+	public var facingY:Int = 0;
+
+	/**
+	 * Standard-Rastergröße für Gitterabfragen in Pixeln (Standard: 8).
+	 */
+	public var gridSize:Int = 8;
+
+	/**
+	 * Verbleibende Rückstoß-Dauer (Recoil / Knockback) in Sekunden.
+	 */
+	public var recoilTimer:Float = 0;
+
+	/**
+	 * Aktuelle Rückstoß-Geschwindigkeit in X-Richtung.
+	 */
+	public var recoilVx:Float = 0;
+
+	/**
+	 * Aktuelle Rückstoß-Geschwindigkeit in Y-Richtung.
+	 */
+	public var recoilVy:Float = 0;
+
+	/**
+	 * Löst einen physikalischen Rückstoß-Impuls (Recoil / Knockback) in die angegebene Richtung aus.
+	 *
+	 * @param dirX Richtung X (-1, 0, 1 oder Richtungsvektor).
+	 * @param dirY Richtung Y (-1, 0, 1 oder Richtungsvektor).
+	 * @param speed Rückstoß-Geschwindigkeit in Pixel/Sekunde (Standard: 65).
+	 * @param duration Dauer des Rückstoßes in Sekunden (Standard: 0.12).
+	 */
+	public function applyRecoil(dirX:Float, dirY:Float, speed:Float = 65, duration:Float = 0.12):Void {
+		var len:Float = Math.sqrt(dirX * dirX + dirY * dirY);
+		if (len > 0) {
+			dirX /= len;
+			dirY /= len;
+		}
+
+		recoilTimer = duration;
+		recoilVx = dirX * speed;
+		recoilVy = dirY * speed;
+
+		if (body != null) {
+			body.velocity.x = recoilVx;
+			body.velocity.y = recoilVy;
+		}
+	}
+
+	/**
+	 * Gibt an, ob sich die Entity aktuell in einer Rückstoß-Phase befindet.
+	 */
+	public inline function isRecoiling():Bool {
+		return recoilTimer > 0;
+	}
+
+	/**
+	 * Ermittelt die aktuelle Rasterkoordinate X der Entity auf Basis der Rastergröße.
+	 *
+	 * @param gSize Optionale Rastergröße (Standard: `gridSize` = 8).
+	 * @param offsetX Optionaler Pixel-Versatz (z. B. für Fußpunkt/Collider-Versatz).
+	 * @return Die Spalte (Raster-X).
+	 */
+	public inline function getGridX(gSize:Int = -1, offsetX:Float = 0):Int {
+		var g:Int = gSize > 0 ? gSize : gridSize;
+		var posX:Float = (body != null ? body.position.x : (x + (width * 0.5))) + offsetX;
+		return Math.floor(posX / g);
+	}
+
+	/**
+	 * Ermittelt die aktuelle Rasterkoordinate Y der Entity auf Basis der Rastergröße.
+	 *
+	 * @param gSize Optionale Rastergröße (Standard: `gridSize` = 8).
+	 * @param offsetY Optionaler Pixel-Versatz (z. B. für Fußpunkt/Collider-Versatz).
+	 * @return Die Zeile (Raster-Y).
+	 */
+	public inline function getGridY(gSize:Int = -1, offsetY:Float = 0):Int {
+		var g:Int = gSize > 0 ? gSize : gridSize;
+		var posY:Float = (body != null ? body.position.y : (y + (height * 0.5))) + offsetY;
+		return Math.floor(posY / g);
+	}
+
+	/**
+	 * Ermittelt den aktiven `mklib.state.State` aus der Instanz oder `FlxG.state`.
+	 */
+	public function getActiveState():Null<State<Dynamic>> {
+		if (state != null) {
+			return state;
+		}
+		if (FlxG.state != null && Std.isOfType(FlxG.state, State)) {
+			state = cast FlxG.state;
+			return state;
+		}
+		return null;
+	}
+
+	/**
+	 * Prüft, ob sich an den angegebenen Rasterkoordinaten `(cx, cy)` eine Entity mit einem bestimmten Tag (oder einem aus mehreren Tags) oder Klassentyp befindet.
+	 *
+	 * @param cx Die Raster-Spalte (X).
+	 * @param cy Die Raster-Zeile (Y).
+	 * @param tags Ein einzelner Tag-Name (z. B. "Obstacle") oder ein Array von Tag-Namen (z. B. ["Obstacle", "Platform", "Wall", "Solid"]).
+	 * @param entityClass Optionale spezifische Entity-Klasse.
+	 * @param gSize Optionale Rastergröße (Standard: `gridSize` = 8).
+	 * @return `true`, wenn eine passende Entity die Rasterzelle belegt, sonst `false`.
+	 */
+	public function hasEntityAtGrid(cx:Int, cy:Int, ?tags:Dynamic, ?entityClass:Class<Dynamic>, gSize:Int = -1):Bool {
+		var g:Int = gSize > 0 ? gSize : gridSize;
+		var targetMinX:Float = cx * g;
+		var targetMaxX:Float = targetMinX + g;
+		var targetMinY:Float = cy * g;
+		var targetMaxY:Float = targetMinY + g;
+
+		var tagList:Null<Array<String>> = null;
+		if (tags != null) {
+			if (Std.isOfType(tags, Array)) {
+				tagList = [for (t in cast(tags, Array<Dynamic>)) Std.string(t)];
+			} else if (Std.isOfType(tags, String)) {
+				tagList = [cast(tags, String)];
+			}
+		}
+
+		// 1. EntityLayer im aktiven State prüfen
+		var activeState = getActiveState();
+		if (activeState != null) {
+			var checkGroups:Array<Dynamic> = [];
+			var dynState:Dynamic = activeState;
+			if (dynState.entityLayer != null) {
+				checkGroups.push(dynState.entityLayer);
+			}
+			if (activeState.members != null) {
+				for (m in activeState.members) {
+					if (m != null && Std.isOfType(m, flixel.group.FlxSpriteGroup)) {
+						checkGroups.push(m);
+					}
+				}
+			}
+
+			for (grp in checkGroups) {
+				if (grp != null && grp.members != null) {
+					var members:Array<Dynamic> = cast grp.members;
+					for (m in members) {
+						if (m == null || m == this) {
+							continue;
+						}
+						var sprite:flixel.FlxSprite = cast m;
+						if (!sprite.exists || !sprite.alive) {
+							continue;
+						}
+
+						var matchesType:Bool = true;
+						if (entityClass != null && !Std.isOfType(m, entityClass)) {
+							matchesType = false;
+						}
+
+						var matchesTag:Bool = true;
+						if (tagList != null && tagList.length > 0) {
+							matchesTag = false;
+							if (Std.isOfType(m, EntityNapeSprite)) {
+								var ens:EntityNapeSprite = cast m;
+								for (t in tagList) {
+									if (ens.hasField("Tag") && ens.getField("Tag") == t) {
+										matchesTag = true;
+										break;
+									} else if (ens.hasField("Tags")) {
+										var tagsVal:Dynamic = ens.getField("Tags");
+										if (Std.isOfType(tagsVal, Array)) {
+											var arr:Array<Dynamic> = cast tagsVal;
+											for (v in arr) {
+												if (Std.string(v) == t) {
+													matchesTag = true;
+													break;
+												}
+											}
+										}
+									}
+									if (!matchesTag && ens.body != null && Tags.exist(t)) {
+										var cb = Tags.get(t);
+										if (cb != null && ens.body.cbTypes.has(cb)) {
+											matchesTag = true;
+											break;
+										}
+									}
+								}
+							}
+						}
+
+						if (matchesType && matchesTag) {
+							var sMinX = sprite.x;
+							var sMaxX = sprite.x + sprite.width;
+							var sMinY = sprite.y;
+							var sMaxY = sprite.y + sprite.height;
+
+							if (targetMinX < sMaxX && targetMaxX > sMinX && targetMinY < sMaxY && targetMaxY > sMinY) {
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// 2. Nape Physics Space AABB Query
+		if (body != null && body.space != null) {
+			var aabb = new nape.geom.AABB(targetMinX + 0.5, targetMinY + 0.5, g - 1.0, g - 1.0);
+			var shapes = body.space.shapesInAABB(aabb);
+
+			for (i in 0...shapes.length) {
+				var shape = shapes.at(i);
+				if (shape != null && shape.body != null && shape.body != body) {
+					if (tagList != null && tagList.length > 0) {
+						for (t in tagList) {
+							var cb = Tags.get(t);
+							if (cb != null && (shape.cbTypes.has(cb) || (shape.body != null && shape.body.cbTypes.has(cb)))) {
+								return true;
+							}
+						}
+					}
+
+					var inst = getFromInteractor(shape);
+					if (inst != null && inst != this) {
+						if (entityClass != null && Std.isOfType(inst, entityClass)) {
+							return true;
+						}
+						if (tagList != null && tagList.length > 0) {
+							for (t in tagList) {
+								if (inst.hasField("Tag") && inst.getField("Tag") == t) {
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Prüft, ob die Nachbarzelle in Blickrichtung durch eine Entity mit bestimmten Tags oder Hindernissen belegt ist.
+	 *
+	 * @param dirX Horizontale Blickrichtung (-1 = Links, 0 = Neutral, 1 = Rechts). Falls 0, wird `facingX` genutzt.
+	 * @param dirY Vertikale Blickrichtung (-1 = Oben, 0 = Neutral, 1 = Unten). Falls 0, wird `facingY` genutzt.
+	 * @param tags Ein Tag oder ein Array von Tags (Standard: `["Obstacle", "Platform", "Wall", "Solid"]`).
+	 * @param gSize Optionale Rastergröße (Standard: `gridSize` = 8).
+	 * @param footOffsetY Optionaler Y-Versatz für Fußpunkt-Kompensation (z. B. 2.5).
+	 * @return `true`, wenn in der Nachbarzelle in Blickrichtung ein passendes Objekt liegt, sonst `false`.
+	 */
+	public function hasObstacleInFacingCell(dirX:Int = 0, dirY:Int = 0, ?tags:Dynamic, gSize:Int = -1, footOffsetY:Float = 0):Bool {
+		var useDirX:Int = dirX != 0 ? dirX : facingX;
+		var useDirY:Int = dirY != 0 ? dirY : facingY;
+
+		var curCx = getGridX(gSize, 0);
+		var curCy = getGridY(gSize, footOffsetY);
+
+		var targetCx = curCx + useDirX;
+		var targetCy = curCy + useDirY;
+
+		if (lastCollidedObstacle != null && isPixelBlocked(useDirX, useDirY)) {
+			return true;
+		}
+
+		var checkTags = (tags != null) ? tags : ["Obstacle", "Platform", "Wall", "Solid"];
+		return hasEntityAtGrid(targetCx, targetCy, checkTags, null, gSize);
+	}
+
+	/**
+	 * Aktualisiert das Sprite, steuert Rückstoß-Bewegungen und speichert die Vorher-Position des Nape-Körpers
 	 * für präzise und jitterfreie Kollisionsauflösung.
 	 */
 	override public function update(elapsed:Float):Void {
@@ -254,6 +527,19 @@ class EntityNapeSprite extends FlxNapeSprite {
 			prevBodyX = body.position.x;
 			prevBodyY = body.position.y;
 		}
+
+		if (recoilTimer > 0) {
+			recoilTimer -= elapsed;
+			if (body != null) {
+				body.velocity.x = recoilVx;
+				body.velocity.y = recoilVy;
+			}
+			if (recoilTimer <= 0) {
+				recoilVx = 0;
+				recoilVy = 0;
+			}
+		}
+
 		super.update(elapsed);
 	}
 

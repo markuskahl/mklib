@@ -69,6 +69,10 @@ Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur
 | `body` | `nape.phys.Body` | `public` | *(Ererbt von FlxNapeSprite)* Der physikalische Nape-Körper der Entity. |
 | `prevBodyX` / `prevBodyY` | `Float` | `public` | Nape-Körperposition vor dem aktuellen Physik-Schritt (für jitterfreie Pixel-Kollisionsauflösung). |
 | `lastCollidedObstacle` | `Null<flixel.FlxSprite>` | `public` | Zuletzt berührtes Hindernis für vorausschauende Pixel-Blockade-Prüfungen (`isPixelBlocked`). |
+| `facingX` / `facingY` | `Int` | `public` | Aktuelle diskrete Blickrichtung der Entity (-1, 0, 1). |
+| `gridSize` | `Int` | `public` | Standard-Rastergröße für Gitterabfragen in Pixeln (Standard: `8`). |
+| `recoilTimer` | `Float` | `public` | Verbleibende Rückstoß-Dauer (Recoil / Knockback) in Sekunden. |
+| `recoilVx` / `recoilVy` | `Float` | `public` | Aktuelle Rückstoß-Geschwindigkeit in X- bzw. Y-Richtung. |
 | *Ererbte Felder* | `Float`, `Bool` etc. | `public` | Alle Standardfelder von `flixel.addons.nape.FlxNapeSprite` und `flixel.FlxSprite`. |
 
 ### Methoden (Methods)
@@ -87,6 +91,13 @@ Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur
 | `createShapesFromGraphic` | `(alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, clearExisting:Bool = true, cellSizeVal:Float = 1.0)` | `Array<Polygon>` | Erzeugt Nape-Polygon-Shapes vollautomatisch aus der sichtbaren Pixelgrafik des Sprites via Marching Squares / Triangulation. |
 | `resolvePixelCollision` | `(obstacle:flixel.FlxSprite)` | `Bool` | Löst eine pixelgenaue Überlappung (`FlxG.pixelPerfectOverlap`) verzögerungsfrei auf (Positionskorrektur, Geschwindigkeitsstopp, Wall-Sliding). Gibt `true` zurück, wenn eine Kollision vorlag. |
 | `isPixelBlocked` | `(dirX:Float, dirY:Float)` | `Bool` | Prüft vorausschauend, ob eine Bewegung in die angegebene Richtung zu einer Pixel-Überlappung mit `lastCollidedObstacle` führen würde. |
+| `applyRecoil` | `(dirX:Float, dirY:Float, speed:Float = 65, duration:Float = 0.12)` | `Void` | Löst einen physikalischen Rückstoß-Impuls (Recoil / Knockback / Zelda-Bounce) in die angegebene Richtung aus. |
+| `isRecoiling` | `()` | `Bool` | Gibt an, ob sich die Entity aktuell in einer aktiven Rückstoß-Phase befindet (`recoilTimer > 0`). |
+| `getGridX` | `(gSize:Int = -1, offsetX:Float = 0)` | `Int` | Berechnet die diskrete Raster-Spalte (X) auf Basis der Körperposition und eines optionalen Offsets. |
+| `getGridY` | `(gSize:Int = -1, offsetY:Float = 0)` | `Int` | Berechnet die diskrete Raster-Zeile (Y) auf Basis der Körperposition und eines optionalen Fußpunkt-Offsets. |
+| `getActiveState` | `()` | `Null<State<Dynamic>>` | Liefert dynamisch und sicher die aktive `State`-Instanz aus der Instanz-Referenz oder `FlxG.state`. |
+| `hasEntityAtGrid` | `(cx:Int, cy:Int, ?tags:Dynamic, ?entityClass:Class<Dynamic>, gSize:Int = -1)` | `Bool` | Prüft, ob sich in der Rasterzelle `(cx, cy)` eine Entity mit bestimmtem Tag (String oder Array, z. B. `["Obstacle", "Platform", "Wall", "Solid"]`) oder Klassentyp befindet. |
+| `hasObstacleInFacingCell` | `(dirX:Int = 0, dirY:Int = 0, ?tags:Dynamic, gSize:Int = -1, footOffsetY:Float = 0)` | `Bool` | Prüft, ob die Nachbarzelle in Blickrichtung durch ein Hindernis oder eine Wand (`tags == null` prüft standardmäßig `["Obstacle", "Platform", "Wall", "Solid"]`) belegt ist. |
 | `onPositionCorrected` | `()` | `Void` | Callback-Hook nach einer Positionskorrektur durch `resolvePixelCollision` (kann in abgeleiteten Klassen überschrieben werden). |
 | `getFromInteractor` | `(interactor:nape.phys.Interactor)` | `Null<EntityNapeSprite>` | Statische Hilfsfunktion: Ermittelt die `EntityNapeSprite`-Instanz aus einem Nape-`Interactor` (`userData.obj` oder `userData.instance`). |
 
