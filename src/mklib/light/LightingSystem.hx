@@ -616,6 +616,10 @@ class LightingSystem extends FlxSprite {
 			_shadowStepsBuffer[0] = shadowSteps;
 			_shadowSoftnessBuffer[0] = shadowSoftness;
 
+			shaderInstance.shadowsEnabled = 0;
+			shaderInstance.shadowSteps = shadowSteps;
+			shaderInstance.shadowSoftness = shadowSoftness;
+
 			shaderInstance.data.u_shadowsEnabled.value = _shadowsEnabledBuffer;
 			shaderInstance.data.u_shadowSteps.value = _shadowStepsBuffer;
 			shaderInstance.data.u_shadowSoftness.value = _shadowSoftnessBuffer;
@@ -643,6 +647,10 @@ class LightingSystem extends FlxSprite {
 		_shadowsEnabledBuffer[0] = 1;
 		_shadowStepsBuffer[0] = shadowSteps;
 		_shadowSoftnessBuffer[0] = shadowSoftness;
+
+		shaderInstance.shadowsEnabled = 1;
+		shaderInstance.shadowSteps = shadowSteps;
+		shaderInstance.shadowSoftness = shadowSoftness;
 
 		shaderInstance.data.u_shadowsEnabled.value = _shadowsEnabledBuffer;
 		shaderInstance.data.u_shadowSteps.value = _shadowStepsBuffer;
@@ -838,29 +846,126 @@ class LightingSystem extends FlxSprite {
 
 		// GPU-Uniforms befüllen
 		var count = _visibleLights.length;
+		var posArr = shaderInstance.posArray;
+		var colArr = shaderInstance.colorArray;
+		var parArr = shaderInstance.paramsArray;
+		var sptArr = shaderInstance.spotArray;
 
 		for (i in 0...count) {
 			var l = _visibleLights[i];
 			var posIdx = i * 2;
 			var vec4Idx = i * 4;
 
-			_posBuffer[posIdx] = l.getRenderX();
-			_posBuffer[posIdx + 1] = l.getRenderY();
+			var rx = l.getRenderX();
+			var ry = l.getRenderY();
+			var cr = l.color.redFloat;
+			var cg = l.color.greenFloat;
+			var cb = l.color.blueFloat;
+			var ci = l.getRenderIntensity();
+			var rad = l.getRenderRadius();
+			var foff = l.falloff;
+			var lt:Float = cast(l.lightType, Int);
+			var extra = l.getShaderExtraParam();
 
-			_colorBuffer[vec4Idx] = l.color.redFloat;
-			_colorBuffer[vec4Idx + 1] = l.color.greenFloat;
-			_colorBuffer[vec4Idx + 2] = l.color.blueFloat;
-			_colorBuffer[vec4Idx + 3] = l.getRenderIntensity();
+			_posBuffer[posIdx] = rx;
+			_posBuffer[posIdx + 1] = ry;
+			if (posArr != null) {
+				posArr[posIdx] = rx;
+				posArr[posIdx + 1] = ry;
+			}
 
-			_paramsBuffer[vec4Idx] = l.getRenderRadius();
-			_paramsBuffer[vec4Idx + 1] = l.falloff;
-			_paramsBuffer[vec4Idx + 2] = cast(l.lightType, Int);
-			_paramsBuffer[vec4Idx + 3] = l.getShaderExtraParam();
+			_colorBuffer[vec4Idx] = cr;
+			_colorBuffer[vec4Idx + 1] = cg;
+			_colorBuffer[vec4Idx + 2] = cb;
+			_colorBuffer[vec4Idx + 3] = ci;
+			if (colArr != null) {
+				colArr[vec4Idx] = cr;
+				colArr[vec4Idx + 1] = cg;
+				colArr[vec4Idx + 2] = cb;
+				colArr[vec4Idx + 3] = ci;
+			}
+
+			_paramsBuffer[vec4Idx] = rad;
+			_paramsBuffer[vec4Idx + 1] = foff;
+			_paramsBuffer[vec4Idx + 2] = lt;
+			_paramsBuffer[vec4Idx + 3] = extra;
+			if (parArr != null) {
+				parArr[vec4Idx] = rad;
+				parArr[vec4Idx + 1] = foff;
+				parArr[vec4Idx + 2] = lt;
+				parArr[vec4Idx + 3] = extra;
+			}
 
 			l.fillShaderSpotData(_spotBuffer, vec4Idx);
+			if (sptArr != null) {
+				sptArr[vec4Idx] = _spotBuffer[vec4Idx];
+				sptArr[vec4Idx + 1] = _spotBuffer[vec4Idx + 1];
+				sptArr[vec4Idx + 2] = _spotBuffer[vec4Idx + 2];
+				sptArr[vec4Idx + 3] = _spotBuffer[vec4Idx + 3];
+			}
 		}
 
-		// Shader-Uniforms setzen (Zero Allocation über wiederverwendete Puffer)
+		// Nicht belegte Licht-Slots säubern
+		for (i in count...MAX_LIGHTS) {
+			var posIdx = i * 2;
+			var vec4Idx = i * 4;
+
+			_posBuffer[posIdx] = 0;
+			_posBuffer[posIdx + 1] = 0;
+			if (posArr != null) {
+				posArr[posIdx] = 0;
+				posArr[posIdx + 1] = 0;
+			}
+
+			_colorBuffer[vec4Idx] = 0;
+			_colorBuffer[vec4Idx + 1] = 0;
+			_colorBuffer[vec4Idx + 2] = 0;
+			_colorBuffer[vec4Idx + 3] = 0;
+			if (colArr != null) {
+				colArr[vec4Idx] = 0;
+				colArr[vec4Idx + 1] = 0;
+				colArr[vec4Idx + 2] = 0;
+				colArr[vec4Idx + 3] = 0;
+			}
+
+			_paramsBuffer[vec4Idx] = 0;
+			_paramsBuffer[vec4Idx + 1] = 0;
+			_paramsBuffer[vec4Idx + 2] = 0;
+			_paramsBuffer[vec4Idx + 3] = 0;
+			if (parArr != null) {
+				parArr[vec4Idx] = 0;
+				parArr[vec4Idx + 1] = 0;
+				parArr[vec4Idx + 2] = 0;
+				parArr[vec4Idx + 3] = 0;
+			}
+
+			_spotBuffer[vec4Idx] = 0;
+			_spotBuffer[vec4Idx + 1] = 0;
+			_spotBuffer[vec4Idx + 2] = -1.0;
+			_spotBuffer[vec4Idx + 3] = -1.0;
+			if (sptArr != null) {
+				sptArr[vec4Idx] = 0;
+				sptArr[vec4Idx + 1] = 0;
+				sptArr[vec4Idx + 2] = -1.0;
+				sptArr[vec4Idx + 3] = -1.0;
+			}
+		}
+
+		// Shader-Uniforms setzen (Direkt auf ShaderInstance sowie über FlxShader-Data)
+		shaderInstance.ambientR = ambientColor.redFloat;
+		shaderInstance.ambientG = ambientColor.greenFloat;
+		shaderInstance.ambientB = ambientColor.blueFloat;
+		shaderInstance.ambientIntensity = ambientIntensity;
+
+		shaderInstance.resolutionX = camW;
+		shaderInstance.resolutionY = camH;
+
+		shaderInstance.camScrollX = cam.scroll.x;
+		shaderInstance.camScrollY = cam.scroll.y;
+
+		shaderInstance.camZoom = cam.zoom;
+		shaderInstance.lightCount = count;
+
 		_ambientBuffer[0] = ambientColor.redFloat;
 		_ambientBuffer[1] = ambientColor.greenFloat;
 		_ambientBuffer[2] = ambientColor.blueFloat;
