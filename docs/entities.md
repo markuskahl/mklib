@@ -67,6 +67,8 @@ Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur
 | `graphicPath` | `Null<String>` | `public` | Der aufgelöste Pfad zur Grafikdatei (beginnend mit `assets/`, z. B. `assets/tilesets/Platform.png`), falls ein Tile oder `TileRect` zugewiesen ist, sonst `null`. |
 | `hasGraphic` | `Bool` | `public` | Gibt an, ob der Entity in LDtk eine gültige Grafikdatei zugewiesen ist (`true`), andernfalls `false`. |
 | `body` | `nape.phys.Body` | `public` | *(Ererbt von FlxNapeSprite)* Der physikalische Nape-Körper der Entity. |
+| `prevBodyX` / `prevBodyY` | `Float` | `public` | Nape-Körperposition vor dem aktuellen Physik-Schritt (für jitterfreie Pixel-Kollisionsauflösung). |
+| `lastCollidedObstacle` | `Null<flixel.FlxSprite>` | `public` | Zuletzt berührtes Hindernis für vorausschauende Pixel-Blockade-Prüfungen (`isPixelBlocked`). |
 | *Ererbte Felder* | `Float`, `Bool` etc. | `public` | Alle Standardfelder von `flixel.addons.nape.FlxNapeSprite` und `flixel.FlxSprite`. |
 
 ### Methoden (Methods)
@@ -82,6 +84,11 @@ Erbt von `flixel.addons.nape.FlxNapeSprite` und erweitert dieses um Methoden zur
 | `sensorEnabled` | `(?enable:Null<Bool>)` | `Void` | Setzt die `sensorEnabled`-Eigenschaft für alle Shapes. Ohne Parameter wird der Wert aus dem LDtk-Feld `"sensor"` bzw. `"sensorEnabled"` ausgelesen. |
 | `addCbType` | `(name:String = null)` | `Void` | Weist dem Nape-Physikkörper (`body`) CbType-Tags zu. Ist `name == null`, werden die Entity-Felder `Tag` bzw. `Tags` aus LDtk automatisch ausgelesen. Setzt zudem `body.userData.instance = this`. |
 | `updateShapePosition` | `()` | `Void` | Positioniert den Nape-Körper im Mittelpunkt der LDtk-Entity bzw. Sprite-Maße (`pixelX + width/2`, `pixelY + height/2`), um die Nape-Schwerpunktsausrichtung auszugleichen. |
+| `createShapesFromGraphic` | `(alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, clearExisting:Bool = true, cellSizeVal:Float = 1.0)` | `Array<Polygon>` | Erzeugt Nape-Polygon-Shapes vollautomatisch aus der sichtbaren Pixelgrafik des Sprites via Marching Squares / Triangulation. |
+| `resolvePixelCollision` | `(obstacle:flixel.FlxSprite)` | `Bool` | Löst eine pixelgenaue Überlappung (`FlxG.pixelPerfectOverlap`) verzögerungsfrei auf (Positionskorrektur, Geschwindigkeitsstopp, Wall-Sliding). Gibt `true` zurück, wenn eine Kollision vorlag. |
+| `isPixelBlocked` | `(dirX:Float, dirY:Float)` | `Bool` | Prüft vorausschauend, ob eine Bewegung in die angegebene Richtung zu einer Pixel-Überlappung mit `lastCollidedObstacle` führen würde. |
+| `onPositionCorrected` | `()` | `Void` | Callback-Hook nach einer Positionskorrektur durch `resolvePixelCollision` (kann in abgeleiteten Klassen überschrieben werden). |
+| `getFromInteractor` | `(interactor:nape.phys.Interactor)` | `Null<EntityNapeSprite>` | Statische Hilfsfunktion: Ermittelt die `EntityNapeSprite`-Instanz aus einem Nape-`Interactor` (`userData.obj` oder `userData.instance`). |
 
 ### Detailerklärung der Methoden
 

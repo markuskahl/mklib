@@ -1,5 +1,6 @@
 package mklib.physic;
 
+import flixel.FlxG;
 import flixel.addons.nape.FlxNapeSpace;
 import mklib.tools.Tags;
 import mklib.entity.EntityNapeSprite;
@@ -207,6 +208,35 @@ class Listener
 	 * @param tag2 Name des Hindernisses (z. B. "Obstacle", "Solid").
 	 * @param onCollision Optionaler Callback, der bei Pixel-Kollision aufgerufen wird: `(actor, obstacle) -> Void`.
 	 */
+	private static function resolveActorAndObstacle(cb:InteractionCallback, cb1:CbType):{actor:EntityNapeSprite, obstacle:EntityNapeSprite}
+	{
+		var entA = EntityNapeSprite.getFromInteractor(cb.int1);
+		var entB = EntityNapeSprite.getFromInteractor(cb.int2);
+		if (entA == null || entB == null)
+		{
+			return null;
+		}
+
+		var int1HasTag1 = cb.int1.cbTypes.has(cb1) || (cb.int1.isShape() && cb.int1.castShape.body != null && cb.int1.castShape.body.cbTypes.has(cb1));
+		if (int1HasTag1)
+		{
+			return {actor: entA, obstacle: entB};
+		}
+		else
+		{
+			return {actor: entB, obstacle: entA};
+		}
+	}
+
+	/**
+	 * Registriert eine pixelgenaue Kollisionsüberwachung zwischen zwei Tag-Typen (`tag1` und `tag2`).
+	 * Löst bei Pixel-Überlappung (`FlxG.pixelPerfectOverlap`) automatisch das Zurücksetzen und Stoppen
+	 * von `tag1` gegenüber `tag2` (inkl. Wall-Sliding) über `EntityNapeSprite.resolvePixelCollision` aus.
+	 *
+	 * @param tag1 Name des sich bewegenden Akteurs (z. B. "Hero", "Player").
+	 * @param tag2 Name des Hindernisses (z. B. "Obstacle", "Solid").
+	 * @param onCollision Optionaler Callback, der bei Pixel-Kollision aufgerufen wird: `(actor, obstacle) -> Void`.
+	 */
 	public static function addPixelCollisionListener(tag1:String, tag2:String, ?onCollision:EntityNapeSprite->EntityNapeSprite->Void):Void
 	{
 		var cb1 = Tags.get(tag1);
@@ -218,33 +248,182 @@ class Listener
 		}
 
 		addSensorOngoingListener(tag1, tag2, function(cb:InteractionCallback) {
-			var entA = EntityNapeSprite.getFromInteractor(cb.int1);
-			var entB = EntityNapeSprite.getFromInteractor(cb.int2);
-			if (entA == null || entB == null)
+			var pair = resolveActorAndObstacle(cb, cb1);
+			if (pair == null)
 			{
 				return;
 			}
 
-			var actor:EntityNapeSprite = null;
-			var obstacle:EntityNapeSprite = null;
-
-			var int1HasTag1 = cb.int1.cbTypes.has(cb1) || (cb.int1.isShape() && cb.int1.castShape.body != null && cb.int1.castShape.body.cbTypes.has(cb1));
-			if (int1HasTag1)
-			{
-				actor = entA;
-				obstacle = entB;
-			}
-			else
-			{
-				actor = entB;
-				obstacle = entA;
-			}
-
-			if (actor.resolvePixelCollision(obstacle))
+			if (pair.actor.resolvePixelCollision(pair.obstacle))
 			{
 				if (onCollision != null)
 				{
-					onCollision(actor, obstacle);
+					onCollision(pair.actor, pair.obstacle);
+				}
+			}
+		});
+	}
+
+	/**
+	 * Registriert einen pixelgenauen Sensor-Listener für das ERSTE Berühren (BEGIN) zwischen zwei Tag-Typen (`tag1` und `tag2`).
+	 * Der Callback wird genau einmal im ersten Frame aufgerufen, in dem sich tatsächliche Pixel überlappen (`FlxG.pixelPerfectOverlap`),
+	 * ohne dass die Bewegung physikalisch blockiert wird.
+	 *
+	 * @param tag1 Name des ersten Tags (z. B. "Player", "Hero").
+	 * @param tag2 Name des zweiten Tags (z. B. "Coin", "Hazard").
+	 * @param onBegin Callback-Funktion beim ersten Pixelkontakt: `(actor, target) -> Void`.
+	 */
+	public static function addPixelSensorBeginListener(tag1:String, tag2:String, onBegin:EntityNapeSprite->EntityNapeSprite->Void):Void
+	{
+		var cb1 = Tags.get(tag1);
+		var cb2 = Tags.get(tag2);
+		if (cb1 == null || cb2 == null || FlxNapeSpace.space == null)
+		{
+			trace('Warning: Could not register PixelSensorBeginListener for "$tag1" and "$tag2" (CbType or space is null)');
+			return;
+		}
+
+		var activeOverlaps:Map<String, Bool> = new Map<String, Bool>();
+
+		addSensorOngoingListener(tag1, tag2, function(cb:InteractionCallback) {
+			var pair = resolveActorAndObstacle(cb, cb1);
+			if (pair == null)
+			{
+				return;
+			}
+
+			var actor = pair.actor;
+			var target = pair.obstacle;
+			var key = (actor.body != null ? actor.body.id : 0) + ":" + (target.body != null ? target.body.id : 0);
+
+			var isPixelOverlapping = FlxG.pixelPerfectOverlap(actor, target);
+			var wasOverlapping = activeOverlaps.exists(key);
+
+			if (isPixelOverlapping && !wasOverlapping)
+			{
+				activeOverlaps.set(key, true);
+				if (onBegin != null)
+				{
+					onBegin(actor, target);
+				}
+			}
+			else if (!isPixelOverlapping && wasOverlapping)
+			{
+				activeOverlaps.remove(key);
+			}
+		});
+
+		addSensorEndListener(tag1, tag2, function(cb:InteractionCallback) {
+			var pair = resolveActorAndObstacle(cb, cb1);
+			if (pair == null)
+			{
+				return;
+			}
+
+			var key = (pair.actor.body != null ? pair.actor.body.id : 0) + ":" + (pair.obstacle.body != null ? pair.obstacle.body.id : 0);
+			activeOverlaps.remove(key);
+		});
+	}
+
+	/**
+	 * Registriert einen pixelgenauen Sensor-Listener für ANDAUERNDE Überlappung (ONGOING) zwischen zwei Tag-Typen (`tag1` und `tag2`).
+	 * Der Callback wird in jedem Physik-Tick aufgerufen, solange tatsächliche Pixel überlappen (`FlxG.pixelPerfectOverlap`),
+	 * ohne dass die Bewegung physikalisch blockiert wird.
+	 *
+	 * @param tag1 Name des ersten Tags.
+	 * @param tag2 Name des zweiten Tags.
+	 * @param onOngoing Callback-Funktion während der andauernden Pixel-Überlappung: `(actor, target) -> Void`.
+	 */
+	public static function addPixelSensorOngoingListener(tag1:String, tag2:String, onOngoing:EntityNapeSprite->EntityNapeSprite->Void):Void
+	{
+		var cb1 = Tags.get(tag1);
+		var cb2 = Tags.get(tag2);
+		if (cb1 == null || cb2 == null || FlxNapeSpace.space == null)
+		{
+			trace('Warning: Could not register PixelSensorOngoingListener for "$tag1" and "$tag2" (CbType or space is null)');
+			return;
+		}
+
+		addSensorOngoingListener(tag1, tag2, function(cb:InteractionCallback) {
+			var pair = resolveActorAndObstacle(cb, cb1);
+			if (pair == null)
+			{
+				return;
+			}
+
+			if (FlxG.pixelPerfectOverlap(pair.actor, pair.obstacle))
+			{
+				if (onOngoing != null)
+				{
+					onOngoing(pair.actor, pair.obstacle);
+				}
+			}
+		});
+	}
+
+	/**
+	 * Registriert einen pixelgenauen Sensor-Listener für das VERLASSEN (END) der Pixel-Überlappung zwischen zwei Tag-Typen (`tag1` und `tag2`).
+	 * Der Callback wird aufgerufen, sobald die Pixel-Überlappung (`FlxG.pixelPerfectOverlap`) abreißt,
+	 * nachdem zuvor eine Überlappung bestand.
+	 *
+	 * @param tag1 Name des ersten Tags.
+	 * @param tag2 Name des zweiten Tags.
+	 * @param onEnd Callback-Funktion beim Abreißen des Pixelkontakts: `(actor, target) -> Void`.
+	 */
+	public static function addPixelSensorEndListener(tag1:String, tag2:String, onEnd:EntityNapeSprite->EntityNapeSprite->Void):Void
+	{
+		var cb1 = Tags.get(tag1);
+		var cb2 = Tags.get(tag2);
+		if (cb1 == null || cb2 == null || FlxNapeSpace.space == null)
+		{
+			trace('Warning: Could not register PixelSensorEndListener for "$tag1" and "$tag2" (CbType or space is null)');
+			return;
+		}
+
+		var activeOverlaps:Map<String, Bool> = new Map<String, Bool>();
+
+		addSensorOngoingListener(tag1, tag2, function(cb:InteractionCallback) {
+			var pair = resolveActorAndObstacle(cb, cb1);
+			if (pair == null)
+			{
+				return;
+			}
+
+			var actor = pair.actor;
+			var target = pair.obstacle;
+			var key = (actor.body != null ? actor.body.id : 0) + ":" + (target.body != null ? target.body.id : 0);
+
+			var isPixelOverlapping = FlxG.pixelPerfectOverlap(actor, target);
+			var wasOverlapping = activeOverlaps.exists(key);
+
+			if (isPixelOverlapping && !wasOverlapping)
+			{
+				activeOverlaps.set(key, true);
+			}
+			else if (!isPixelOverlapping && wasOverlapping)
+			{
+				activeOverlaps.remove(key);
+				if (onEnd != null)
+				{
+					onEnd(actor, target);
+				}
+			}
+		});
+
+		addSensorEndListener(tag1, tag2, function(cb:InteractionCallback) {
+			var pair = resolveActorAndObstacle(cb, cb1);
+			if (pair == null)
+			{
+				return;
+			}
+
+			var key = (pair.actor.body != null ? pair.actor.body.id : 0) + ":" + (pair.obstacle.body != null ? pair.obstacle.body.id : 0);
+			if (activeOverlaps.exists(key))
+			{
+				activeOverlaps.remove(key);
+				if (onEnd != null)
+				{
+					onEnd(pair.actor, pair.obstacle);
 				}
 			}
 		});

@@ -58,15 +58,27 @@ Physische Kontakte, bei denen Körper aneinander abprallen, stehen bleiben oder 
 | `addSensorEndListenerANY` | `(tag1:String, handler:InteractionCallback->Void)` | `Void` | Registriert ein `CbEvent.END`-Sensor-Event zwischen `tag1` und `CbType.ANY_BODY`. |
 | `addSensorOngoingListenerANY` | `(tag1:String, handler:InteractionCallback->Void)` | `Void` | Registriert ein `CbEvent.ONGOING`-Sensor-Event zwischen `tag1` und `CbType.ANY_BODY`. |
 
+### Übersicht: Pixelgenaue Kollisionen & Pixel-Sensoren (`Pixel-Perfect`)
+
+Pixelgenaue Kollisions- und Sensorüberwachung via `FlxG.pixelPerfectOverlap`.
+
+| Methode | Signatur | Rückgabe | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `addPixelCollisionListener` | `(tag1:String, tag2:String, ?onCollision:EntityNapeSprite->EntityNapeSprite->Void)` | `Void` | **Physische Pixel-Kollision:** Registriert eine pixelgenaue Kollisionsüberwachung zwischen `tag1` (Akteur) und `tag2` (Hindernis). Löst bei Pixel-Überlappung automatisches Zurücksetzen, Stoppen und Wall-Sliding via `resolvePixelCollision` aus. Optionaler Callback `(actor, obstacle) -> Void`. |
+| `addPixelSensorBeginListener` | `(tag1:String, tag2:String, onBegin:EntityNapeSprite->EntityNapeSprite->Void)` | `Void` | **Pixel-Sensor (Start):** Feuert genau einmal im ersten Frame, in dem sich tatsächliche Pixel von `tag1` und `tag2` berühren (ohne die Bewegung physikalisch zu blockieren). Perfekt für Münzen, Schalter, Fallen. |
+| `addPixelSensorOngoingListener` | `(tag1:String, tag2:String, onOngoing:EntityNapeSprite->EntityNapeSprite->Void)` | `Void` | **Pixel-Sensor (Dauerhaft):** Feuert in jedem Physik-Tick, solange sich tatsächliche Pixel überlappen (z. B. Schaden über Zeit in Giftwolken/Lava, Wasserströmungen). |
+| `addPixelSensorEndListener` | `(tag1:String, tag2:String, onEnd:EntityNapeSprite->EntityNapeSprite->Void)` | `Void` | **Pixel-Sensor (Ende):** Feuert in dem Frame, in dem die Pixel-Überlappung abreißt, nachdem zuvor ein Kontakt bestand. |
+
 ---
 
-## 💡 Code-Beispiel: Münzen einsammeln & Schaden nehmen
+## 💡 Code-Beispiel: Münzen einsammeln, Schaden nehmen & Pixel-Kollision / Sensoren
 
 ```haxe
 package;
 
 import mklib.state.State;
 import mklib.physic.Listener;
+import mklib.entity.EntityNapeSprite;
 import nape.callbacks.InteractionCallback;
 import entities.Hero;
 import entities.Coin;
@@ -76,14 +88,30 @@ class PlayState extends State<Data.Data_Level> {
         super.create();
         napeInit(0, 300);
 
-        // 1. Münzen einsammeln (Sensor-Event zwischen "Player" und "Coin")
-        Listener.addSensorBeginListener("Player", "Coin", onCollectCoin);
+        // 1. Münzen pixelgenau einsammeln (Pixel-Sensor BEGIN, ohne grobe Bounding-Box-Fehlauslösung)
+        Listener.addPixelSensorBeginListener("Player", "Coin", onCollectCoinPixel);
 
-        // 2. Stacheln berühren (Kollisions-Event zwischen "Player" und "Spikes")
+        // 2. Schaden in Lava-Feldern (Pixel-Sensor ONGOING, Schaden pro Frame bei echtem Kontakt)
+        Listener.addPixelSensorOngoingListener("Player", "Lava", onBurnInLava);
+
+        // 3. Stacheln berühren (Standard Nape CbEvent.BEGIN Kollisions-Event)
         Listener.addCollisionBeginListener("Player", "Spikes", onHitSpikes);
 
-        // 3. Sensor-Event mit beliebigem Körper
-        Listener.addSensorBeginListenerANY("Checkpoint", onTriggerCheckpoint);
+        // 4. Pixelgenaue feste Kollision zwischen Spieler und Hindernissen (inkl. Wall-Sliding)
+        Listener.addPixelCollisionListener("Player", "Obstacle", onPixelHit);
+    }
+
+    private function onCollectCoinPixel(player:EntityNapeSprite, coin:EntityNapeSprite):Void {
+        coin.kill();
+        trace("Münze bei exaktem Pixelkontakt eingesammelt!");
+    }
+
+    private function onBurnInLava(player:EntityNapeSprite, lava:EntityNapeSprite):Void {
+        trace("Spieler berührt Lava-Pixel!");
+    }
+
+    private function onPixelHit(actor:EntityNapeSprite, obstacle:EntityNapeSprite):Void {
+        trace('Pixel-Kollision zwischen ${actor.iid} und ${obstacle.iid}');
     }
 
     private function onCollectCoin(cb:InteractionCallback):Void {

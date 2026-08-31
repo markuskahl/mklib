@@ -213,7 +213,7 @@
                   <td><code>mklib.physic</code></td>
                   <td><strong><code>Listener</code></strong></td>
                   <td>–</td>
-                  <td>9 Listener für Kollisionen und Sensoren</td>
+                  <td>13 Listener für Kollisionen, Sensoren & Pixel-Kollision/Sensoren</td>
                   <td><a href="#physics">Physik →</a></td>
                 </tr>
                 <tr>
@@ -467,7 +467,7 @@
                   <td><code>mklib.physic</code></td>
                   <td><strong><code>Listener</code></strong></td>
                   <td>–</td>
-                  <td>9 Listener für Kollisionen und Sensoren</td>
+                  <td>13 listeners for collisions, sensors & pixel-perfect collisions/sensors</td>
                   <td><a href="#physics">Physik →</a></td>
                 </tr>
                 <tr>
@@ -2548,6 +2548,36 @@
                   <td><code>Void</code></td>
                   <td>Lädt alle Animationsclips aus <code>AnimationRegistry.db</code> und startet die Standardanimation.</td>
                 </tr>
+                <tr>
+                  <td><code>createShapesFromGraphic</code></td>
+                  <td><code>(alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, clearExisting:Bool = true, cellSizeVal:Float = 1.0):Array&lt;Polygon&gt;</code></td>
+                  <td><code>Array&lt;Polygon&gt;</code></td>
+                  <td>Erzeugt Nape-Polygon-Shapes vollautomatisch aus der sichtbaren Pixelgrafik des Sprites via Marching Squares.</td>
+                </tr>
+                <tr>
+                  <td><code>resolvePixelCollision</code></td>
+                  <td><code>(obstacle:flixel.FlxSprite):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Löst eine pixelgenaue Überlappung (<code>FlxG.pixelPerfectOverlap</code>) verzögerungsfrei auf (Positionskorrektur, Geschwindigkeitsstopp, Wall-Sliding). Gibt <code>true</code> zurück, wenn eine Kollision vorlag.</td>
+                </tr>
+                <tr>
+                  <td><code>isPixelBlocked</code></td>
+                  <td><code>(dirX:Float, dirY:Float):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft vorausschauend, ob eine Bewegung in die angegebene Richtung zu einer Pixel-Überlappung mit <code>lastCollidedObstacle</code> führen würde.</td>
+                </tr>
+                <tr>
+                  <td><code>onPositionCorrected</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Callback-Hook nach einer Positionskorrektur durch <code>resolvePixelCollision</code> (kann in Unterklassen überschrieben werden).</td>
+                </tr>
+                <tr>
+                  <td><code>getFromInteractor</code></td>
+                  <td><code>(interactor:nape.phys.Interactor):Null&lt;EntityNapeSprite&gt;</code></td>
+                  <td><code>Null&lt;EntityNapeSprite&gt;</code></td>
+                  <td>Statische Hilfsmethode: Ermittelt die <code>EntityNapeSprite</code>-Instanz aus einem Nape-Interactor (Shape oder Body).</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -2917,6 +2947,36 @@
                   <td><code>(?animKey:String):Void</code></td>
                   <td><code>Void</code></td>
                   <td>Loads all animation clips from <code>AnimationRegistry.db</code> and starts the default animation.</td>
+                </tr>
+                <tr>
+                  <td><code>createShapesFromGraphic</code></td>
+                  <td><code>(alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, clearExisting:Bool = true, cellSizeVal:Float = 1.0):Array&lt;Polygon&gt;</code></td>
+                  <td><code>Array&lt;Polygon&gt;</code></td>
+                  <td>Generates Nape polygon shapes automatically from visible graphic pixels via Marching Squares.</td>
+                </tr>
+                <tr>
+                  <td><code>resolvePixelCollision</code></td>
+                  <td><code>(obstacle:flixel.FlxSprite):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Resolves pixel-perfect overlap (<code>FlxG.pixelPerfectOverlap</code>) with zero latency (position correction, velocity stop, wall-sliding). Returns <code>true</code> if collision occurred.</td>
+                </tr>
+                <tr>
+                  <td><code>isPixelBlocked</code></td>
+                  <td><code>(dirX:Float, dirY:Float):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Checks predictively whether movement in the specified direction would cause pixel overlap with <code>lastCollidedObstacle</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>onPositionCorrected</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Callback hook invoked after position correction by <code>resolvePixelCollision</code> (can be overridden in subclasses).</td>
+                </tr>
+                <tr>
+                  <td><code>getFromInteractor</code></td>
+                  <td><code>(interactor:nape.phys.Interactor):Null&lt;EntityNapeSprite&gt;</code></td>
+                  <td><code>Null&lt;EntityNapeSprite&gt;</code></td>
+                  <td>Static helper: Retrieves the <code>EntityNapeSprite</code> instance from a Nape interactor (shape or body).</td>
                 </tr>
               </tbody>
             </table>
@@ -4091,6 +4151,47 @@ myEntity.animation.<span class="hl-func">play</span>(<span class="hl-str">"burn"
             </table>
           </div>
 
+          <h3>Pixelgenaue Kollisionen (<code>Pixel-Perfect Collision</code>)</h3>
+          <p>Pixelgenaue Kollisionsüberwachung via <code>FlxG.pixelPerfectOverlap</code> mit automatischer Positionskorrektur, Geschwindigkeitsstopp und Wall-Sliding über <code>EntityNapeSprite.resolvePixelCollision</code>.</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Ereignis</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>addPixelCollisionListener</code></td>
+                  <td><code>(tag1:String, tag2:String, ?onCollision:EntityNapeSprite-&gt;EntityNapeSprite-&gt;Void)</code></td>
+                  <td><code>CbEvent.ONGOING</code> (Sensor) + Pixel-Overlap</td>
+                  <td><strong>Physische Pixel-Kollision:</strong> Registriert eine pixelgenaue Kollisionsüberwachung zwischen <code>tag1</code> (Akteur) und <code>tag2</code> (Hindernis). Löst bei Pixel-Überlappung automatisches Zurücksetzen, Stoppen und Wall-Sliding via <code>resolvePixelCollision</code> aus. Optionaler Callback <code>(actor, obstacle) -&gt; Void</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>addPixelSensorBeginListener</code></td>
+                  <td><code>(tag1:String, tag2:String, onBegin:EntityNapeSprite-&gt;EntityNapeSprite-&gt;Void)</code></td>
+                  <td><code>CbEvent.BEGIN</code> (Pixel)</td>
+                  <td><strong>Pixel-Sensor (Start):</strong> Feuert genau einmal im ersten Frame, in dem sich tatsächliche Pixel von <code>tag1</code> und <code>tag2</code> berühren (ohne physikalischen Widerstand). Ideal für Münzen, Power-Ups, Schalter.</td>
+                </tr>
+                <tr>
+                  <td><code>addPixelSensorOngoingListener</code></td>
+                  <td><code>(tag1:String, tag2:String, onOngoing:EntityNapeSprite-&gt;EntityNapeSprite-&gt;Void)</code></td>
+                  <td><code>CbEvent.ONGOING</code> (Pixel)</td>
+                  <td><strong>Pixel-Sensor (Dauerhaft):</strong> Feuert in jedem Physik-Tick, solange tatsächliche Pixel überlappen (z. B. Schaden über Zeit in Giftwolken/Lava, Wasserströmungen).</td>
+                </tr>
+                <tr>
+                  <td><code>addPixelSensorEndListener</code></td>
+                  <td><code>(tag1:String, tag2:String, onEnd:EntityNapeSprite-&gt;EntityNapeSprite-&gt;Void)</code></td>
+                  <td><code>CbEvent.END</code> (Pixel)</td>
+                  <td><strong>Pixel-Sensor (Ende):</strong> Feuert in dem Frame, in dem die Pixel-Überlappung abreißt, nachdem zuvor ein Kontakt bestand (z. B. Verlassen von Bereichen).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
           <div class="section-nav-footer">
             <a href="#animation" class="nav-page-btn">← Animationen & Makros</a>
             <a href="#pathfinding" class="nav-page-btn">Pathfinding & A* →</a>
@@ -4215,7 +4316,48 @@ myEntity.animation.<span class="hl-func">play</span>(<span class="hl-str">"burn"
                   <td><code>addSensorOngoingListenerANY</code></td>
                   <td><code>(t1:String, handler:InteractionCallback-&gt;Void)</code></td>
                   <td><code>CbEvent.ONGOING</code></td>
-                  <td><code>t1</code> überlappt andauernd mit beliebigem anderen Körper.</td>
+                  <td><code>t1</code> overlaps continuously with any other body.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Pixel-Perfect Collisions</h3>
+          <p>Pixel-accurate collision detection via <code>FlxG.pixelPerfectOverlap</code> with automatic position correction, velocity stopping, and smooth wall-sliding via <code>EntityNapeSprite.resolvePixelCollision</code>.</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Event</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>addPixelCollisionListener</code></td>
+                  <td><code>(tag1:String, tag2:String, ?onCollision:EntityNapeSprite-&gt;EntityNapeSprite-&gt;Void)</code></td>
+                  <td><code>CbEvent.ONGOING</code> (Sensor) + Pixel Overlap</td>
+                  <td><strong>Physical Pixel Collision:</strong> Registers pixel-perfect collision detection between <code>tag1</code> (moving actor) and <code>tag2</code> (obstacle). Automatically handles positional reset, stopping, and wall-sliding via <code>resolvePixelCollision</code>. Optional callback <code>(actor, obstacle) -&gt; Void</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>addPixelSensorBeginListener</code></td>
+                  <td><code>(tag1:String, tag2:String, onBegin:EntityNapeSprite-&gt;EntityNapeSprite-&gt;Void)</code></td>
+                  <td><code>CbEvent.BEGIN</code> (Pixel)</td>
+                  <td><strong>Pixel Sensor (Begin):</strong> Fires once in the exact frame when actual visible pixels of <code>tag1</code> and <code>tag2</code> touch (without blocking physical movement). Ideal for collectibles, triggers, switches.</td>
+                </tr>
+                <tr>
+                  <td><code>addPixelSensorOngoingListener</code></td>
+                  <td><code>(tag1:String, tag2:String, onOngoing:EntityNapeSprite-&gt;EntityNapeSprite-&gt;Void)</code></td>
+                  <td><code>CbEvent.ONGOING</code> (Pixel)</td>
+                  <td><strong>Pixel Sensor (Ongoing):</strong> Fires every physics tick while visible pixels are overlapping (e.g. damage over time in hazards/lava, currents).</td>
+                </tr>
+                <tr>
+                  <td><code>addPixelSensorEndListener</code></td>
+                  <td><code>(tag1:String, tag2:String, onEnd:EntityNapeSprite-&gt;EntityNapeSprite-&gt;Void)</code></td>
+                  <td><code>CbEvent.END</code> (Pixel)</td>
+                  <td><strong>Pixel Sensor (End):</strong> Fires in the frame when pixel overlap ceases after having previously overlapped (e.g. exiting zones).</td>
                 </tr>
               </tbody>
             </table>
