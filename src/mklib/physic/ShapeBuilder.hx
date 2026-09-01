@@ -13,6 +13,9 @@ import nape.phys.Material;
 import nape.shape.Polygon;
 import nape.shape.Shape;
 import openfl.display.BitmapData;
+import openfl.geom.Rectangle;
+import openfl.geom.Point;
+import openfl.geom.Matrix;
 
 /**
  * Automatisierte Generierung von Nape-Polygon-Shapes direkt aus Pixelgrafiken (BitmapData / FlxSprite)
@@ -194,5 +197,125 @@ class ShapeBuilder {
 		}
 
 		return newBody;
+	}
+
+	/**
+	 * Schneidet ein einzelnes Frame aus einer Spritesheet-BitmapData aus und spiegelt es optional.
+	 *
+	 * @param sourceBmd Die Quell-Spritesheet-BitmapData.
+	 * @param frameRect Der Ausschnitt des Frames (x, y, w, h).
+	 * @param flipX Soll das Frame horizontal gespiegelt werden? Standard: false.
+	 * @param flipY Soll das Frame vertikal gespiegelt werden? Standard: false.
+	 * @return Eine neue BitmapData mit den Pixeln des Frames oder `null`.
+	 */
+	public static function extractFrameBitmap(sourceBmd:BitmapData, frameRect:Rectangle, flipX:Bool = false, flipY:Bool = false):Null<BitmapData> {
+		if (sourceBmd == null || frameRect == null || frameRect.width <= 0 || frameRect.height <= 0) {
+			return null;
+		}
+		var w:Int = Std.int(frameRect.width);
+		var h:Int = Std.int(frameRect.height);
+		var frameBmd = new BitmapData(w, h, true, 0x00000000);
+		frameBmd.copyPixels(sourceBmd, frameRect, new Point(0, 0));
+
+		if (!flipX && !flipY) {
+			return frameBmd;
+		}
+
+		var flippedBmd = new BitmapData(w, h, true, 0x00000000);
+		var matrix = new Matrix();
+		matrix.scale(flipX ? -1 : 1, flipY ? -1 : 1);
+		matrix.translate(flipX ? w : 0, flipY ? h : 0);
+		flippedBmd.draw(frameBmd, matrix);
+		frameBmd.dispose();
+		return flippedBmd;
+	}
+
+	/**
+	 * Erzeugt Nape-Polygon-Shapes für alle Frames einer Animation eines `FlxSprite` (sowohl normal als auch gespiegelt für `flipX`).
+	 *
+	 * @param sprite Das Quell-Sprite mit geladenen Frames/Grafik und Animationen.
+	 * @param animName Name der Animation (z. B. "attack" oder "attack_up").
+	 * @param alphaThreshold Schwellenwert für die Sichtbarkeit (0-255). Standard: 128.
+	 * @param simplify Grad der Glättung/Vereinfachung in Pixeln. Standard: 1.0.
+	 * @param sensor Sollen die Shapes als Sensoren deklariert werden? Standard: true.
+	 * @param cbType Optionaler CbType für die erzeugten Shapes (z. B. Tags.get("ObstacleSensor")).
+	 * @param cellSizeVal Zellengröße für MarchingSquares. Standard: 1.0.
+	 * @return Map der Shapes mit Schlüsseln wie "attack:0:0" (normal) und "attack:0:1" (gespiegelt) sowie "frame:6:0".
+	 */
+	public static function createShapesForAnimation(sprite:FlxSprite, animName:String, alphaThreshold:Int = 128, simplify:Float = 1.0,
+			sensor:Bool = true, ?cbType:CbType, cellSizeVal:Float = 1.0):Map<String, Array<Polygon>> {
+		var result:Map<String, Array<Polygon>> = new Map();
+		if (sprite == null || sprite.graphic == null || sprite.graphic.bitmap == null || sprite.animation == null) {
+			return result;
+		}
+
+		var anim = sprite.animation.getByName(animName);
+		if (anim == null || anim.frames == null || anim.frames.length == 0) {
+			return result;
+		}
+
+		var sourceBmd:BitmapData = sprite.graphic.bitmap;
+		var frameW:Int = Std.int(sprite.width > 0 ? sprite.width : 32);
+		var frameH:Int = Std.int(sprite.height > 0 ? sprite.height : 32);
+		var originX:Float = sprite.origin.x;
+		var originY:Float = sprite.origin.y;
+
+		for (frameNum in 0...anim.frames.length) {
+			var frameIndex:Int = anim.frames[frameNum];
+
+			var rect:Rectangle = null;
+			if (sprite.frames != null && frameIndex < sprite.frames.frames.length) {
+				var flxFrame = sprite.frames.frames[frameIndex];
+				if (flxFrame != null && flxFrame.frame != null) {
+					rect = new Rectangle(flxFrame.frame.x, flxFrame.frame.y, flxFrame.frame.width, flxFrame.frame.height);
+					frameW = Std.int(flxFrame.frame.width);
+					frameH = Std.int(flxFrame.frame.height);
+				}
+			}
+
+			if (rect == null) {
+				var cols:Int = Math.floor(sourceBmd.width / frameW);
+				if (cols <= 0) cols = 1;
+				var fx:Int = (frameIndex % cols) * frameW;
+				var fy:Int = Math.floor(frameIndex / cols) * frameH;
+				rect = new Rectangle(fx, fy, frameW, frameH);
+			}
+
+			// 1. Normal (flipX = false)
+			var bmdNormal = extractFrameBitmap(sourceBmd, rect, false, false);
+			if (bmdNormal != null) {
+				var offsetVec = Vec2.get(-originX, -originY);
+				var shapesNormal = createShapesFromBitmap(bmdNormal, null, alphaThreshold, simplify, offsetVec, sensor, cbType, cellSizeVal);
+				offsetVec.dispose();
+				bmdNormal.dispose();
+
+				for (s in shapesNormal) {
+					s.userData.animName = animName;
+					s.userData.frameNumber = frameNum;
+					s.userData.frameIndex = frameIndex;
+				}
+				result.set(animName + ":" + frameNum + ":0", shapesNormal);
+				result.set("frame:" + frameIndex + ":0", shapesNormal);
+			}
+
+			// 2. Flipped (flipX = true)
+			var bmdFlipped = extractFrameBitmap(sourceBmd, rect, true, false);
+			if (bmdFlipped != null) {
+				var offsetVec = Vec2.get(-originX, -originY);
+				var shapesFlipped = createShapesFromBitmap(bmdFlipped, null, alphaThreshold, simplify, offsetVec, sensor, cbType, cellSizeVal);
+				offsetVec.dispose();
+				bmdFlipped.dispose();
+
+				for (s in shapesFlipped) {
+					s.userData.animName = animName;
+					s.userData.frameNumber = frameNum;
+					s.userData.frameIndex = frameIndex;
+				}
+				result.set(animName + ":" + frameNum + ":1", shapesFlipped);
+				result.set("frame:" + frameIndex + ":1", shapesFlipped);
+			}
+		}
+
+		return result;
 	}
 }
