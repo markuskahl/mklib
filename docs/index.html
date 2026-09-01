@@ -112,8 +112,8 @@
             </div>
             <div class="feature-card">
               <div class="feature-icon">📱</div>
-              <h3>Responsive Skalierung</h3>
-              <p>Dynamische Spielauflösung für Breitbild-Displays (<code>AspectRatio</code>) und mathematische Helfer (<code>MathTool</code>).</p>
+              <h3>Responsive Skalierung & Tools</h3>
+              <p>Dynamische Spielauflösung (<code>AspectRatio</code>), Gamepad-Rumble (<code>GamepadHelper</code>) und mathematische Helfer (<code>MathTool</code>).</p>
             </div>
           </div>
 
@@ -308,6 +308,13 @@
                   <td><a href="#tools-math">Tools →</a></td>
                 </tr>
                 <tr>
+                  <td><code>mklib.tools</code></td>
+                  <td><strong><code>GamepadHelper</code></strong></td>
+                  <td>–</td>
+                  <td><code>vibrate</code>, <code>rumble</code>, <code>stopVibration</code>, <code>vibrateAll</code>, <code>stopAllVibrations</code>, <code>getLimeGamepad</code></td>
+                  <td><a href="#tools-math">Tools →</a></td>
+                </tr>
+                <tr>
                   <td><code>mklib.math</code></td>
                   <td><strong><code>MathTool</code></strong></td>
                   <td>–</td>
@@ -387,8 +394,8 @@
             </div>
             <div class="feature-card">
               <div class="feature-icon">📱</div>
-              <h3>Responsive Scaling</h3>
-              <p>Dynamic game resolution for widescreen displays (<code>AspectRatio</code>) and mathematical helpers (<code>MathTool</code>).</p>
+              <h3>Responsive Scaling & Tools</h3>
+              <p>Dynamic game resolution (<code>AspectRatio</code>), gamepad rumble support (<code>GamepadHelper</code>) and mathematical helpers (<code>MathTool</code>).</p>
             </div>
           </div>
 
@@ -559,6 +566,13 @@
                   <td><strong><code>AspectRatio</code></strong></td>
                   <td><code>width</code>, <code>height</code>, <code>isDefault</code>, <code>screenRatio</code></td>
                   <td><code>new</code>, <code>calc</code>, <code>isInRange</code></td>
+                  <td><a href="#tools-math">Tools →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.tools</code></td>
+                  <td><strong><code>GamepadHelper</code></strong></td>
+                  <td>–</td>
+                  <td><code>vibrate</code>, <code>rumble</code>, <code>stopVibration</code>, <code>vibrateAll</code>, <code>stopAllVibrations</code>, <code>getLimeGamepad</code></td>
                   <td><a href="#tools-math">Tools →</a></td>
                 </tr>
                 <tr>
@@ -6981,7 +6995,80 @@ FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type"
 
           <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
 
-          <h2>2. <code>MathTool</code> (<code>mklib.math.MathTool</code>)</h2>
+          <h2>2. <code>GamepadHelper</code> (<code>mklib.tools.GamepadHelper</code>)</h2>
+          <p>Hilfsklasse zum Auslösen von Gamepad-Rumble und Controller-Vibrationen über HaxeFlixel und Lime:</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>vibrate</code></td>
+                  <td><code>(gamepadID:Int = 0, lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Löst Controller-Vibration auf dem angegebenen Gamepad aus (Tieffrequenz- & Hochfrequenzmotor in ms).</td>
+                </tr>
+                <tr>
+                  <td><code>rumble</code></td>
+                  <td><code>(gamepadID:Int = 0, lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Direkter Inline-Alias für <code>vibrate()</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>stopVibration</code></td>
+                  <td><code>(gamepadID:Int = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Stoppt die Vibration auf dem angegebenen Gamepad sofort.</td>
+                </tr>
+                <tr>
+                  <td><code>vibrateAll</code></td>
+                  <td><code>(lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Löst eine Vibration auf allen aktuell verbundenen Gamepads aus.</td>
+                </tr>
+                <tr>
+                  <td><code>stopAllVibrations</code></td>
+                  <td><code>()</code></td>
+                  <td><code>Void</code></td>
+                  <td>Stoppt alle aktiven Vibrationen auf sämtlichen Gamepads.</td>
+                </tr>
+                <tr>
+                  <td><code>getLimeGamepad</code></td>
+                  <td><code>(gamepadID:Int = 0)</code></td>
+                  <td><code>LimeGamepad</code></td>
+                  <td>Gibt das native <code>lime.ui.Gamepad</code>-Gerät zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="code-box" style="margin-top: 1.5rem;">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code>import mklib.tools.GamepadHelper;
+
+// Standard-Feedback (Spieler 1, 200ms)
+GamepadHelper.vibrate(0);
+
+// Starker Explosionstreffer (Tiefer Motor 1.0, Hoher Motor 0.2, 400ms)
+GamepadHelper.vibrate(0, 1.0, 0.2, 400);
+
+// Vibration bei allen verbundenen Controllern
+GamepadHelper.vibrateAll(0.7, 0.7, 250);</code></pre>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>3. <code>MathTool</code> (<code>mklib.math.MathTool</code>)</h2>
           <p>Hilfsfunktion zur Rundung von Gleitkommazahlen auf feste Nachkommastellen:</p>
 
           <div class="api-table-wrapper">
@@ -7093,8 +7180,8 @@ FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type"
 
           <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
 
-          <h2>2. <code>MathTool</code> (<code>mklib.math.MathTool</code>)</h2>
-          <p>Hilfsfunktion zur Rundung von Gleitkommazahlen auf feste Nachkommastellen:</p>
+          <h2>2. <code>GamepadHelper</code> (<code>mklib.tools.GamepadHelper</code>)</h2>
+          <p>Helper class for triggering gamepad rumble and controller vibration via HaxeFlixel and Lime:</p>
 
           <div class="api-table-wrapper">
             <table class="api-table">
@@ -7102,7 +7189,80 @@ FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type"
                 <tr>
                   <th>Method</th>
                   <th>Signature</th>
-                  <th>Rückgabe</th>
+                  <th>Return</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>vibrate</code></td>
+                  <td><code>(gamepadID:Int = 0, lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Triggers controller vibration on the specified gamepad (low & high frequency motors in ms).</td>
+                </tr>
+                <tr>
+                  <td><code>rumble</code></td>
+                  <td><code>(gamepadID:Int = 0, lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Direct inline alias for <code>vibrate()</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>stopVibration</code></td>
+                  <td><code>(gamepadID:Int = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Stops vibration on the specified gamepad immediately.</td>
+                </tr>
+                <tr>
+                  <td><code>vibrateAll</code></td>
+                  <td><code>(lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Triggers vibration on all currently connected gamepads.</td>
+                </tr>
+                <tr>
+                  <td><code>stopAllVibrations</code></td>
+                  <td><code>()</code></td>
+                  <td><code>Void</code></td>
+                  <td>Stops all active vibrations on all gamepads.</td>
+                </tr>
+                <tr>
+                  <td><code>getLimeGamepad</code></td>
+                  <td><code>(gamepadID:Int = 0)</code></td>
+                  <td><code>LimeGamepad</code></td>
+                  <td>Returns the native <code>lime.ui.Gamepad</code> device instance.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="code-box" style="margin-top: 1.5rem;">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code>import mklib.tools.GamepadHelper;
+
+// Default haptic feedback (Player 1, 200ms)
+GamepadHelper.vibrate(0);
+
+// Heavy impact / explosion (Low motor 1.0, High motor 0.2, 400ms)
+GamepadHelper.vibrate(0, 1.0, 0.2, 400);
+
+// Rumble all connected controllers
+GamepadHelper.vibrateAll(0.7, 0.7, 250);</code></pre>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>3. <code>MathTool</code> (<code>mklib.math.MathTool</code>)</h2>
+          <p>Utility functions for rounding floating point numbers to fixed decimal places:</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Return</th>
                   <th>Description</th>
                 </tr>
               </thead>
@@ -7111,7 +7271,7 @@ FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type"
                   <td><code>floatFix</code></td>
                   <td><code>(v:Float, length:Int):Float</code></td>
                   <td><code>Float</code></td>
-                  <td>Rundet <code>v</code> auf <code>length</code> Nachkommastellen (z. B. <code>MathTool.floatFix(3.1415, 2) == 3.14</code>).</td>
+                  <td>Rounds <code>v</code> to <code>length</code> decimal places (e.g. <code>MathTool.floatFix(3.1415, 2) == 3.14</code>).</td>
                 </tr>
               </tbody>
             </table>

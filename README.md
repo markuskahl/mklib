@@ -20,7 +20,7 @@ The complete interactive documentation, including a live A* pathfinding simulato
 - [**Pathfinding & Navigation (`NavGrid`, `NavGridBuilder`, `AStar`)**](docs/pathfinding.md)
 - [**GPU Lighting System (`LightingSystem`, `Light`, `PointLight`, `SpotLight`, `TorchLight`, `GlowLight`)**](docs/lighting.md)
 - [**Water Reflection & Wave Shaders (`WaterReflectionShader`, `WaterReflectionPlane`, `EntityWaterReflection`)**](docs/water_reflection.md)
-- [**Tools & Math Utilities (`AspectRatio` & `MathTool`)**](docs/tools_math.md)
+- [**Tools & Math Utilities (`AspectRatio`, `GamepadHelper` & `MathTool`)**](docs/tools_math.md)
 
 ---
 
@@ -60,6 +60,7 @@ The complete interactive documentation, including a live A* pathfinding simulato
 | `mklib.path` | `AStar` | `SQRT2` | `findPath`, `findWorldPath`, `heuristic`, `reconstructPath` |
 | `mklib.path` | `GridPoint` | `x`, `y` | `new`, `equals`, `toString` |
 | `mklib.tools` | `AspectRatio` | `width`, `height`, `isDefault`, `screenRatio` | `new`, `calc`, `isInRange` |
+| `mklib.tools` | `GamepadHelper` |  | `vibrate`, `rumble`, `stopVibration`, `vibrateAll`, `stopAllVibrations`, `getLimeGamepad` |
 | `mklib.math` | `MathTool` |  | `floatFix` |
 
 ---

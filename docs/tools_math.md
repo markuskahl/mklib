@@ -49,6 +49,44 @@ class Main extends Sprite {
 
 ---
 
+## 🎮 `GamepadHelper` (`mklib.tools.GamepadHelper`)
+
+Hilfsklasse für Gamepad-spezifische Hardware-Funktionen wie Controller-Vibration (Rumble). Sie verbindet HaxeFlixels `FlxGamepad`-Geräteverwaltung mit Limes nativer `lime.ui.Gamepad.rumble`-Schnittstelle, um haptisches Feedback bei Treffern, Explosionen oder Interaktionen auszulösen.
+
+### Methoden (Methods)
+
+| Methode | Signatur | Rückgabewert | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `vibrate` | `(gamepadID:Int = 0, lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)` | `Void` | *(Statisch)* Löst eine Controller-Vibration auf dem angegebenen Gamepad aus. `lowFreq` steuert den tiefen/starken Motor (`0.0` bis `1.0`), `highFreq` den feinen/hohen Motor (`0.0` bis `1.0`) und `durationMs` die Dauer in Millisekunden. |
+| `rumble` | `(gamepadID:Int = 0, lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)` | `Void` | *(Inline, Statisch)* Direkter Alias für `vibrate`. |
+| `stopVibration` | `(gamepadID:Int = 0)` | `Void` | *(Statisch)* Stoppt die Vibration auf dem angegebenen Gamepad sofort. |
+| `vibrateAll` | `(lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)` | `Void` | *(Statisch)* Löst eine Vibration auf allen aktuell aktiven und verbundenen Gamepads aus. |
+| `stopAllVibrations` | `()` | `Void` | *(Statisch)* Stoppt die Vibration auf allen verbundenen Gamepads sofort. |
+| `getLimeGamepad` | `(gamepadID:Int = 0)` | `LimeGamepad` | *(Statisch)* Liefert das native `lime.ui.Gamepad`-Objekt für das angegebene `FlxGamepad` zurück (oder `null`, falls nicht vorhanden). |
+
+### Code-Beispiel
+
+```haxe
+import mklib.tools.GamepadHelper;
+
+// 1. Kurzes Standard-Feedback (Spieler 1, 200 ms, halbe Stärke)
+GamepadHelper.vibrate(0);
+
+// 2. Starker Treffer / Explosion (starker tiefer Motor, 400 ms)
+GamepadHelper.vibrate(0, 1.0, 0.2, 400);
+
+// 3. Feines Klick-/Hover-Feedback (nur hoher Motor, 50 ms)
+GamepadHelper.vibrate(0, 0.0, 0.4, 50);
+
+// 4. Vibration bei allen Spielern im Koop-Modus auslösen
+GamepadHelper.vibrateAll(0.8, 0.8, 300);
+
+// 5. Vibration sofort abbrechen
+GamepadHelper.stopVibration(0);
+```
+
+---
+
 ## 🔢 `MathTool` (`mklib.math.MathTool`)
 
 Stellt statische Hilfsfunktionen für mathematische Berechnungen bereit.

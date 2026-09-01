@@ -62,8 +62,9 @@
     - Full water planes and per-entity reflection sprites
     - Configurable wave amplitude, frequency, foam, and reflection fade
 
-11. [**Tools & Math Utilities (`AspectRatio` & `MathTool`)**](tools_math.md)
+11. [**Tools & Math Utilities (`AspectRatio`, `GamepadHelper` & `MathTool`)**](tools_math.md)
     - Aspect ratio calculations & validation (`AspectRatio`)
+    - Gamepad vibration & hardware rumble control (`GamepadHelper`)
     - High-precision float rounding & arithmetic fixes (`MathTool`)
 
 ---
