@@ -77,7 +77,7 @@
             <li class="nav-item"><a href="#physics"><span class="nav-icon">⚡</span> <span data-de="Physik & Sensoren" data-en="Physics & Sensors">Physik & Sensoren</span></a></li>
             <li class="nav-item"><a href="#pathfinding"><span class="nav-icon">🧭</span> <span data-de="Pathfinding & A*" data-en="Pathfinding & A*">Pathfinding & A*</span></a></li>
             <li class="nav-item"><a href="#lighting"><span class="nav-icon">💡</span> <span data-de="GPU Lighting System" data-en="GPU Lighting System">GPU Lighting System</span></a></li>
-            <li class="nav-item"><a href="#effects"><span class="nav-icon">🌊</span> <span data-de="Wasser & Wellen-Shader" data-en="Water & Wave Shaders">Wasser & Wellen-Shader</span></a></li>
+            <li class="nav-item"><a href="#effects"><span class="nav-icon">🎨</span> <span data-de="Shader & Effekte" data-en="Shaders & Effects">Shader & Effekte</span></a></li>
             <li class="nav-item"><a href="#tools-math"><span class="nav-icon">📐</span> <span data-de="Tools & Mathematik" data-en="Tools & Mathematics">Tools & Mathematik</span></a></li>
           </ul>
         </div>
@@ -89,9 +89,9 @@
       <!-- Section: overview -->
       <section id="overview" class="doc-section active">
         <div data-lang="de">
-<h1>mklib <span class="hero-gradient-text">API-Dokumentation</span></h1>
+          <h1>mklib <span class="hero-gradient-text">API-Dokumentation</span></h1>
           <p class="section-desc">
-            Vollständige, lückenlose Referenz aller Klassen, Eigenschaften und Methoden der <strong>mklib</strong>-Bibliothek für <strong>HaxeFlixel</strong>, den <strong>LDtk Level-Editor</strong> und <strong>Nape 2D</strong>.
+            Vollständige, lückenlose Referenz aller Klassen, Eigenschaften und Methoden der <strong>mklib</strong>-Bibliothek für <strong>HaxeFlixel</strong>, den <strong>LDtk Level-Editor</strong>, <strong>Nape 2D</strong> und <strong>GPU-Shader</strong>.
           </p>
 
           <div class="feature-grid">
@@ -103,7 +103,7 @@
             <div class="feature-card">
               <div class="feature-icon">⚡</div>
               <h3>Nape Physik & Tags</h3>
-              <p>9 spezialisierte Kollisions- und Sensor-Listener (<code>Listener</code>) mit lesbaren String-Tags (<code>Tags</code>).</p>
+              <p>13 spezialisierte Kollisions- und Sensor-Listener (<code>Listener</code>) mit lesbaren String-Tags (<code>Tags</code>) und <code>ShapeBuilder</code>.</p>
             </div>
             <div class="feature-card">
               <div class="feature-icon">🧭</div>
@@ -111,9 +111,19 @@
               <p>Performantes 2D-Wegfindungsraster (<code>NavGrid</code>, <code>NavGridBuilder</code>, <code>AStar</code>) mit Multi-Tile-Support.</p>
             </div>
             <div class="feature-card">
+              <div class="feature-icon">💡</div>
+              <h3>GPU Lighting & 2D-Schatten</h3>
+              <p>Hardwarebeschleunigtes Multi-Light-System (<code>LightingSystem</code>) mit weichen Raymarching-Schatten, Occludern, Fackel- und Spotlichtern.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🎨</div>
+              <h3>Shader & Post-Processing</h3>
+              <p>Authentischer CRT-Retro-Filter (<code>CrtShader</code>), prozedurale Lava/Säurebecken (<code>HazardLiquidPlane</code>) und Wasserspiegelungen (<code>WaterReflectionPlane</code>).</p>
+            </div>
+            <div class="feature-card">
               <div class="feature-icon">📱</div>
               <h3>Responsive Skalierung & Tools</h3>
-              <p>Dynamische Spielauflösung (<code>AspectRatio</code>), Gamepad-Rumble (<code>GamepadHelper</code>) und mathematische Helfer (<code>MathTool</code>).</p>
+              <p>Dynamische Spielauflösung (<code>AspectRatio</code>), Gamepad-Rumble (<code>GamepadHelper</code>), Persistenz (<code>SaveManager</code>) und Mathe-Helfer (<code>MathTool</code>).</p>
             </div>
           </div>
 
@@ -406,9 +416,9 @@
           </div>
         </div>
         <div data-lang="en">
-<h1>mklib <span class="hero-gradient-text">API Documentation</span></h1>
+          <h1>mklib <span class="hero-gradient-text">API Documentation</span></h1>
           <p class="section-desc">
-            Complete, comprehensive reference of all classes, properties, and methods in the <strong>mklib</strong> library for <strong>HaxeFlixel</strong>, the <strong>LDtk Level Editor</strong>, and <strong>Nape 2D</strong>.
+            Complete, comprehensive reference of all classes, properties, and methods in the <strong>mklib</strong> library for <strong>HaxeFlixel</strong>, the <strong>LDtk Level Editor</strong>, <strong>Nape 2D</strong>, and <strong>GPU Shaders</strong>.
           </p>
 
           <div class="feature-grid">
@@ -420,7 +430,7 @@
             <div class="feature-card">
               <div class="feature-icon">⚡</div>
               <h3>Nape Physics & Tags</h3>
-              <p>9 specialized collision and sensor listeners (<code>Listener</code>) with human-readable string tags (<code>Tags</code>).</p>
+              <p>13 specialized collision and sensor listeners (<code>Listener</code>) with human-readable string tags (<code>Tags</code>) and <code>ShapeBuilder</code>.</p>
             </div>
             <div class="feature-card">
               <div class="feature-icon">🧭</div>
@@ -428,14 +438,24 @@
               <p>High-performance 2D pathfinding grid (<code>NavGrid</code>, <code>NavGridBuilder</code>, <code>AStar</code>) with multi-tile agent support.</p>
             </div>
             <div class="feature-card">
+              <div class="feature-icon">💡</div>
+              <h3>GPU Lighting & 2D Shadows</h3>
+              <p>Hardware-accelerated 2D multi-light system (<code>LightingSystem</code>) with raymarched soft shadows, occluders, torch flickers, and spotlights.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🎨</div>
+              <h3>Shaders & Post-Processing</h3>
+              <p>Authentic CRT retro screen filter (<code>CrtShader</code>), procedural lava/acid fluid pools (<code>HazardLiquidPlane</code>), and real-time water reflections (<code>WaterReflectionPlane</code>).</p>
+            </div>
+            <div class="feature-card">
               <div class="feature-icon">📱</div>
               <h3>Responsive Scaling & Tools</h3>
-              <p>Dynamic game resolution (<code>AspectRatio</code>), gamepad rumble support (<code>GamepadHelper</code>) and mathematical helpers (<code>MathTool</code>).</p>
+              <p>Dynamic game resolution (<code>AspectRatio</code>), gamepad rumble support (<code>GamepadHelper</code>), persistence (<code>SaveManager</code>), and math utilities (<code>MathTool</code>).</p>
             </div>
           </div>
 
-          <h2>🏛️ Vollständige Klassen- & API-Matrix</h2>
-          <p>Alle in der Bibliothek enthaltenen Typen im Überblick:</p>
+          <h2>🏛️ Complete Class & API Matrix</h2>
+          <p>Overview of all types provided by the library:</p>
 
           <div class="api-table-wrapper">
             <table class="api-table">
