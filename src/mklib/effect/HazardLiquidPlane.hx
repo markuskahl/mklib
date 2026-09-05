@@ -94,25 +94,28 @@ class HazardLiquidPlane extends FlxSprite {
 		if (object == null || !object.exists || !object.alive)
 			return false;
 
-		return (object.x + object.width > x
-			&& object.x < x + width
-			&& object.y + object.height > y
-			&& object.y < y + height);
+		return (object.x + object.width > x && object.x < x + width && object.y + object.height > y && object.y < y + height);
 	}
 
 	/**
-	 * Wendet fortlaufenden Umgebungsschaden auf ein berührendes Objekt an, falls `isHazardous = true`.
+	 * Wendet fortlaufenden Umgebungsschaden auf ein berührendes `FlxSprite` (z. B. `Hero`, `EntitySprite`) an, falls `isHazardous = true`.
+	 * Ruft standardmäßig `sprite.hurt(damage)` auf oder leitet den Schaden an `onCustomDamage` weiter.
 	 *
-	 * @param object Das berührende Objekt (mit `hurt(amount)` oder Health-Komponente).
+	 * @param sprite Das berührende Sprite mit Health-System (`FlxSprite`, `EntitySprite`, `EntityNapeSprite`).
 	 * @param elapsed Vergangene Frame-Zeit in Sekunden.
+	 * @param onCustomDamage Optionaler Callback für individuelle Health-Systeme: `(sprite, dmg) -> Void`.
 	 */
-	public function applyHazardDamage(object:FlxObject, elapsed:Float):Void {
-		if (!isHazardous || damagePerSecond <= 0.0 || object == null)
+	public function applyHazardDamage(sprite:FlxSprite, elapsed:Float, ?onCustomDamage:(sprite:FlxSprite, damage:Float) -> Void):Void {
+		if (!isHazardous || damagePerSecond <= 0.0 || sprite == null)
 			return;
 
-		if (isOverlapping(object)) {
+		if (isOverlapping(sprite)) {
 			var dmg = damagePerSecond * elapsed;
-			object.hurt(dmg);
+			if (onCustomDamage != null) {
+				onCustomDamage(sprite, dmg);
+			} else {
+				sprite.hurt(dmg);
+			}
 		}
 	}
 
