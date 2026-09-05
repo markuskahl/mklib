@@ -94,41 +94,98 @@
             Vollständige, lückenlose Referenz aller Klassen, Eigenschaften und Methoden der <strong>mklib</strong>-Bibliothek für <strong>HaxeFlixel</strong>, den <strong>LDtk Level-Editor</strong>, <strong>Nape 2D</strong> und <strong>GPU-Shader</strong>.
           </p>
 
+          <div class="quick-nav-pills">
+            <a href="#getting-started" class="pill-link"><span>🚀</span> Schnellstart</a>
+            <a href="#ldtk-guide" class="pill-link"><span>🗺️</span> LDtk Guide</a>
+            <a href="#state" class="pill-link"><span>🎮</span> State</a>
+            <a href="#layers" class="pill-link"><span>📑</span> Layer</a>
+            <a href="#entities" class="pill-link"><span>👾</span> Entities</a>
+            <a href="#save" class="pill-link"><span>💾</span> Save</a>
+            <a href="#animation" class="pill-link"><span>🎬</span> Animationen</a>
+            <a href="#physics" class="pill-link"><span>⚡</span> Physik & Nape</a>
+            <a href="#pathfinding" class="pill-link"><span>🧭</span> Pathfinding & A*</a>
+            <a href="#lighting" class="pill-link"><span>💡</span> GPU Lighting</a>
+            <a href="#effects" class="pill-link"><span>🎨</span> Shader & Effekte</a>
+            <a href="#tools-math" class="pill-link"><span>📐</span> Tools & Mathe</a>
+          </div>
+
           <div class="feature-grid">
-            <div class="feature-card">
+            <a href="#getting-started" class="feature-card">
+              <div class="feature-icon">🚀</div>
+              <h3>Schnellstart & Setup</h3>
+              <p>Project.xml Konfiguration, Compiler-Flags, Asset-Pfade und minimales Flixel-Bootstrapping.</p>
+              <div class="card-link-hint">Zum Schnellstart →</div>
+            </a>
+            <a href="#ldtk-guide" class="feature-card">
               <div class="feature-icon">🗺️</div>
-              <h3>LDtk Integration</h3>
+              <h3>LDtk Guide & Workflow</h3>
+              <p>Level-Editor-Workflow, Custom Entity Fields, Enum-Mapping und automatische Layer-Hierarchie.</p>
+              <div class="card-link-hint">Zum LDtk Guide →</div>
+            </a>
+            <a href="#state" class="feature-card">
+              <div class="feature-icon">🎮</div>
+              <h3>State Management</h3>
+              <p>Typisierter Basis-State (<code>State&lt;TLevel&gt;</code>) mit Nape-Physikraum-Lifecycle und Level-Loading.</p>
+              <div class="card-link-hint">Zum State Management →</div>
+            </a>
+            <a href="#layers" class="feature-card">
+              <div class="feature-icon">📑</div>
+              <h3>Layer System</h3>
               <p>Automatische Kachelebenen-Darstellung (<code>TileLayer</code>) und dynamische Reflection-Instanziierung (<code>EntityLayer</code>).</p>
-            </div>
-            <div class="feature-card">
+              <div class="card-link-hint">Zum Layer System →</div>
+            </a>
+            <a href="#entities" class="feature-card">
+              <div class="feature-icon">👾</div>
+              <h3>Entities & Sprites</h3>
+              <p>Basis-Klassen (<code>EntitySprite</code>, <code>EntityNapeSprite</code>), Custom-Field-Parser, Tileset-Graphics und Physikkörper.</p>
+              <div class="card-link-hint">Zu den Entities →</div>
+            </a>
+            <a href="#save" class="feature-card">
+              <div class="feature-icon">💾</div>
+              <h3>Save & Persistence</h3>
+              <p>Umfassendes Speichersystem (<code>SaveManager</code>, <code>ISaveable</code>), Checkpoints, Spielzeit und globale Flags.</p>
+              <div class="card-link-hint">Zu Save & Persistence →</div>
+            </a>
+            <a href="#animation" class="feature-card">
+              <div class="feature-icon">🎬</div>
+              <h3>Animationen & Makros</h3>
+              <p>Compile-Time-SpriteSheet-Builder (<code>AnimationBuilder</code>), JSON-Parsing und Clip-Definitionen.</p>
+              <div class="card-link-hint">Zu den Animationen →</div>
+            </a>
+            <a href="#physics" class="feature-card">
               <div class="feature-icon">⚡</div>
               <h3>Nape Physik & Tags</h3>
               <p>13 spezialisierte Kollisions- und Sensor-Listener (<code>Listener</code>) mit lesbaren String-Tags (<code>Tags</code>) und <code>ShapeBuilder</code>.</p>
-            </div>
-            <div class="feature-card">
+              <div class="card-link-hint">Zur Physik & Sensoren →</div>
+            </a>
+            <a href="#pathfinding" class="feature-card">
               <div class="feature-icon">🧭</div>
               <h3>A* Pathfinding</h3>
-              <p>Performantes 2D-Wegfindungsraster (<code>NavGrid</code>, <code>NavGridBuilder</code>, <code>AStar</code>) mit Multi-Tile-Support.</p>
-            </div>
-            <div class="feature-card">
+              <p>Performantes 2D-Wegfindungsraster (<code>NavGrid</code>, <code>NavGridBuilder</code>, <code>AStar</code>) mit interaktivem Simulator.</p>
+              <div class="card-link-hint">Zum Pathfinding & Simulator →</div>
+            </a>
+            <a href="#lighting" class="feature-card">
               <div class="feature-icon">💡</div>
-              <h3>GPU Lighting & 2D-Schatten</h3>
-              <p>Hardwarebeschleunigtes Multi-Light-System (<code>LightingSystem</code>) mit weichen Raymarching-Schatten, Occludern, Fackel- und Spotlichtern.</p>
-            </div>
-            <div class="feature-card">
+              <h3>GPU Lighting & Schatten</h3>
+              <p>Hardwarebeschleunigtes Multi-Light-System (<code>LightingSystem</code>) mit weichen Schatten, Occludern, Fackel- und Spotlichtern.</p>
+              <div class="card-link-hint">Zum Lighting System →</div>
+            </a>
+            <a href="#effects" class="feature-card">
               <div class="feature-icon">🎨</div>
               <h3>Shader & Post-Processing</h3>
               <p>Authentischer CRT-Retro-Filter (<code>CrtShader</code>), prozedurale Lava/Säurebecken (<code>HazardLiquidPlane</code>) und Wasserspiegelungen (<code>WaterReflectionPlane</code>).</p>
-            </div>
-            <div class="feature-card">
-              <div class="feature-icon">📱</div>
+              <div class="card-link-hint">Zu den Shadern & Effekten →</div>
+            </a>
+            <a href="#tools-math" class="feature-card">
+              <div class="feature-icon">📐</div>
               <h3>Responsive Skalierung & Tools</h3>
-              <p>Dynamische Spielauflösung (<code>AspectRatio</code>), Gamepad-Rumble (<code>GamepadHelper</code>), Persistenz (<code>SaveManager</code>) und Mathe-Helfer (<code>MathTool</code>).</p>
-            </div>
+              <p>Dynamische Spielauflösung (<code>AspectRatio</code>), Gamepad-Rumble (<code>GamepadHelper</code>) und Mathe-Helfer (<code>MathTool</code>).</p>
+              <div class="card-link-hint">Zu Tools & Mathe →</div>
+            </a>
           </div>
 
           <h2>🏛️ Vollständige Klassen- & API-Matrix</h2>
-          <p>Alle in der Bibliothek enthaltenen Typen im Überblick:</p>
+          <p>Alle in der Bibliothek enthaltenen Typen im Überblick (klicke auf eine Klasse, um direkt zur Dokumentation zu springen):</p>
 
           <div class="api-table-wrapper">
             <table class="api-table">
@@ -143,228 +200,228 @@
               </thead>
               <tbody>
                 <tr>
-                  <td><code>mklib.state</code></td>
-                  <td><strong><code>State&lt;TLevel&gt;</code></strong></td>
+                  <td><a href="#state" class="package-link"><code>mklib.state</code></a></td>
+                  <td><a href="#state" class="table-class-link"><strong><code>State&lt;TLevel&gt;</code></strong></a></td>
                   <td><code>project</code>, <code>tags</code>, <code>levelName</code>, <code>data</code></td>
                   <td><code>new</code>, <code>create</code>, <code>napeInit</code>, <code>addCbTypes</code>, <code>update</code></td>
-                  <td><a href="#state">State →</a></td>
+                  <td><a href="#state" class="api-matrix-btn">State →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.layer</code></td>
-                  <td><strong><code>TileLayer</code></strong></td>
+                  <td><a href="#layers" class="package-link"><code>mklib.layer</code></a></td>
+                  <td><a href="#layers" class="table-class-link"><strong><code>TileLayer</code></strong></a></td>
                   <td><code>levelName</code>, <code>layerName</code>, <code>state</code></td>
                   <td><code>new</code>, <code>render</code></td>
-                  <td><a href="#layers">Layer →</a></td>
+                  <td><a href="#layers" class="api-matrix-btn">Layer →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.layer</code></td>
-                  <td><strong><code>EntityLayer</code></strong></td>
+                  <td><a href="#layers" class="package-link"><code>mklib.layer</code></a></td>
+                  <td><a href="#layers" class="table-class-link"><strong><code>EntityLayer</code></strong></a></td>
                   <td><code>layerName</code>, <code>packageName</code>, <code>state</code></td>
                   <td><code>new</code>, <code>addEntities</code>, <code>isNapeEntity</code></td>
-                  <td><a href="#layers">Layer →</a></td>
+                  <td><a href="#layers" class="api-matrix-btn">Layer →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.layer</code></td>
-                  <td><strong><code>EntityLayerSource&lt;T&gt;</code></strong></td>
+                  <td><a href="#layers" class="package-link"><code>mklib.layer</code></a></td>
+                  <td><a href="#layers" class="table-class-link"><strong><code>EntityLayerSource&lt;T&gt;</code></strong></a></td>
                   <td><code>identifier</code>, <code>getAllUntyped</code></td>
                   <td>–</td>
-                  <td><a href="#layers">Layer →</a></td>
+                  <td><a href="#layers" class="api-matrix-btn">Layer →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.entity</code></td>
-                  <td><strong><code>EntitySprite</code></strong></td>
+                  <td><a href="#entities" class="package-link"><code>mklib.entity</code></a></td>
+                  <td><a href="#entities" class="table-class-link"><strong><code>EntitySprite</code></strong></a></td>
                   <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code></td>
                   <td><code>new</code>, <code>resolveTilesetPath</code>, <code>loadTileRectGraphic</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>initAnimation</code></td>
-                  <td><a href="#entities">Entities →</a></td>
+                  <td><a href="#entities" class="api-matrix-btn">Entities →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.entity</code></td>
-                  <td><strong><code>EntityNapeSprite</code></strong></td>
+                  <td><a href="#entities" class="package-link"><code>mklib.entity</code></a></td>
+                  <td><a href="#entities" class="table-class-link"><strong><code>EntityNapeSprite</code></strong></a></td>
                   <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code>, <code>body</code></td>
                   <td><code>new</code>, <code>resolveTilesetPath</code>, <code>loadTileRectGraphic</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>sensorEnabled</code>, <code>addCbType</code>, <code>updateShapePosition</code>, <code>initAnimation</code>, <code>markDestroyed</code>, <code>isSaveDestroyed</code></td>
-                  <td><a href="#entities">Entities →</a></td>
+                  <td><a href="#entities" class="api-matrix-btn">Entities →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.save</code></td>
-                  <td><strong><code>SaveManager</code></strong></td>
+                  <td><a href="#save" class="package-link"><code>mklib.save</code></a></td>
+                  <td><a href="#save" class="table-class-link"><strong><code>SaveManager</code></strong></a></td>
                   <td><code>config</code>, <code>playTime</code>, <code>globals</code>, <code>levelStates</code>, <code>lastCheckpointMeta</code>, <code>onSave</code>, <code>onLoad</code></td>
                   <td><code>update</code>, <code>saveCheckpoint</code>, <code>loadCheckpoint</code>, <code>hasCheckpoint</code>, <code>clearCheckpoint</code>, <code>captureLevel</code>, <code>restoreLevel</code>, <code>markEntityDestroyed</code>, <code>setGlobal</code>, <code>getGlobal</code></td>
-                  <td><a href="#save">Save →</a></td>
+                  <td><a href="#save" class="api-matrix-btn">Save →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.save</code></td>
-                  <td><strong><code>ISaveable</code></strong></td>
+                  <td><a href="#save" class="package-link"><code>mklib.save</code></a></td>
+                  <td><a href="#save" class="table-class-link"><strong><code>ISaveable</code></strong></a></td>
                   <td>–</td>
                   <td><code>saveState</code>, <code>loadState</code></td>
-                  <td><a href="#save">Save →</a></td>
+                  <td><a href="#save" class="api-matrix-btn">Save →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.save</code></td>
-                  <td><strong><code>CheckpointMeta</code> / <code>SaveData</code></strong></td>
+                  <td><a href="#save" class="package-link"><code>mklib.save</code></a></td>
+                  <td><a href="#save" class="table-class-link"><strong><code>CheckpointMeta</code> / <code>SaveData</code></strong></a></td>
                   <td><code>timestamp</code>, <code>dateFormatted</code>, <code>playTimeSeconds</code>, <code>levelName</code>, <code>customMeta</code></td>
                   <td>Typdefinitionen für Checkpoints und Speicherprofile</td>
-                  <td><a href="#save">Save →</a></td>
+                  <td><a href="#save" class="api-matrix-btn">Save →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.animation</code></td>
-                  <td><strong><code>FrameConfig</code> / <code>AnimationClip</code> / <code>SpriteSheetData</code></strong></td>
+                  <td><a href="#animation" class="package-link"><code>mklib.animation</code></a></td>
+                  <td><a href="#animation" class="table-class-link"><strong><code>FrameConfig</code> / <code>AnimationClip</code> / <code>SpriteSheetData</code></strong></a></td>
                   <td><code>imagePath</code>, <code>config</code>, <code>animations</code>, <code>defaultAnimation</code></td>
                   <td>Typdefinitionen für Spritesheets und Clips</td>
-                  <td><a href="#animation">Animationen →</a></td>
+                  <td><a href="#animation" class="api-matrix-btn">Animationen →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.macro</code></td>
-                  <td><strong><code>AnimationBuilder</code></strong></td>
+                  <td><a href="#animation" class="package-link"><code>mklib.macro</code></a></td>
+                  <td><a href="#animation" class="table-class-link"><strong><code>AnimationBuilder</code></strong></a></td>
                   <td>–</td>
                   <td><code>buildDatabase</code> (Compile-Time-Makro)</td>
-                  <td><a href="#animation">Animationen →</a></td>
+                  <td><a href="#animation" class="api-matrix-btn">Animationen →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.physic</code></td>
-                  <td><strong><code>Listener</code></strong></td>
+                  <td><a href="#physics" class="package-link"><code>mklib.physic</code></a></td>
+                  <td><a href="#physics" class="table-class-link"><strong><code>Listener</code></strong></a></td>
                   <td>–</td>
                   <td>13 Listener für Kollisionen, Sensoren & Pixel-Kollision/Sensoren</td>
-                  <td><a href="#physics">Physik →</a></td>
+                  <td><a href="#physics" class="api-matrix-btn">Physik →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.physic</code></td>
-                  <td><strong><code>ShapeBuilder</code></strong></td>
+                  <td><a href="#physics" class="package-link"><code>mklib.physic</code></a></td>
+                  <td><a href="#physics" class="table-class-link"><strong><code>ShapeBuilder</code></strong></a></td>
                   <td>–</td>
                   <td><code>createShapesFromBitmap</code>, <code>createShapesFromSprite</code>, <code>createBodyFromSprite</code>, <code>extractFrameBitmap</code>, <code>createShapesForAnimation</code></td>
-                  <td><a href="#physics">Physik →</a></td>
+                  <td><a href="#physics" class="api-matrix-btn">Physik →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.tools</code></td>
-                  <td><strong><code>Tags</code></strong></td>
+                  <td><a href="#physics" class="package-link"><code>mklib.tools</code></a></td>
+                  <td><a href="#physics" class="table-class-link"><strong><code>Tags</code></strong></a></td>
                   <td>–</td>
                   <td><code>get</code>, <code>exist</code></td>
-                  <td><a href="#physics">Physik →</a></td>
+                  <td><a href="#physics" class="api-matrix-btn">Physik →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.light</code></td>
-                  <td><strong><code>LightingSystem</code></strong></td>
+                  <td><a href="#lighting" class="package-link"><code>mklib.light</code></a></td>
+                  <td><a href="#lighting" class="table-class-link"><strong><code>LightingSystem</code></strong></a></td>
                   <td><code>lights</code>, <code>ambientColor</code>, <code>ambientIntensity</code>, <code>autoCull</code>, <code>shaderInstance</code></td>
                   <td><code>new</code>, <code>addLight</code>, <code>removeLight</code>, <code>clearLights</code>, <code>createPointLight</code>, <code>createSpotLight</code>, <code>createTorchLight</code>, <code>createGlowLight</code>, <code>loadFromLevel</code>, <code>fromEntity</code></td>
-                  <td><a href="#lighting">Lighting →</a></td>
+                  <td><a href="#lighting" class="api-matrix-btn">Lighting →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.light</code></td>
-                  <td><strong><code>Light</code></strong></td>
+                  <td><a href="#lighting" class="package-link"><code>mklib.light</code></a></td>
+                  <td><a href="#lighting" class="table-class-link"><strong><code>Light</code></strong></a></td>
                   <td><code>x</code>, <code>y</code>, <code>radius</code>, <code>color</code>, <code>intensity</code>, <code>falloff</code>, <code>active</code>, <code>visible</code>, <code>target</code></td>
                   <td><code>new</code>, <code>follow</code>, <code>stopFollowing</code>, <code>setPosition</code>, <code>setColor</code>, <code>update</code>, <code>destroy</code></td>
-                  <td><a href="#lighting">Lighting →</a></td>
+                  <td><a href="#lighting" class="api-matrix-btn">Lighting →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.light</code></td>
-                  <td><strong><code>SpotLight</code> / <code>TorchLight</code> / <code>GlowLight</code> / <code>PointLight</code></strong></td>
+                  <td><a href="#lighting" class="package-link"><code>mklib.light</code></a></td>
+                  <td><a href="#lighting" class="table-class-link"><strong><code>SpotLight</code> / <code>TorchLight</code> / <code>GlowLight</code> / <code>PointLight</code></strong></a></td>
                   <td><code>angle</code>, <code>spotAngle</code>, <code>flickerSpeed</code>, <code>minRadius</code>, <code>maxRadius</code>, <code>innerRadius</code></td>
                   <td>Spezialisierte GPU-Lichtquellen mit Dämpfung, Wobble & Pulsieren</td>
-                  <td><a href="#lighting">Lighting →</a></td>
+                  <td><a href="#lighting" class="api-matrix-btn">Lighting →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>CrtShader</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>CrtShader</code></strong></a></td>
                   <td><code>totalTime</code>, <code>filter</code></td>
                   <td><code>new</code>, <code>update</code>, <code>setCurvature</code>, <code>setScanlines</code>, <code>setRgbMask</code>, <code>setChromaticAberration</code>, <code>setVignette</code>, <code>setBloom</code>, <code>setAnalogNoise</code>, Presets</td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>HazardLiquidShader</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>HazardLiquidShader</code></strong></a></td>
                   <td><code>totalTime</code></td>
                   <td><code>new</code>, <code>update</code>, <code>setColors</code>, <code>setFlowAndTurbulence</code>, <code>setSurfaceWave</code>, <code>setBubbles</code>, <code>setCrustThresholds</code>, Presets</td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>HazardLiquidPlane</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>HazardLiquidPlane</code></strong></a></td>
                   <td><code>shaderInstance</code>, <code>liquidType</code>, <code>damagePerSecond</code>, <code>isHazardous</code></td>
                   <td><code>new</code>, <code>update</code>, <code>resizePlane</code>, <code>isOverlapping</code>, <code>applyHazardDamage</code></td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>HazardLiquidType</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>HazardLiquidType</code></strong></a></td>
                   <td><code>LAVA</code>, <code>ACID_SLIME</code>, <code>TOXIC_WATER</code>, <code>CUSTOM</code></td>
                   <td>–</td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>WaterReflectionShader</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>WaterReflectionShader</code></strong></a></td>
                   <td><code>data</code></td>
                   <td><code>new</code>, <code>update</code>, <code>setWaterLevel</code>, <code>syncWithCamera</code>, <code>setWaveParams</code>, <code>setWaterColor</code>, <code>setFoam</code>, <code>setFade</code>, <code>setMode</code></td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>WaterReflectionPlane</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>WaterReflectionPlane</code></strong></a></td>
                   <td><code>shaderInstance</code>, <code>autoSyncCamera</code>, <code>targetCamera</code></td>
                   <td><code>new</code>, <code>update</code>, <code>setWaveParams</code>, <code>setFoam</code>, <code>destroy</code></td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>EntityWaterReflection</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>EntityWaterReflection</code></strong></a></td>
                   <td><code>target</code>, <code>shaderInstance</code>, <code>offsetX</code>, <code>offsetY</code>, <code>verticalScale</code></td>
                   <td><code>new</code>, <code>update</code>, <code>syncWithTarget</code>, <code>setWaveParams</code>, <code>destroy</code></td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>WaterReflectionMode</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>WaterReflectionMode</code></strong></a></td>
                   <td><code>VERTICAL_WATER_PLANE</code>, <code>HORIZONTAL_MIRROR</code>, <code>WAVE_DISTORTION_ONLY</code></td>
                   <td>–</td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.path</code></td>
-                  <td><strong><code>NavGrid</code></strong></td>
+                  <td><a href="#pathfinding" class="package-link"><code>mklib.path</code></a></td>
+                  <td><a href="#pathfinding" class="table-class-link"><strong><code>NavGrid</code></strong></a></td>
                   <td><code>width</code>, <code>height</code>, <code>gridSize</code>, <code>data</code></td>
                   <td>12 Methoden zur Rasterverwaltung & Koordinatenumrechnung</td>
-                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                  <td><a href="#pathfinding" class="api-matrix-btn">Pathfinding →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.path</code></td>
-                  <td><strong><code>NavGridBuilder</code></strong></td>
+                  <td><a href="#pathfinding" class="package-link"><code>mklib.path</code></a></td>
+                  <td><a href="#pathfinding" class="table-class-link"><strong><code>NavGridBuilder</code></strong></a></td>
                   <td><code>grid</code>, <code>level</code></td>
                   <td><code>new</code>, <code>fromLevel</code>, <code>addIntGrid</code>, <code>addTileLayer</code>, <code>addEntityLayer</code>, <code>addLayerByName</code>, <code>autoBuild</code>, <code>build</code></td>
-                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                  <td><a href="#pathfinding" class="api-matrix-btn">Pathfinding →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.path</code></td>
-                  <td><strong><code>AStar</code></strong></td>
+                  <td><a href="#pathfinding" class="package-link"><code>mklib.path</code></a></td>
+                  <td><a href="#pathfinding" class="table-class-link"><strong><code>AStar</code></strong></a></td>
                   <td><code>SQRT2</code></td>
                   <td><code>findPath</code>, <code>findWorldPath</code>, <code>heuristic</code>, <code>reconstructPath</code></td>
-                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                  <td><a href="#pathfinding" class="api-matrix-btn">Pathfinding →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.path</code></td>
-                  <td><strong><code>GridPoint</code></strong></td>
+                  <td><a href="#pathfinding" class="package-link"><code>mklib.path</code></a></td>
+                  <td><a href="#pathfinding" class="table-class-link"><strong><code>GridPoint</code></strong></a></td>
                   <td><code>x</code>, <code>y</code></td>
                   <td><code>new</code>, <code>equals</code>, <code>toString</code></td>
-                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                  <td><a href="#pathfinding" class="api-matrix-btn">Pathfinding →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.tools</code></td>
-                  <td><strong><code>AspectRatio</code></strong></td>
+                  <td><a href="#tools-math" class="package-link"><code>mklib.tools</code></a></td>
+                  <td><a href="#tools-math" class="table-class-link"><strong><code>AspectRatio</code></strong></a></td>
                   <td><code>width</code>, <code>height</code>, <code>isDefault</code>, <code>screenRatio</code></td>
                   <td><code>new</code>, <code>calc</code>, <code>isInRange</code></td>
-                  <td><a href="#tools-math">Tools →</a></td>
+                  <td><a href="#tools-math" class="api-matrix-btn">Tools →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.tools</code></td>
-                  <td><strong><code>GamepadHelper</code></strong></td>
+                  <td><a href="#tools-math" class="package-link"><code>mklib.tools</code></a></td>
+                  <td><a href="#tools-math" class="table-class-link"><strong><code>GamepadHelper</code></strong></a></td>
                   <td>–</td>
                   <td><code>vibrate</code>, <code>rumble</code>, <code>stopVibration</code>, <code>vibrateAll</code>, <code>stopAllVibrations</code>, <code>getLimeGamepad</code></td>
-                  <td><a href="#tools-math">Tools →</a></td>
+                  <td><a href="#tools-math" class="api-matrix-btn">Tools →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.math</code></td>
-                  <td><strong><code>MathTool</code></strong></td>
+                  <td><a href="#tools-math" class="package-link"><code>mklib.math</code></a></td>
+                  <td><a href="#tools-math" class="table-class-link"><strong><code>MathTool</code></strong></a></td>
                   <td>–</td>
                   <td><code>floatFix</code></td>
-                  <td><a href="#tools-math">Tools →</a></td>
+                  <td><a href="#tools-math" class="api-matrix-btn">Tools →</a></td>
                 </tr>
               </tbody>
             </table>
@@ -421,41 +478,98 @@
             Complete, comprehensive reference of all classes, properties, and methods in the <strong>mklib</strong> library for <strong>HaxeFlixel</strong>, the <strong>LDtk Level Editor</strong>, <strong>Nape 2D</strong>, and <strong>GPU Shaders</strong>.
           </p>
 
+          <div class="quick-nav-pills">
+            <a href="#getting-started" class="pill-link"><span>🚀</span> Quick Start</a>
+            <a href="#ldtk-guide" class="pill-link"><span>🗺️</span> LDtk Guide</a>
+            <a href="#state" class="pill-link"><span>🎮</span> State</a>
+            <a href="#layers" class="pill-link"><span>📑</span> Layer</a>
+            <a href="#entities" class="pill-link"><span>👾</span> Entities</a>
+            <a href="#save" class="pill-link"><span>💾</span> Save</a>
+            <a href="#animation" class="pill-link"><span>🎬</span> Animations</a>
+            <a href="#physics" class="pill-link"><span>⚡</span> Physics & Nape</a>
+            <a href="#pathfinding" class="pill-link"><span>🧭</span> Pathfinding & A*</a>
+            <a href="#lighting" class="pill-link"><span>💡</span> GPU Lighting</a>
+            <a href="#effects" class="pill-link"><span>🎨</span> Shaders & Effects</a>
+            <a href="#tools-math" class="pill-link"><span>📐</span> Tools & Math</a>
+          </div>
+
           <div class="feature-grid">
-            <div class="feature-card">
+            <a href="#getting-started" class="feature-card">
+              <div class="feature-icon">🚀</div>
+              <h3>Quick Start & Setup</h3>
+              <p>Project.xml configuration, compiler flags, asset directory mapping, and minimal Flixel bootstrapping.</p>
+              <div class="card-link-hint">To Quick Start →</div>
+            </a>
+            <a href="#ldtk-guide" class="feature-card">
               <div class="feature-icon">🗺️</div>
-              <h3>LDtk Integration</h3>
+              <h3>LDtk Guide & Workflow</h3>
+              <p>Level editor workflow, custom entity fields, enum mapping, and automatic layer hierarchies.</p>
+              <div class="card-link-hint">To LDtk Guide →</div>
+            </a>
+            <a href="#state" class="feature-card">
+              <div class="feature-icon">🎮</div>
+              <h3>State Management</h3>
+              <p>Typed base state (<code>State&lt;TLevel&gt;</code>) with automated Nape physics space lifecycle and level loading.</p>
+              <div class="card-link-hint">To State Management →</div>
+            </a>
+            <a href="#layers" class="feature-card">
+              <div class="feature-icon">📑</div>
+              <h3>Layer System</h3>
               <p>Automated tile layer rendering (<code>TileLayer</code>) and dynamic reflection-based entity instantiation (<code>EntityLayer</code>).</p>
-            </div>
-            <div class="feature-card">
+              <div class="card-link-hint">To Layer System →</div>
+            </a>
+            <a href="#entities" class="feature-card">
+              <div class="feature-icon">👾</div>
+              <h3>Entities & Sprites</h3>
+              <p>Base classes (<code>EntitySprite</code>, <code>EntityNapeSprite</code>), custom field parsing, tileset graphics, and physics bodies.</p>
+              <div class="card-link-hint">To Entities →</div>
+            </a>
+            <a href="#save" class="feature-card">
+              <div class="feature-icon">💾</div>
+              <h3>Save & Persistence</h3>
+              <p>Comprehensive persistence framework (<code>SaveManager</code>, <code>ISaveable</code>), checkpoints, playtime, and global flags.</p>
+              <div class="card-link-hint">To Save & Persistence →</div>
+            </a>
+            <a href="#animation" class="feature-card">
+              <div class="feature-icon">🎬</div>
+              <h3>Animations & Macros</h3>
+              <p>Compile-time spritesheet generator (<code>AnimationBuilder</code>), JSON parsing, and clip metadata.</p>
+              <div class="card-link-hint">To Animations →</div>
+            </a>
+            <a href="#physics" class="feature-card">
               <div class="feature-icon">⚡</div>
               <h3>Nape Physics & Tags</h3>
               <p>13 specialized collision and sensor listeners (<code>Listener</code>) with human-readable string tags (<code>Tags</code>) and <code>ShapeBuilder</code>.</p>
-            </div>
-            <div class="feature-card">
+              <div class="card-link-hint">To Physics & Sensors →</div>
+            </a>
+            <a href="#pathfinding" class="feature-card">
               <div class="feature-icon">🧭</div>
               <h3>A* Pathfinding</h3>
-              <p>High-performance 2D pathfinding grid (<code>NavGrid</code>, <code>NavGridBuilder</code>, <code>AStar</code>) with multi-tile agent support.</p>
-            </div>
-            <div class="feature-card">
+              <p>High-performance 2D pathfinding grid (<code>NavGrid</code>, <code>NavGridBuilder</code>, <code>AStar</code>) with interactive visual simulator.</p>
+              <div class="card-link-hint">To Pathfinding & Simulator →</div>
+            </a>
+            <a href="#lighting" class="feature-card">
               <div class="feature-icon">💡</div>
-              <h3>GPU Lighting & 2D Shadows</h3>
-              <p>Hardware-accelerated 2D multi-light system (<code>LightingSystem</code>) with raymarched soft shadows, occluders, torch flickers, and spotlights.</p>
-            </div>
-            <div class="feature-card">
+              <h3>GPU Lighting & Shadows</h3>
+              <p>Hardware-accelerated 2D multi-light system (<code>LightingSystem</code>) with raymarched soft shadows, occluders, and spotlights.</p>
+              <div class="card-link-hint">To Lighting System →</div>
+            </a>
+            <a href="#effects" class="feature-card">
               <div class="feature-icon">🎨</div>
               <h3>Shaders & Post-Processing</h3>
               <p>Authentic CRT retro screen filter (<code>CrtShader</code>), procedural lava/acid fluid pools (<code>HazardLiquidPlane</code>), and real-time water reflections (<code>WaterReflectionPlane</code>).</p>
-            </div>
-            <div class="feature-card">
-              <div class="feature-icon">📱</div>
+              <div class="card-link-hint">To Shaders & Effects →</div>
+            </a>
+            <a href="#tools-math" class="feature-card">
+              <div class="feature-icon">📐</div>
               <h3>Responsive Scaling & Tools</h3>
-              <p>Dynamic game resolution (<code>AspectRatio</code>), gamepad rumble support (<code>GamepadHelper</code>), persistence (<code>SaveManager</code>), and math utilities (<code>MathTool</code>).</p>
-            </div>
+              <p>Dynamic game resolution (<code>AspectRatio</code>), gamepad rumble support (<code>GamepadHelper</code>), and math utilities (<code>MathTool</code>).</p>
+              <div class="card-link-hint">To Tools & Math →</div>
+            </a>
           </div>
 
           <h2>🏛️ Complete Class & API Matrix</h2>
-          <p>Overview of all types provided by the library:</p>
+          <p>Overview of all types provided by the library (click any class name to jump directly to its documentation):</p>
 
           <div class="api-table-wrapper">
             <table class="api-table">
@@ -470,207 +584,228 @@
               </thead>
               <tbody>
                 <tr>
-                  <td><code>mklib.state</code></td>
-                  <td><strong><code>State&lt;TLevel&gt;</code></strong></td>
+                  <td><a href="#state" class="package-link"><code>mklib.state</code></a></td>
+                  <td><a href="#state" class="table-class-link"><strong><code>State&lt;TLevel&gt;</code></strong></a></td>
                   <td><code>project</code>, <code>tags</code>, <code>levelName</code>, <code>data</code></td>
                   <td><code>new</code>, <code>create</code>, <code>napeInit</code>, <code>addCbTypes</code>, <code>update</code></td>
-                  <td><a href="#state">State →</a></td>
+                  <td><a href="#state" class="api-matrix-btn">State →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.layer</code></td>
-                  <td><strong><code>TileLayer</code></strong></td>
+                  <td><a href="#layers" class="package-link"><code>mklib.layer</code></a></td>
+                  <td><a href="#layers" class="table-class-link"><strong><code>TileLayer</code></strong></a></td>
                   <td><code>levelName</code>, <code>layerName</code>, <code>state</code></td>
                   <td><code>new</code>, <code>render</code></td>
-                  <td><a href="#layers">Layer →</a></td>
+                  <td><a href="#layers" class="api-matrix-btn">Layer →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.layer</code></td>
-                  <td><strong><code>EntityLayer</code></strong></td>
+                  <td><a href="#layers" class="package-link"><code>mklib.layer</code></a></td>
+                  <td><a href="#layers" class="table-class-link"><strong><code>EntityLayer</code></strong></a></td>
                   <td><code>layerName</code>, <code>packageName</code>, <code>state</code></td>
                   <td><code>new</code>, <code>addEntities</code>, <code>isNapeEntity</code></td>
-                  <td><a href="#layers">Layer →</a></td>
+                  <td><a href="#layers" class="api-matrix-btn">Layer →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.layer</code></td>
-                  <td><strong><code>EntityLayerSource&lt;T&gt;</code></strong></td>
+                  <td><a href="#layers" class="package-link"><code>mklib.layer</code></a></td>
+                  <td><a href="#layers" class="table-class-link"><strong><code>EntityLayerSource&lt;T&gt;</code></strong></a></td>
                   <td><code>identifier</code>, <code>getAllUntyped</code></td>
                   <td>–</td>
-                  <td><a href="#layers">Layer →</a></td>
+                  <td><a href="#layers" class="api-matrix-btn">Layer →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.entity</code></td>
-                  <td><strong><code>EntitySprite</code></strong></td>
+                  <td><a href="#entities" class="package-link"><code>mklib.entity</code></a></td>
+                  <td><a href="#entities" class="table-class-link"><strong><code>EntitySprite</code></strong></a></td>
                   <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code></td>
                   <td><code>new</code>, <code>resolveTilesetPath</code>, <code>loadTileRectGraphic</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>initAnimation</code></td>
-                  <td><a href="#entities">Entities →</a></td>
+                  <td><a href="#entities" class="api-matrix-btn">Entities →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.entity</code></td>
-                  <td><strong><code>EntityNapeSprite</code></strong></td>
+                  <td><a href="#entities" class="package-link"><code>mklib.entity</code></a></td>
+                  <td><a href="#entities" class="table-class-link"><strong><code>EntityNapeSprite</code></strong></a></td>
                   <td><code>_entity</code>, <code>iid</code>, <code>state</code>, <code>graphicPath</code>, <code>hasGraphic</code>, <code>body</code></td>
                   <td><code>new</code>, <code>resolveTilesetPath</code>, <code>loadTileRectGraphic</code>, <code>getGraphicPath</code>, <code>getField</code>, <code>hasField</code>, <code>sensorEnabled</code>, <code>addCbType</code>, <code>updateShapePosition</code>, <code>initAnimation</code>, <code>markDestroyed</code>, <code>isSaveDestroyed</code></td>
-                  <td><a href="#entities">Entities →</a></td>
+                  <td><a href="#entities" class="api-matrix-btn">Entities →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.animation</code></td>
-                  <td><strong><code>FrameConfig</code> / <code>AnimationClip</code> / <code>SpriteSheetData</code></strong></td>
+                  <td><a href="#save" class="package-link"><code>mklib.save</code></a></td>
+                  <td><a href="#save" class="table-class-link"><strong><code>SaveManager</code></strong></a></td>
+                  <td><code>config</code>, <code>playTime</code>, <code>globals</code>, <code>levelStates</code>, <code>lastCheckpointMeta</code>, <code>onSave</code>, <code>onLoad</code></td>
+                  <td><code>update</code>, <code>saveCheckpoint</code>, <code>loadCheckpoint</code>, <code>hasCheckpoint</code>, <code>clearCheckpoint</code>, <code>captureLevel</code>, <code>restoreLevel</code>, <code>markEntityDestroyed</code>, <code>setGlobal</code>, <code>getGlobal</code></td>
+                  <td><a href="#save" class="api-matrix-btn">Save →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="#save" class="package-link"><code>mklib.save</code></a></td>
+                  <td><a href="#save" class="table-class-link"><strong><code>ISaveable</code></strong></a></td>
+                  <td>–</td>
+                  <td><code>saveState</code>, <code>loadState</code></td>
+                  <td><a href="#save" class="api-matrix-btn">Save →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="#save" class="package-link"><code>mklib.save</code></a></td>
+                  <td><a href="#save" class="table-class-link"><strong><code>CheckpointMeta</code> / <code>SaveData</code></strong></a></td>
+                  <td><code>timestamp</code>, <code>dateFormatted</code>, <code>playTimeSeconds</code>, <code>levelName</code>, <code>customMeta</code></td>
+                  <td>Typdefinitionen für Checkpoints und Speicherprofile</td>
+                  <td><a href="#save" class="api-matrix-btn">Save →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="#animation" class="package-link"><code>mklib.animation</code></a></td>
+                  <td><a href="#animation" class="table-class-link"><strong><code>FrameConfig</code> / <code>AnimationClip</code> / <code>SpriteSheetData</code></strong></a></td>
                   <td><code>imagePath</code>, <code>config</code>, <code>animations</code>, <code>defaultAnimation</code></td>
                   <td>Typdefinitionen für Spritesheets und Clips</td>
-                  <td><a href="#animation">Animationen →</a></td>
+                  <td><a href="#animation" class="api-matrix-btn">Animationen →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.macro</code></td>
-                  <td><strong><code>AnimationBuilder</code></strong></td>
+                  <td><a href="#animation" class="package-link"><code>mklib.macro</code></a></td>
+                  <td><a href="#animation" class="table-class-link"><strong><code>AnimationBuilder</code></strong></a></td>
                   <td>–</td>
                   <td><code>buildDatabase</code> (Compile-Time-Makro)</td>
-                  <td><a href="#animation">Animationen →</a></td>
+                  <td><a href="#animation" class="api-matrix-btn">Animationen →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.physic</code></td>
-                  <td><strong><code>Listener</code></strong></td>
+                  <td><a href="#physics" class="package-link"><code>mklib.physic</code></a></td>
+                  <td><a href="#physics" class="table-class-link"><strong><code>Listener</code></strong></a></td>
                   <td>–</td>
                   <td>13 listeners for collisions, sensors & pixel-perfect collisions/sensors</td>
-                  <td><a href="#physics">Physik →</a></td>
+                  <td><a href="#physics" class="api-matrix-btn">Physik →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.physic</code></td>
-                  <td><strong><code>ShapeBuilder</code></strong></td>
+                  <td><a href="#physics" class="package-link"><code>mklib.physic</code></a></td>
+                  <td><a href="#physics" class="table-class-link"><strong><code>ShapeBuilder</code></strong></a></td>
                   <td>–</td>
                   <td><code>createShapesFromBitmap</code>, <code>createShapesFromSprite</code>, <code>createBodyFromSprite</code>, <code>extractFrameBitmap</code>, <code>createShapesForAnimation</code></td>
-                  <td><a href="#physics">Physik →</a></td>
+                  <td><a href="#physics" class="api-matrix-btn">Physik →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.tools</code></td>
-                  <td><strong><code>Tags</code></strong></td>
+                  <td><a href="#physics" class="package-link"><code>mklib.tools</code></a></td>
+                  <td><a href="#physics" class="table-class-link"><strong><code>Tags</code></strong></a></td>
                   <td>–</td>
                   <td><code>get</code>, <code>exist</code></td>
-                  <td><a href="#physics">Physik →</a></td>
+                  <td><a href="#physics" class="api-matrix-btn">Physik →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.light</code></td>
-                  <td><strong><code>LightingSystem</code></strong></td>
+                  <td><a href="#lighting" class="package-link"><code>mklib.light</code></a></td>
+                  <td><a href="#lighting" class="table-class-link"><strong><code>LightingSystem</code></strong></a></td>
                   <td><code>lights</code>, <code>ambientColor</code>, <code>ambientIntensity</code>, <code>autoCull</code>, <code>shaderInstance</code></td>
                   <td><code>new</code>, <code>addLight</code>, <code>removeLight</code>, <code>clearLights</code>, <code>createPointLight</code>, <code>createSpotLight</code>, <code>createTorchLight</code>, <code>createGlowLight</code>, <code>loadFromLevel</code>, <code>fromEntity</code></td>
-                  <td><a href="#lighting">Lighting →</a></td>
+                  <td><a href="#lighting" class="api-matrix-btn">Lighting →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.light</code></td>
-                  <td><strong><code>Light</code></strong></td>
+                  <td><a href="#lighting" class="package-link"><code>mklib.light</code></a></td>
+                  <td><a href="#lighting" class="table-class-link"><strong><code>Light</code></strong></a></td>
                   <td><code>x</code>, <code>y</code>, <code>radius</code>, <code>color</code>, <code>intensity</code>, <code>falloff</code>, <code>active</code>, <code>visible</code>, <code>target</code></td>
                   <td><code>new</code>, <code>follow</code>, <code>stopFollowing</code>, <code>setPosition</code>, <code>setColor</code>, <code>update</code>, <code>destroy</code></td>
-                  <td><a href="#lighting">Lighting →</a></td>
+                  <td><a href="#lighting" class="api-matrix-btn">Lighting →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.light</code></td>
-                  <td><strong><code>SpotLight</code> / <code>TorchLight</code> / <code>GlowLight</code> / <code>PointLight</code></strong></td>
+                  <td><a href="#lighting" class="package-link"><code>mklib.light</code></a></td>
+                  <td><a href="#lighting" class="table-class-link"><strong><code>SpotLight</code> / <code>TorchLight</code> / <code>GlowLight</code> / <code>PointLight</code></strong></a></td>
                   <td><code>angle</code>, <code>spotAngle</code>, <code>flickerSpeed</code>, <code>minRadius</code>, <code>maxRadius</code>, <code>innerRadius</code></td>
                   <td>Spezialisierte GPU-Lichtquellen mit Dämpfung, Wobble & Pulsieren</td>
-                  <td><a href="#lighting">Lighting →</a></td>
+                  <td><a href="#lighting" class="api-matrix-btn">Lighting →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>CrtShader</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>CrtShader</code></strong></a></td>
                   <td><code>totalTime</code>, <code>filter</code></td>
                   <td><code>new</code>, <code>update</code>, <code>setCurvature</code>, <code>setScanlines</code>, <code>setRgbMask</code>, <code>setChromaticAberration</code>, <code>setVignette</code>, <code>setBloom</code>, <code>setAnalogNoise</code>, Presets</td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>HazardLiquidShader</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>HazardLiquidShader</code></strong></a></td>
                   <td><code>totalTime</code></td>
                   <td><code>new</code>, <code>update</code>, <code>setColors</code>, <code>setFlowAndTurbulence</code>, <code>setSurfaceWave</code>, <code>setBubbles</code>, <code>setCrustThresholds</code>, Presets</td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>HazardLiquidPlane</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>HazardLiquidPlane</code></strong></a></td>
                   <td><code>shaderInstance</code>, <code>liquidType</code>, <code>damagePerSecond</code>, <code>isHazardous</code></td>
                   <td><code>new</code>, <code>update</code>, <code>resizePlane</code>, <code>isOverlapping</code>, <code>applyHazardDamage</code></td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>HazardLiquidType</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>HazardLiquidType</code></strong></a></td>
                   <td><code>LAVA</code>, <code>ACID_SLIME</code>, <code>TOXIC_WATER</code>, <code>CUSTOM</code></td>
                   <td>–</td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>WaterReflectionShader</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>WaterReflectionShader</code></strong></a></td>
                   <td><code>data</code></td>
                   <td><code>new</code>, <code>update</code>, <code>setWaterLevel</code>, <code>syncWithCamera</code>, <code>setWaveParams</code>, <code>setWaterColor</code>, <code>setFoam</code>, <code>setFade</code>, <code>setMode</code></td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>WaterReflectionPlane</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>WaterReflectionPlane</code></strong></a></td>
                   <td><code>shaderInstance</code>, <code>autoSyncCamera</code>, <code>targetCamera</code></td>
                   <td><code>new</code>, <code>update</code>, <code>setWaveParams</code>, <code>setFoam</code>, <code>destroy</code></td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>EntityWaterReflection</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>EntityWaterReflection</code></strong></a></td>
                   <td><code>target</code>, <code>shaderInstance</code>, <code>offsetX</code>, <code>offsetY</code>, <code>verticalScale</code></td>
                   <td><code>new</code>, <code>update</code>, <code>syncWithTarget</code>, <code>setWaveParams</code>, <code>destroy</code></td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.effect</code></td>
-                  <td><strong><code>WaterReflectionMode</code></strong></td>
+                  <td><a href="#effects" class="package-link"><code>mklib.effect</code></a></td>
+                  <td><a href="#effects" class="table-class-link"><strong><code>WaterReflectionMode</code></strong></a></td>
                   <td><code>VERTICAL_WATER_PLANE</code>, <code>HORIZONTAL_MIRROR</code>, <code>WAVE_DISTORTION_ONLY</code></td>
                   <td>–</td>
-                  <td><a href="#effects">Shader →</a></td>
+                  <td><a href="#effects" class="api-matrix-btn">Shader →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.path</code></td>
-                  <td><strong><code>NavGrid</code></strong></td>
+                  <td><a href="#pathfinding" class="package-link"><code>mklib.path</code></a></td>
+                  <td><a href="#pathfinding" class="table-class-link"><strong><code>NavGrid</code></strong></a></td>
                   <td><code>width</code>, <code>height</code>, <code>gridSize</code>, <code>data</code></td>
                   <td>12 Methoden zur Rasterverwaltung & Koordinatenumrechnung</td>
-                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                  <td><a href="#pathfinding" class="api-matrix-btn">Pathfinding →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.path</code></td>
-                  <td><strong><code>NavGridBuilder</code></strong></td>
+                  <td><a href="#pathfinding" class="package-link"><code>mklib.path</code></a></td>
+                  <td><a href="#pathfinding" class="table-class-link"><strong><code>NavGridBuilder</code></strong></a></td>
                   <td><code>grid</code>, <code>level</code></td>
                   <td><code>new</code>, <code>fromLevel</code>, <code>addIntGrid</code>, <code>addTileLayer</code>, <code>addEntityLayer</code>, <code>addLayerByName</code>, <code>autoBuild</code>, <code>build</code></td>
-                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                  <td><a href="#pathfinding" class="api-matrix-btn">Pathfinding →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.path</code></td>
-                  <td><strong><code>AStar</code></strong></td>
+                  <td><a href="#pathfinding" class="package-link"><code>mklib.path</code></a></td>
+                  <td><a href="#pathfinding" class="table-class-link"><strong><code>AStar</code></strong></a></td>
                   <td><code>SQRT2</code></td>
                   <td><code>findPath</code>, <code>findWorldPath</code>, <code>heuristic</code>, <code>reconstructPath</code></td>
-                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                  <td><a href="#pathfinding" class="api-matrix-btn">Pathfinding →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.path</code></td>
-                  <td><strong><code>GridPoint</code></strong></td>
+                  <td><a href="#pathfinding" class="package-link"><code>mklib.path</code></a></td>
+                  <td><a href="#pathfinding" class="table-class-link"><strong><code>GridPoint</code></strong></a></td>
                   <td><code>x</code>, <code>y</code></td>
                   <td><code>new</code>, <code>equals</code>, <code>toString</code></td>
-                  <td><a href="#pathfinding">Pathfinding →</a></td>
+                  <td><a href="#pathfinding" class="api-matrix-btn">Pathfinding →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.tools</code></td>
-                  <td><strong><code>AspectRatio</code></strong></td>
+                  <td><a href="#tools-math" class="package-link"><code>mklib.tools</code></a></td>
+                  <td><a href="#tools-math" class="table-class-link"><strong><code>AspectRatio</code></strong></a></td>
                   <td><code>width</code>, <code>height</code>, <code>isDefault</code>, <code>screenRatio</code></td>
                   <td><code>new</code>, <code>calc</code>, <code>isInRange</code></td>
-                  <td><a href="#tools-math">Tools →</a></td>
+                  <td><a href="#tools-math" class="api-matrix-btn">Tools →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.tools</code></td>
-                  <td><strong><code>GamepadHelper</code></strong></td>
+                  <td><a href="#tools-math" class="package-link"><code>mklib.tools</code></a></td>
+                  <td><a href="#tools-math" class="table-class-link"><strong><code>GamepadHelper</code></strong></a></td>
                   <td>–</td>
                   <td><code>vibrate</code>, <code>rumble</code>, <code>stopVibration</code>, <code>vibrateAll</code>, <code>stopAllVibrations</code>, <code>getLimeGamepad</code></td>
-                  <td><a href="#tools-math">Tools →</a></td>
+                  <td><a href="#tools-math" class="api-matrix-btn">Tools →</a></td>
                 </tr>
                 <tr>
-                  <td><code>mklib.math</code></td>
-                  <td><strong><code>MathTool</code></strong></td>
+                  <td><a href="#tools-math" class="package-link"><code>mklib.math</code></a></td>
+                  <td><a href="#tools-math" class="table-class-link"><strong><code>MathTool</code></strong></a></td>
                   <td>–</td>
                   <td><code>floatFix</code></td>
-                  <td><a href="#tools-math">Tools →</a></td>
+                  <td><a href="#tools-math" class="api-matrix-btn">Tools →</a></td>
                 </tr>
               </tbody>
             </table>
