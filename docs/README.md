@@ -58,10 +58,10 @@
    - Light types: Point, Spot, Torch (flicker), Glow (pulse), Directional
    - Raymarched soft shadows and occluders
 
-10. [**Water Reflection & Wave Shaders (`WaterReflectionShader`, `WaterReflectionPlane`, `EntityWaterReflection`)**](water_reflection.md)
-    - Dynamic real-time water wave & reflection shader
-    - Full water planes and per-entity reflection sprites
-    - Configurable wave amplitude, frequency, foam, and reflection fade
+10. [**Shader & Post-Processing System (`CrtShader`, `HazardLiquid*`, `WaterReflection*`)**](shaders.md)
+    - Full-screen CRT & retro-arcade shader with curvature, scanlines, and RGB mask (`CrtShader`)
+    - Procedural lava, acid/slime, and toxic water surfaces with crust, bubbles, and edge glow (`HazardLiquidShader`, `HazardLiquidPlane`, `HazardLiquidType`)
+    - Dynamic real-time water wave & reflection shader (`WaterReflectionShader`, `WaterReflectionPlane`, `EntityWaterReflection`)
 
 11. [**Tools & Math Utilities (`AspectRatio`, `GamepadHelper` & `MathTool`)**](tools_math.md)
     - Aspect ratio calculations & validation (`AspectRatio`)

@@ -19,7 +19,7 @@ The complete interactive documentation, including a live A* pathfinding simulato
 - [**Physics & Sensors (`Listener` & `Tags`)**](docs/physics.md)
 - [**Pathfinding & Navigation (`NavGrid`, `NavGridBuilder`, `AStar`)**](docs/pathfinding.md)
 - [**GPU Lighting System (`LightingSystem`, `Light`, `PointLight`, `SpotLight`, `TorchLight`, `GlowLight`)**](docs/lighting.md)
-- [**Water Reflection & Wave Shaders (`WaterReflectionShader`, `WaterReflectionPlane`, `EntityWaterReflection`)**](docs/water_reflection.md)
+- [**Shader & Post-Processing System (`CrtShader`, `HazardLiquid*`, `WaterReflection*`)**](docs/shaders.md)
 - [**Tools & Math Utilities (`AspectRatio`, `GamepadHelper` & `MathTool`)**](docs/tools_math.md)
 
 ---
@@ -44,6 +44,10 @@ The complete interactive documentation, including a live A* pathfinding simulato
 | `mklib.light` | `TorchLight` | `flickerSpeed`, `flickerIntensity`, `flickerRadius`, `flameJitter` | `new`, `update` |
 | `mklib.light` | `GlowLight` | `minRadius`, `maxRadius`, `minIntensity`, `maxIntensity`, `pulseSpeed` | `new`, `update` |
 | `mklib.light` | `DirectionalLight` | `directionAngle` | `new` |
+| `mklib.effect` | `CrtShader` | `totalTime`, `filter` | `new`, `update`, `setCurvature`, `setScanlines`, `setRgbMask`, `setChromaticAberration`, `setVignette`, `setBloom`, `setAnalogNoise`, `presetSubtle`, `presetArcade`, `presetVhsGlitch` |
+| `mklib.effect` | `HazardLiquidShader` | `totalTime` | `new`, `update`, `setColors`, `setFlowAndTurbulence`, `setSurfaceWave`, `setBubbles`, `setCrustThresholds`, `presetLava`, `presetAcid`, `presetToxic`, `applyType` |
+| `mklib.effect` | `HazardLiquidPlane` | `shaderInstance`, `liquidType`, `damagePerSecond`, `isHazardous`, `autoUpdateShader` | `new`, `update`, `resizePlane`, `isOverlapping`, `applyHazardDamage` |
+| `mklib.effect` | `HazardLiquidType` | `LAVA`, `ACID_SLIME`, `TOXIC_WATER`, `CUSTOM` |  |
 | `mklib.effect` | `WaterReflectionShader` | `data` | `new`, `update`, `setWaterLevel`, `syncWithCamera`, `setWaveParams`, `setWaterColor`, `setFoam`, `setFade`, `setMode` |
 | `mklib.effect` | `WaterReflectionPlane` | `shaderInstance`, `autoSyncCamera`, `targetCamera` | `new`, `update`, `setWaveParams`, `setFoam`, `destroy` |
 | `mklib.effect` | `EntityWaterReflection` | `target`, `shaderInstance`, `offsetX`, `offsetY`, `verticalScale` | `new`, `update`, `syncWithTarget`, `setWaveParams`, `destroy` |

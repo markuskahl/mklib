@@ -37,7 +37,7 @@ const i18nStrings = {
     navPhysics: 'Physik & Sensoren',
     navPathfinding: 'Pathfinding & A*',
     navLighting: 'GPU Lighting System',
-    navEffects: 'Wasser & Wellen-Shader',
+    navEffects: 'Shader & Post-Processing',
     navToolsMath: 'Tools & Mathematik',
     goalChar: 'Z'
   },
@@ -60,7 +60,7 @@ const i18nStrings = {
     navPhysics: 'Physics & Sensors',
     navPathfinding: 'Pathfinding & A*',
     navLighting: 'GPU Lighting System',
-    navEffects: 'Water & Wave Shaders',
+    navEffects: 'Shaders & Post-Processing',
     navToolsMath: 'Tools & Mathematics',
     goalChar: 'G'
   }

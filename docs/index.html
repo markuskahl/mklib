@@ -253,6 +253,34 @@
                 </tr>
                 <tr>
                   <td><code>mklib.effect</code></td>
+                  <td><strong><code>CrtShader</code></strong></td>
+                  <td><code>totalTime</code>, <code>filter</code></td>
+                  <td><code>new</code>, <code>update</code>, <code>setCurvature</code>, <code>setScanlines</code>, <code>setRgbMask</code>, <code>setChromaticAberration</code>, <code>setVignette</code>, <code>setBloom</code>, <code>setAnalogNoise</code>, Presets</td>
+                  <td><a href="#effects">Shader →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.effect</code></td>
+                  <td><strong><code>HazardLiquidShader</code></strong></td>
+                  <td><code>totalTime</code></td>
+                  <td><code>new</code>, <code>update</code>, <code>setColors</code>, <code>setFlowAndTurbulence</code>, <code>setSurfaceWave</code>, <code>setBubbles</code>, <code>setCrustThresholds</code>, Presets</td>
+                  <td><a href="#effects">Shader →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.effect</code></td>
+                  <td><strong><code>HazardLiquidPlane</code></strong></td>
+                  <td><code>shaderInstance</code>, <code>liquidType</code>, <code>damagePerSecond</code>, <code>isHazardous</code></td>
+                  <td><code>new</code>, <code>update</code>, <code>resizePlane</code>, <code>isOverlapping</code>, <code>applyHazardDamage</code></td>
+                  <td><a href="#effects">Shader →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.effect</code></td>
+                  <td><strong><code>HazardLiquidType</code></strong></td>
+                  <td><code>LAVA</code>, <code>ACID_SLIME</code>, <code>TOXIC_WATER</code>, <code>CUSTOM</code></td>
+                  <td>–</td>
+                  <td><a href="#effects">Shader →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.effect</code></td>
                   <td><strong><code>WaterReflectionShader</code></strong></td>
                   <td><code>data</code></td>
                   <td><code>new</code>, <code>update</code>, <code>setWaterLevel</code>, <code>syncWithCamera</code>, <code>setWaveParams</code>, <code>setWaterColor</code>, <code>setFoam</code>, <code>setFade</code>, <code>setMode</code></td>
@@ -518,6 +546,34 @@
                   <td><code>angle</code>, <code>spotAngle</code>, <code>flickerSpeed</code>, <code>minRadius</code>, <code>maxRadius</code>, <code>innerRadius</code></td>
                   <td>Spezialisierte GPU-Lichtquellen mit Dämpfung, Wobble & Pulsieren</td>
                   <td><a href="#lighting">Lighting →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.effect</code></td>
+                  <td><strong><code>CrtShader</code></strong></td>
+                  <td><code>totalTime</code>, <code>filter</code></td>
+                  <td><code>new</code>, <code>update</code>, <code>setCurvature</code>, <code>setScanlines</code>, <code>setRgbMask</code>, <code>setChromaticAberration</code>, <code>setVignette</code>, <code>setBloom</code>, <code>setAnalogNoise</code>, Presets</td>
+                  <td><a href="#effects">Shader →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.effect</code></td>
+                  <td><strong><code>HazardLiquidShader</code></strong></td>
+                  <td><code>totalTime</code></td>
+                  <td><code>new</code>, <code>update</code>, <code>setColors</code>, <code>setFlowAndTurbulence</code>, <code>setSurfaceWave</code>, <code>setBubbles</code>, <code>setCrustThresholds</code>, Presets</td>
+                  <td><a href="#effects">Shader →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.effect</code></td>
+                  <td><strong><code>HazardLiquidPlane</code></strong></td>
+                  <td><code>shaderInstance</code>, <code>liquidType</code>, <code>damagePerSecond</code>, <code>isHazardous</code></td>
+                  <td><code>new</code>, <code>update</code>, <code>resizePlane</code>, <code>isOverlapping</code>, <code>applyHazardDamage</code></td>
+                  <td><a href="#effects">Shader →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.effect</code></td>
+                  <td><strong><code>HazardLiquidType</code></strong></td>
+                  <td><code>LAVA</code>, <code>ACID_SLIME</code>, <code>TOXIC_WATER</code>, <code>CUSTOM</code></td>
+                  <td>–</td>
+                  <td><a href="#effects">Shader →</a></td>
                 </tr>
                 <tr>
                   <td><code>mklib.effect</code></td>
@@ -6157,28 +6213,28 @@ spot.lookAt(targetEnemy);</code></pre>
       <!-- Section: effects -->
       <section id="effects" class="doc-section">
         <div data-lang="de">
-<h1>🌊 Wasser-Reflexions- & Wellen-Shader (<code>mklib.effect.*</code>)</h1>
-          <p class="section-desc">Hardwarebeschleunigte GPU-Shader und spezialisierte Spielobjekte für dynamische Wasseroberflächen, Wellenverzerrungen und Entity-Reflexionen.</p>
+          <h1>🎨 Shader- & Post-Processing-System (<code>mklib.effect.*</code>)</h1>
+          <p class="section-desc">Hardwarebeschleunigte 2D-GPU-Shader und spezialisierte Spielobjekte für authentische CRT-Retro-Filter, animierte Lava-/Säurebecken und dynamische Wasserspiegelungen.</p>
 
           <div class="feature-grid">
             <div class="feature-card">
-              <div class="feature-icon">⚡</div>
-              <h3>GPU Fragment-Shader</h3>
-              <p>Berechnet Multi-Sinus- und Cosinus-Wellenverzerrungen direkt auf der Grafikkarte für maximale Frameraten.</p>
+              <div class="feature-icon">📺</div>
+              <h3>CRT & Retro-Arcade</h3>
+              <p><code>CrtShader</code> simuliert Röhrenmonitore mit Wölbung, Scanlines, RGB-Phosphormaske, Glitch und Bloom.</p>
             </div>
             <div class="feature-card">
-              <div class="feature-icon">📐</div>
-              <h3>Feste Wasserflächen</h3>
-              <p><code>setWaterArea(x, y, w, h)</code> definiert ein fixes Wasser-Rechteck in Weltkoordinaten mit automatischem Kamera-Tracking.</p>
+              <div class="feature-icon">🧪</div>
+              <h3>Lava & Säure-Flüssigkeiten</h3>
+              <p><code>HazardLiquidPlane</code> rendert prozedurale Lava, Säure/Slime und Giftwasser mit Kruste, Blubbern und Schaden.</p>
             </div>
             <div class="feature-card">
-              <div class="feature-icon">🔄</div>
-              <h3>3 Betriebsmodi</h3>
-              <p>Vertikale Wasseroberfläche, horizontaler Spiegel (Portale/Wände) und reine Wellenverzerrung für Sprites.</p>
+              <div class="feature-icon">🌊</div>
+              <h3>Wasser & Reflexionen</h3>
+              <p><code>WaterReflectionPlane</code> und Shader für Echtzeit-Wasserspiegelung, Wellenverzerrung und Gischtkanten.</p>
             </div>
             <div class="feature-card">
               <div class="feature-icon">🦆</div>
-              <h3>Entity-Reflexion</h3>
+              <h3>Entity-Begleiter</h3>
               <p><code>EntityWaterReflection</code> spiegelt Spielfiguren automatisch an deren Fußkante und synchronisiert Animationen.</p>
             </div>
           </div>
@@ -6334,7 +6390,42 @@ mirrorShader.setMode(WaterReflectionMode.HORIZONTAL_MIRROR);
 mirrorShader.setWaterLevel(<span class="hl-num">0.5</span>);
 mirrorShader.setWaveParams(<span class="hl-num">2.0</span>, <span class="hl-num">20.0</span>, <span class="hl-num">0.006</span>);
 
-FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type">ShaderFilter</span>(mirrorShader)];</code></pre>
+          </div>
+
+          <h3>5. CRT- & Retro-Arcade-Filter (<code>CrtShader</code>)</h3>
+          <p>Wendet Bildschirmwölbung, Scanlines, RGB-Phosphormaske und sanftes Glühen auf die Kamera an:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> mklib.effect.shader.CrtShader;
+
+<span class="hl-keyword">var</span> crt = <span class="hl-keyword">new</span> <span class="hl-type">CrtShader</span>();
+crt.presetArcade(); <span class="hl-comment">// Vordefiniertes 80s Arcade-Preset</span>
+FlxG.camera.setFilters([crt.filter]);
+
+<span class="hl-comment">// Im State update(elapsed):</span>
+crt.update(elapsed, FlxG.camera);</code></pre>
+          </div>
+
+          <h3>6. Lava-, Säure- und Giftbecken (<code>HazardLiquidPlane</code>)</h3>
+          <p>Erstellt ein animiertes Flüssigkeitsbecken mit prozeduraler Kruste, Blubbern, Wellen und Umgebungsschaden:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> mklib.effect.HazardLiquidPlane;
+<span class="hl-keyword">import</span> mklib.effect.HazardLiquidType;
+
+<span class="hl-comment">// 1. Glühendes Lava-Becken erzeugen (X, Y, Breite, Höhe, Typ)</span>
+<span class="hl-keyword">var</span> lava = <span class="hl-keyword">new</span> <span class="hl-type">HazardLiquidPlane</span>(<span class="hl-num">100</span>, <span class="hl-num">400</span>, <span class="hl-num">300</span>, <span class="hl-num">80</span>, HazardLiquidType.LAVA);
+lava.damagePerSecond = <span class="hl-num">40.0</span>;
+add(lava);
+
+<span class="hl-comment">// 2. Im State update(elapsed) Schaden auf den Spieler anwenden:</span>
+lava.applyHazardDamage(hero, elapsed);</code></pre>
           </div>
 
           <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
