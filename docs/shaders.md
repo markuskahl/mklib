@@ -59,7 +59,7 @@ class PlayState extends State<Data.Data_Level> {
         crtShader.setScanlines(0.25, 240.0, 0.2);
 
         // 3. Auf die Kamera als Filter legen
-        FlxG.camera.setFilters([crtShader.filter]);
+        FlxG.camera.filters = [crtShader.filter];
     }
 
     override public function update(elapsed:Float):Void {

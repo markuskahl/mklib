@@ -6403,7 +6403,7 @@ mirrorShader.setWaveParams(<span class="hl-num">2.0</span>, <span class="hl-num"
 
 <span class="hl-keyword">var</span> crt = <span class="hl-keyword">new</span> <span class="hl-type">CrtShader</span>();
 crt.presetArcade(); <span class="hl-comment">// Vordefiniertes 80s Arcade-Preset</span>
-FlxG.camera.setFilters([crt.filter]);
+FlxG.camera.filters = [crt.filter];
 
 <span class="hl-comment">// Im State update(elapsed):</span>
 crt.update(elapsed, FlxG.camera);</code></pre>
