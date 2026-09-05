@@ -71,6 +71,63 @@ Pixelgenaue Kollisions- und Sensorüberwachung via `FlxG.pixelPerfectOverlap`.
 
 ---
 
+## 📐 Shape-Generierung aus Grafiken (`mklib.physic.ShapeBuilder`)
+
+Die Klasse `mklib.physic.ShapeBuilder` bietet statische Methoden zur vollautomatischen Generierung konvexer Nape-`Polygon`-Shapes direkt aus Pixelgrafiken (`BitmapData` und `FlxSprite`) mittels **Marching Squares** (`nape.geom.MarchingSquares`) und konvexer Zerlegung (`convexDecomposition`).
+
+Darüber hinaus unterstützt `ShapeBuilder` das automatische Generieren und Zwischenspeichern von Shapes für alle Frames einer Sprite-Animation (sowohl in normaler Ausrichtung als auch horizontal gespiegelt für `flipX`).
+
+### Methoden (Methods)
+
+| Methode | Signatur | Rückgabewert | Beschreibung |
+| :--- | :--- | :--- | :--- |
+| `createShapesFromBitmap` | `(bmd:BitmapData, ?body:Body, alphaThreshold:Int = 128, simplify:Float = 1.0, ?offset:Vec2, sensor:Bool = false, ?cbType:CbType, cellSizeVal:Float = 1.0)` | `Array<Polygon>` | Erzeugt konvexe Nape-`Polygon`-Shapes direkt aus den sichtbaren Pixeln einer `BitmapData`. Die Shapes können optional direkt einem Nape-`Body` zugewiesen, mit einem `offset` verschoben oder als Sensoren deklariert werden. |
+| `createShapesFromSprite` | `(sprite:FlxSprite, ?body:Body, alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, cellSizeVal:Float = 1.0)` | `Array<Polygon>` | Erzeugt passgenaue Polygon-Shapes für ein `FlxSprite` und richtet sie automatisch am Ursprung (`origin.x`, `origin.y`) des Sprites aus. Falls kein `body` übergeben wird, wird `sprite.body` (falls vorhanden) genutzt. |
+| `createBodyFromSprite` | `(sprite:FlxSprite, ?type:BodyType, alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, cellSizeVal:Float = 1.0)` | `Body` | Erzeugt einen neuen Nape-`Body` (`STATIC`, `DYNAMIC` oder `KINEMATIC`) und bestückt ihn automatisch mit konvexen Polygon-Shapes aus der Sprite-Grafik. |
+| `extractFrameBitmap` | `(sourceBmd:BitmapData, frameRect:Rectangle, flipX:Bool = false, flipY:Bool = false)` | `Null<BitmapData>` | Schneidet ein einzelnes Frame aus einer Spritesheet-`BitmapData` aus und spiegelt es optional horizontal (`flipX`) oder vertikal (`flipY`). |
+| `createShapesForAnimation` | `(sprite:FlxSprite, animName:String, alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = true, ?cbType:CbType, cellSizeVal:Float = 1.0)` | `Map<String, Array<Polygon>>` | Erzeugt vorberechnete Polygon-Shapes für alle Frames einer `FlxSprite`-Animation (für Normal- und `flipX`-Darstellung). Shapes erhalten in `userData` Metadaten (`animName`, `frameNumber`, `frameIndex`). |
+
+### Verwendung
+
+```haxe
+import mklib.physic.ShapeBuilder;
+import mklib.tools.Tags;
+import nape.phys.BodyType;
+
+// 1. Shapes direkt für ein FlxSprite erzeugen und dem Körper zuweisen
+var shapes = ShapeBuilder.createShapesFromSprite(
+    mySprite,
+    myBody,
+    128,                     // Alpha-Schwellenwert (0-255)
+    1.0,                     // Vereinfachung/Glättung in Pixeln (simplify)
+    false,                   // sensor = false (feste physische Kollision)
+    Tags.get("Obstacle"),    // CbType für alle erzeugten Shapes
+    1.0                      // Zellengröße (cellSize)
+);
+
+// 2. Kompletten neuen Nape-Body aus einem Sprite erzeugen
+var enemyBody = ShapeBuilder.createBodyFromSprite(
+    enemySprite,
+    BodyType.DYNAMIC,
+    128,
+    1.5,
+    false,
+    Tags.get("Enemy")
+);
+
+// 3. Shapes für eine Angriffsanimation vorberechnen
+var attackShapes = ShapeBuilder.createShapesForAnimation(
+    heroSprite,
+    "attack",
+    128,
+    1.0,
+    true,                    // Als Hitbox-Sensoren
+    Tags.get("HeroHitbox")
+);
+```
+
+---
+
 ## 💡 Code-Beispiel: Münzen einsammeln, Schaden nehmen & Pixel-Kollision / Sensoren
 
 ```haxe
@@ -78,6 +135,7 @@ package;
 
 import mklib.state.State;
 import mklib.physic.Listener;
+import mklib.physic.ShapeBuilder;
 import mklib.entity.EntityNapeSprite;
 import nape.callbacks.InteractionCallback;
 import entities.Hero;

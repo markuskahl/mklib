@@ -43,9 +43,10 @@
    - JSON animation configuration & spritesheets
    - `AnimationClip`, `FrameConfig`, and `SpriteSheetData` types
 
-7. [**Physics & Collision Sensors (`Listener` & `Tags`)**](physics.md)
+7. [**Physics & Collision Sensors (`Listener`, `Tags` & `ShapeBuilder`)**](physics.md)
    - String-based collision types via LDtk enum `"Tags"`
    - Collision & sensor callbacks (`Listener.addCollisionBeginListener`, `Listener.addSensorBeginListener`, etc.)
+   - Automated Nape polygon shape generation from bitmaps and sprites (`ShapeBuilder`)
 
 8. [**Pathfinding & Navigation (`NavGrid`, `NavGridBuilder`, `AStar`)**](pathfinding.md)
    - 2D grid map with multi-tile sizing and diagonals (`NavGrid`)

@@ -217,6 +217,13 @@
                   <td><a href="#physics">Physik →</a></td>
                 </tr>
                 <tr>
+                  <td><code>mklib.physic</code></td>
+                  <td><strong><code>ShapeBuilder</code></strong></td>
+                  <td>–</td>
+                  <td><code>createShapesFromBitmap</code>, <code>createShapesFromSprite</code>, <code>createBodyFromSprite</code>, <code>extractFrameBitmap</code>, <code>createShapesForAnimation</code></td>
+                  <td><a href="#physics">Physik →</a></td>
+                </tr>
+                <tr>
                   <td><code>mklib.tools</code></td>
                   <td><strong><code>Tags</code></strong></td>
                   <td>–</td>
@@ -475,6 +482,13 @@
                   <td><strong><code>Listener</code></strong></td>
                   <td>–</td>
                   <td>13 listeners for collisions, sensors & pixel-perfect collisions/sensors</td>
+                  <td><a href="#physics">Physik →</a></td>
+                </tr>
+                <tr>
+                  <td><code>mklib.physic</code></td>
+                  <td><strong><code>ShapeBuilder</code></strong></td>
+                  <td>–</td>
+                  <td><code>createShapesFromBitmap</code>, <code>createShapesFromSprite</code>, <code>createBodyFromSprite</code>, <code>extractFrameBitmap</code>, <code>createShapesForAnimation</code></td>
                   <td><a href="#physics">Physik →</a></td>
                 </tr>
                 <tr>
@@ -4392,6 +4406,86 @@ myEntity.animation.<span class="hl-func">play</span>(<span class="hl-str">"burn"
             </table>
           </div>
 
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>3. <code>ShapeBuilder</code> (<code>mklib.physic.ShapeBuilder</code>)</h2>
+          <p>Statische Hilfsklasse zur automatischen Generierung konvexer Nape-Polygon-Shapes direkt aus Pixelgrafiken (<code>BitmapData</code> / <code>FlxSprite</code>) mittels Marching Squares und Polygonzerlegung.</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>createShapesFromBitmap</code></td>
+                  <td><code>(bmd:BitmapData, ?body:Body, alphaThreshold:Int = 128, simplify:Float = 1.0, ?offset:Vec2, sensor:Bool = false, ?cbType:CbType, cellSizeVal:Float = 1.0)</code></td>
+                  <td><code>Array&lt;Polygon&gt;</code></td>
+                  <td>Erzeugt konvexe Nape-Polygon-Shapes direkt aus den sichtbaren Pixeln einer <code>BitmapData</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>createShapesFromSprite</code></td>
+                  <td><code>(sprite:FlxSprite, ?body:Body, alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, cellSizeVal:Float = 1.0)</code></td>
+                  <td><code>Array&lt;Polygon&gt;</code></td>
+                  <td>Erzeugt passgenaue Polygon-Shapes für ein <code>FlxSprite</code> unter Berücksichtigung von <code>origin.x/y</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>createBodyFromSprite</code></td>
+                  <td><code>(sprite:FlxSprite, ?type:BodyType, alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, cellSizeVal:Float = 1.0)</code></td>
+                  <td><code>Body</code></td>
+                  <td>Erzeugt einen neuen Nape-<code>Body</code> (STATIC, DYNAMIC, KINEMATIC) bestückt mit den Polygon-Shapes des Sprites.</td>
+                </tr>
+                <tr>
+                  <td><code>extractFrameBitmap</code></td>
+                  <td><code>(sourceBmd:BitmapData, frameRect:Rectangle, flipX:Bool = false, flipY:Bool = false)</code></td>
+                  <td><code>Null&lt;BitmapData&gt;</code></td>
+                  <td>Schneidet ein einzelnes Frame aus einer Spritesheet-Grafik aus (inkl. optionalem FlipX / FlipY).</td>
+                </tr>
+                <tr>
+                  <td><code>createShapesForAnimation</code></td>
+                  <td><code>(sprite:FlxSprite, animName:String, alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = true, ?cbType:CbType, cellSizeVal:Float = 1.0)</code></td>
+                  <td><code>Map&lt;String, Array&lt;Polygon&gt;&gt;</code></td>
+                  <td>Erzeugt vorberechnete Polygon-Shapes für alle Frames einer Animation (Normal & gespiegelt) mit <code>userData</code>-Metadaten.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="code-box" style="margin-top: 1.5rem;">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> mklib.physic.ShapeBuilder;
+<span class="hl-keyword">import</span> mklib.tools.Tags;
+<span class="hl-keyword">import</span> nape.phys.BodyType;
+
+<span class="hl-comment">// 1. Shapes direkt aus Sprite generieren und dem Body zuweisen</span>
+<span class="hl-keyword">var</span> shapes = <span class="hl-type">ShapeBuilder</span>.createShapesFromSprite(
+    mySprite,
+    myBody,
+    <span class="hl-num">128</span>,                  <span class="hl-comment">// Alpha-Schwellenwert</span>
+    <span class="hl-num">1.0</span>,                  <span class="hl-comment">// Glättung / Vereinfachung</span>
+    <span class="hl-keyword">false</span>,                <span class="hl-comment">// Sensor</span>
+    <span class="hl-type">Tags</span>.get(<span class="hl-str">"Obstacle"</span>)  <span class="hl-comment">// Kollisions-Tag</span>
+);
+
+<span class="hl-comment">// 2. Oder kompletten Nape-Body direkt aus einem Sprite bauen</span>
+<span class="hl-keyword">var</span> dynamicBody = <span class="hl-type">ShapeBuilder</span>.createBodyFromSprite(
+    enemySprite,
+    <span class="hl-type">BodyType</span>.DYNAMIC,
+    <span class="hl-num">128</span>,
+    <span class="hl-num">1.5</span>,
+    <span class="hl-keyword">false</span>,
+    <span class="hl-type">Tags</span>.get(<span class="hl-str">"Enemy"</span>)
+);</code></pre>
+          </div>
+
           <div class="section-nav-footer">
             <a href="#animation" class="nav-page-btn">← Animationen & Makros</a>
             <a href="#pathfinding" class="nav-page-btn">Pathfinding & A* →</a>
@@ -4561,6 +4655,86 @@ myEntity.animation.<span class="hl-func">play</span>(<span class="hl-str">"burn"
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>3. <code>ShapeBuilder</code> (<code>mklib.physic.ShapeBuilder</code>)</h2>
+          <p>Static utility for automated convex polygon shape generation directly from pixel graphics (<code>BitmapData</code> / <code>FlxSprite</code>) using Marching Squares and polygon decomposition.</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Return</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>createShapesFromBitmap</code></td>
+                  <td><code>(bmd:BitmapData, ?body:Body, alphaThreshold:Int = 128, simplify:Float = 1.0, ?offset:Vec2, sensor:Bool = false, ?cbType:CbType, cellSizeVal:Float = 1.0)</code></td>
+                  <td><code>Array&lt;Polygon&gt;</code></td>
+                  <td>Generates convex Nape polygon shapes directly from visible pixels of a <code>BitmapData</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>createShapesFromSprite</code></td>
+                  <td><code>(sprite:FlxSprite, ?body:Body, alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, cellSizeVal:Float = 1.0)</code></td>
+                  <td><code>Array&lt;Polygon&gt;</code></td>
+                  <td>Generates tailored polygon shapes for an <code>FlxSprite</code> respecting origin offset.</td>
+                </tr>
+                <tr>
+                  <td><code>createBodyFromSprite</code></td>
+                  <td><code>(sprite:FlxSprite, ?type:BodyType, alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, cellSizeVal:Float = 1.0)</code></td>
+                  <td><code>Body</code></td>
+                  <td>Creates a new Nape <code>Body</code> (STATIC, DYNAMIC, KINEMATIC) populated with the sprite's polygon shapes.</td>
+                </tr>
+                <tr>
+                  <td><code>extractFrameBitmap</code></td>
+                  <td><code>(sourceBmd:BitmapData, frameRect:Rectangle, flipX:Bool = false, flipY:Bool = false)</code></td>
+                  <td><code>Null&lt;BitmapData&gt;</code></td>
+                  <td>Extracts a single frame rectangle from a spritesheet graphic (with optional flipX / flipY).</td>
+                </tr>
+                <tr>
+                  <td><code>createShapesForAnimation</code></td>
+                  <td><code>(sprite:FlxSprite, animName:String, alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = true, ?cbType:CbType, cellSizeVal:Float = 1.0)</code></td>
+                  <td><code>Map&lt;String, Array&lt;Polygon&gt;&gt;</code></td>
+                  <td>Generates precalculated polygon shapes for all animation frames (normal & flipped) with <code>userData</code> tags.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="code-box" style="margin-top: 1.5rem;">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> mklib.physic.ShapeBuilder;
+<span class="hl-keyword">import</span> mklib.tools.Tags;
+<span class="hl-keyword">import</span> nape.phys.BodyType;
+
+<span class="hl-comment">// 1. Generate shapes from sprite and attach to body</span>
+<span class="hl-keyword">var</span> shapes = <span class="hl-type">ShapeBuilder</span>.createShapesFromSprite(
+    mySprite,
+    myBody,
+    <span class="hl-num">128</span>,                  <span class="hl-comment">// Alpha threshold</span>
+    <span class="hl-num">1.0</span>,                  <span class="hl-comment">// Smoothing / simplification</span>
+    <span class="hl-keyword">false</span>,                <span class="hl-comment">// Sensor</span>
+    <span class="hl-type">Tags</span>.get(<span class="hl-str">"Obstacle"</span>)  <span class="hl-comment">// Collision tag</span>
+);
+
+<span class="hl-comment">// 2. Or create an entire new Nape body directly from a sprite</span>
+<span class="hl-keyword">var</span> dynamicBody = <span class="hl-type">ShapeBuilder</span>.createBodyFromSprite(
+    enemySprite,
+    <span class="hl-type">BodyType</span>.DYNAMIC,
+    <span class="hl-num">128</span>,
+    <span class="hl-num">1.5</span>,
+    <span class="hl-keyword">false</span>,
+    <span class="hl-type">Tags</span>.get(<span class="hl-str">"Enemy"</span>)
+);</code></pre>
           </div>
 
           <div class="section-nav-footer">
