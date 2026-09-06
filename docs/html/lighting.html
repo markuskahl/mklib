@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPU Lighting System — mklib Dokumentation</title>
+  <meta name="description" content="Lückenlose Dokumentation und API-Referenz für mklib — Jede Klasse, Methode und Eigenschaft für HaxeFlixel, LDtk und Nape 2D.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Glow Backgrounds -->
+  <div class="bg-decorations">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="icon-btn mobile-menu-btn" aria-label="Menü öffnen">☰</button>
+      <a href="index.html" class="logo-group">
+        <div class="logo-badge">mk</div>
+        <div>
+          <span class="logo-title">mklib</span>
+          <span class="logo-version">v1.0.1</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Search Input -->
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="docs-search" class="search-input" placeholder="Klasse, Methode oder Feld suchen..." data-de="Klasse, Methode oder Feld suchen..." data-en="Search class, method, or field..." autocomplete="off">
+    </div>
+
+    <!-- Header Actions (Language Switcher & Theme Toggle & GitHub) -->
+    <div class="header-actions">
+      <!-- Language Switcher -->
+      <div class="lang-switch-group">
+        <button class="lang-btn active" data-set-lang="de" title="Deutsch">DE</button>
+        <button class="lang-btn" data-set-lang="en" title="English">EN</button>
+      </div>
+
+      <button id="theme-toggle" class="icon-btn" title="Thema wechseln">☀️</button>
+      <a href="https://github.com/markuskahl/mklib" target="_blank" rel="noopener noreferrer" class="github-link">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- App Layout Container -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div>
+          <div class="nav-section-title" data-de="Einführung" data-en="Introduction">Einführung</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="index.html"><span class="nav-icon">📖</span> <span data-de="Übersicht & API-Matrix" data-en="Overview & API Matrix">Übersicht & API-Matrix</span></a></li>
+            <li class="nav-item"><a href="getting-started.html"><span class="nav-icon">🚀</span> <span data-de="Schnellstart" data-en="Quick Start">Schnellstart</span></a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-section-title" data-de="Kern-Module & Klassen" data-en="Core Modules & Classes">Kern-Module & Klassen</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="ldtk-guide.html"><span class="nav-icon">🗺️</span> <span data-de="LDtk Guide & Felder" data-en="LDtk Guide & Fields">LDtk Guide & Felder</span></a></li>
+            <li class="nav-item"><a href="state.html"><span class="nav-icon">🎮</span> <span data-de="State Management" data-en="State Management">State Management</span></a></li>
+            <li class="nav-item"><a href="layers.html"><span class="nav-icon">🗺️</span> <span data-de="Layer System" data-en="Layer System">Layer System</span></a></li>
+            <li class="nav-item"><a href="entities.html"><span class="nav-icon">👾</span> <span data-de="Entities & Sprites" data-en="Entities & Sprites">Entities & Sprites</span></a></li>
+            <li class="nav-item"><a href="save.html"><span class="nav-icon">💾</span> <span data-de="Save & Persistence" data-en="Save & Persistence">Save & Persistence</span></a></li>
+            <li class="nav-item"><a href="animation.html"><span class="nav-icon">🎬</span> <span data-de="Animationen & Makros" data-en="Animations & Macros">Animationen & Makros</span></a></li>
+            <li class="nav-item"><a href="physics.html"><span class="nav-icon">⚡</span> <span data-de="Physik & Sensoren" data-en="Physics & Sensors">Physik & Sensoren</span></a></li>
+            <li class="nav-item"><a href="pathfinding.html"><span class="nav-icon">🧭</span> <span data-de="Pathfinding & A*" data-en="Pathfinding & A*">Pathfinding & A*</span></a></li>
+            <li class="nav-item active"><a href="lighting.html"><span class="nav-icon">💡</span> <span data-de="GPU Lighting System" data-en="GPU Lighting System">GPU Lighting System</span></a></li>
+            <li class="nav-item"><a href="effects.html"><span class="nav-icon">🎨</span> <span data-de="Shader & Effekte" data-en="Shaders & Effects">Shader & Effekte</span></a></li>
+            <li class="nav-item"><a href="tools-math.html"><span class="nav-icon">📐</span> <span data-de="Tools & Mathematik" data-en="Tools & Mathematics">Tools & Mathematik</span></a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Section: lighting -->
+<section id="lighting" class="doc-section active">
+        <div data-lang="de">
+<h1>💡 GPU-Shader-Lighting-System (<code>mklib.light.*</code>)</h1>
+          <p class="section-desc">Hardwarebeschleunigte 2D-Echtzeitbeleuchtung auf GPU-Shader-Basis mit Viewport-Culling, 5 Licht-Typen und nativer LDtk Custom-Properties-Steuerung.</p>
+
+          <h2>🌟 Features & Highlights</h2>
+          <ul>
+            <li><strong>⚡ GLSL-Shader auf der GPU:</strong> Berechnet bis zu 32 dynamische Lichter gleichzeitig in einem einzigen Render-Pass mit sanften Hermite-Dämpfungskurven (<code>smoothstep</code>).</li>
+            <li><strong>🎯 5 Spezialisierte Licht-Typen:</strong>
+              <ul>
+                <li><strong><code>PointLight</code>:</strong> 360°-Rundumlicht mit anpassbarem 100%-Helligkeitskern (<code>innerRadius</code>).</li>
+                <li><strong><code>SpotLight</code>:</strong> Gerichteter Scheinwerfer mit Abstrahlwinkel, Gesamtkegel und weichem Fokusübergang (<code>innerAngle</code>).</li>
+                <li><strong><code>TorchLight</code>:</strong> Naturgetreues Fackelflackern durch multi-harmonische Wellen und Flammen-Wobble (<code>flameJitter</code>).</li>
+                <li><strong><code>GlowLight</code>:</strong> Sanft atmendes Magie-/Aura-Licht mit konfigurierbaren Min/Max-Bereichen und Puls-Geschwindigkeit.</li>
+                <li><strong><code>DirectionalLight</code>:</strong> Globales Sonnen-, Mond- und Umgebungslicht mit Einfallswinkel.</li>
+              </ul>
+            </li>
+            <li><strong>🚀 Automatisches Frustum-Culling:</strong> In großen Welten werden pro Frame nur die aktuell im Kamerabereich sichtbaren Lichter an die GPU gesendet.</li>
+            <li><strong>🧲 Zielverfolgung (<code>follow</code>):</strong> Lichter folgen Spielfiguren oder Objekten automatisch mit konfigurierbarem Versatz.</li>
+            <li><strong>🗺️ Volle LDtk-Integration:</strong> Alle Lichteigenschaften können direkt in LDtk als <em>Custom Fields</em> definiert und automatisiert geladen werden.</li>
+          </ul>
+
+          <h2>🚀 Code-Beispiele</h2>
+
+          <h3>1. Grundlegendes Setup im PlayState</h3>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> mklib.state.State;
+<span class="hl-keyword">import</span> mklib.light.LightingSystem;
+
+<span class="hl-keyword">class</span> <span class="hl-type">PlayState</span> <span class="hl-keyword">extends</span> <span class="hl-type">State</span>&lt;Data.Data_Level&gt; {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> lighting:<span class="hl-type">LightingSystem</span>;
+
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">create</span>():<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.create();
+
+        <span class="hl-comment">// 1. LightingSystem mit dunkler Nacht-Atmosphäre erstellen (Overlay-Sprite)</span>
+        lighting = <span class="hl-keyword">new</span> <span class="hl-type">LightingSystem</span>(<span class="hl-num">0xFF141424</span>, <span class="hl-num">0.2</span>);
+
+        <span class="hl-comment">// 2. Fackellicht erzeugen</span>
+        <span class="hl-keyword">var</span> torch = lighting.createTorchLight(<span class="hl-num">100</span>, <span class="hl-num">100</span>, <span class="hl-num">120</span>, <span class="hl-num">0xFFFFAA44</span>, <span class="hl-num">1.0</span>);
+
+        <span class="hl-comment">// 3. Scheinwerfer erzeugen</span>
+        <span class="hl-keyword">var</span> spot = lighting.createSpotLight(<span class="hl-num">200</span>, <span class="hl-num">80</span>, <span class="hl-num">160</span>, <span class="hl-num">90</span>, <span class="hl-num">45</span>, <span class="hl-num">0xFFFFFFFF</span>);
+
+        <span class="hl-comment">// 4. Pulsierenden Kristall erzeugen</span>
+        <span class="hl-keyword">var</span> glow = lighting.createGlowLight(<span class="hl-num">350</span>, <span class="hl-num">120</span>, <span class="hl-num">30</span>, <span class="hl-num">70</span>, <span class="hl-num">0xFF55AAFF</span>, <span class="hl-num">0.3</span>, <span class="hl-num">1.0</span>, <span class="hl-num">2.0</span>);
+
+        <span class="hl-comment">// 5. Zum State hinzufügen</span>
+        add(lighting);
+    }
+}</code></pre>
+          </div>
+
+          <h3>2. Licht an Spielfigur binden</h3>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-comment">// Fackel folgt der Spielerfigur automatisch</span>
+<span class="hl-keyword">var</span> playerLight = lighting.createTorchLight(<span class="hl-num">0</span>, <span class="hl-num">0</span>, <span class="hl-num">120</span>, <span class="hl-num">0xFFFF9933</span>, <span class="hl-num">1.0</span>);
+playerLight.follow(heroSprite, <span class="hl-num">0</span>, <span class="hl-num">0</span>, <span class="hl-keyword">true</span>);</code></pre>
+          </div>
+
+          <h3>3. Scheinwerfer auf Ziel ausrichten</h3>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-comment">// In der update()-Schleife: Scheinwerfer folgt der Maus oder einem Objekt</span>
+spot.pointAt(FlxG.mouse.x, FlxG.mouse.y);
+<span class="hl-comment">// oder:</span>
+spot.lookAt(targetEnemy);</code></pre>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🗺️ LDtk Custom-Properties (Editor-Steuerung)</h2>
+          <p>Lichter können komplett im LDtk-Editor über benutzerdefinierte Entity-Felder (Custom Fields) konfiguriert werden. <code>LightingSystem.loadFromLevel(data)</code> liest alle Licht-Entities automatisch ein:</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>LDtk-Feldname</th>
+                  <th>Typ</th>
+                  <th>Betroffene Lichter</th>
+                  <th>Beschreibung & Standardwert</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>type</code> / <code>light_type</code></td>
+                  <td><code>String</code> / <code>Enum</code></td>
+                  <td>Alle</td>
+                  <td><code>"point"</code>, <code>"spot"</code>, <code>"torch"</code>, <code>"glow"</code>, <code>"directional"</code> (Fallback: Entity-Identifier).</td>
+                </tr>
+                <tr>
+                  <td><code>radius</code> / <code>light_radius</code></td>
+                  <td><code>Float</code> / <code>Int</code></td>
+                  <td>Alle</td>
+                  <td>Lichtradius in Pixeln (Standard: <code>100.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>color</code> / <code>light_color</code></td>
+                  <td><code>Color</code> / <code>Int</code> / <code>Hex</code></td>
+                  <td>Alle</td>
+                  <td>Lichtfarbe (Standard: Weiß <code>0xFFFFFFFF</code> bzw. Fackel <code>0xFFFFAA44</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>intensity</code> / <code>light_intensity</code></td>
+                  <td><code>Float</code></td>
+                  <td>Alle</td>
+                  <td>Helligkeit (Standard: <code>1.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>falloff</code> / <code>light_falloff</code></td>
+                  <td><code>Float</code></td>
+                  <td>Alle</td>
+                  <td>Dämpfungsexponent (Standard: <code>1.0</code> für weiche Kante).</td>
+                </tr>
+                <tr>
+                  <td><code>innerRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>PointLight</code></td>
+                  <td>Radius für 100% Leuchtkraft vor Beginn des Helligkeitsabfalls (Standard: <code>0.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>angle</code> / <code>direction</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>SpotLight</code>, <code>Directional</code></td>
+                  <td>Abstrahlwinkel in Grad (0° = rechts, 90° = unten, Standard: <code>0.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>spotAngle</code> / <code>coneAngle</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>SpotLight</code></td>
+                  <td>Gesamtöffnungswinkel des Strahls in Grad (Standard: <code>45.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>innerAngle</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>SpotLight</code></td>
+                  <td>Innerer Fokuswinkel für sanfte Strahlränder (Standard: <code>15.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flickerSpeed</code> / <code>speed</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>TorchLight</code></td>
+                  <td>Frequenz des Flackerns in Hz (Standard: <code>8.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flickerIntensity</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>TorchLight</code></td>
+                  <td>Helligkeits-Schwankung der Flamme (Standard: <code>0.15</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flickerRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>TorchLight</code></td>
+                  <td>Radius-Schwankung in Pixeln (Standard: <code>10.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flameJitter</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>TorchLight</code></td>
+                  <td>Docht-Wobble / Flammenverschiebung in Pixeln (Standard: <code>2.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>minRadius</code> / <code>maxRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>GlowLight</code></td>
+                  <td>Minimaler und maximaler Radius beim Pulsieren.</td>
+                </tr>
+                <tr>
+                  <td><code>minIntensity</code> / <code>maxIntensity</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>GlowLight</code></td>
+                  <td>Minimale und maximale Helligkeit beim Pulsieren.</td>
+                </tr>
+                <tr>
+                  <td><code>pulseSpeed</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>GlowLight</code></td>
+                  <td>Geschwindigkeit des Pulsierens (Standard: <code>2.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>active</code> / <code>enabled</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Alle</td>
+                  <td>Ob das Licht initial aktiv ist (Standard: <code>true</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>offsetX</code> / <code>offsetY</code></td>
+                  <td><code>Float</code></td>
+                  <td>Alle</td>
+                  <td>Versatz relativ zur Entity (Standard: Entity-Zentrum).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🏛️ Detaillierte API-Referenz</h2>
+
+          <h3>1. <code>LightingSystem</code> (<code>mklib.light.LightingSystem</code>)</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>ambientColor</code></td>
+                  <td><code>FlxColor</code> (Standard: <code>0xFF141424</code>)</td>
+                  <td>Grundfarbe der Umgebung / Dunkelheit.</td>
+                </tr>
+                <tr>
+                  <td><code>ambientIntensity</code></td>
+                  <td><code>Float</code> (Standard: <code>0.2</code>)</td>
+                  <td>Grundhelligkeit der Umgebung (0.0 = stockdunkel, 1.0 = voll ausgeleuchtet).</td>
+                </tr>
+                <tr>
+                  <td><code>autoCull</code></td>
+                  <td><code>Bool</code> (Standard: <code>true</code>)</td>
+                  <td>Aktiviert automatisches Frustum-Culling für maximale GPU-Performance.</td>
+                </tr>
+                <tr>
+                  <td><code>lights</code></td>
+                  <td><code>Array&lt;Light&gt;</code></td>
+                  <td>Liste aller registrierten Lichter.</td>
+                </tr>
+                <tr>
+                  <td><code>addLight</code></td>
+                  <td><code>&lt;T:Light&gt;(light:T):T</code></td>
+                  <td>Registriert ein Licht im System.</td>
+                </tr>
+                <tr>
+                  <td><code>removeLight</code></td>
+                  <td><code>&lt;T:Light&gt;(light:T, destroy:Bool = false):T</code></td>
+                  <td>Entfernt ein Licht aus dem System.</td>
+                </tr>
+                <tr>
+                  <td><code>createPointLight</code></td>
+                  <td><code>(x, y, radius, color, intensity, innerRadius, falloff):PointLight</code></td>
+                  <td>Erzeugt und registriert ein Punktlicht.</td>
+                </tr>
+                <tr>
+                  <td><code>createSpotLight</code></td>
+                  <td><code>(x, y, radius, angle, spotAngle, color, intensity, innerAngle, falloff):SpotLight</code></td>
+                  <td>Erzeugt und registriert einen Scheinwerfer.</td>
+                </tr>
+                <tr>
+                  <td><code>createTorchLight</code></td>
+                  <td><code>(x, y, radius, color, intensity, flickerSpeed, flickerIntensity, flickerRadius, flameJitter):TorchLight</code></td>
+                  <td>Erzeugt und registriert eine flackernde Fackel.</td>
+                </tr>
+                <tr>
+                  <td><code>createGlowLight</code></td>
+                  <td><code>(x, y, minRadius, maxRadius, color, minIntensity, maxIntensity, pulseSpeed, pulsePhase):GlowLight</code></td>
+                  <td>Erzeugt und registriert ein pulsierendes Magielicht.</td>
+                </tr>
+                <tr>
+                  <td><code>createDirectionalLight</code></td>
+                  <td><code>(directionAngle, color, intensity):DirectionalLight</code></td>
+                  <td>Erzeugt und registriert ein globales Sonnen-/Mondlicht.</td>
+                </tr>
+                <tr>
+                  <td><code>loadFromLevel</code></td>
+                  <td><code>(levelData:Dynamic):Int</code></td>
+                  <td>Lädt alle Licht-Entities aus einem LDtk-Level automatisch.</td>
+                </tr>
+                <tr>
+                  <td><code>fromEntity</code></td>
+                  <td><code>(entity:ldtk.Entity):Null&lt;Light&gt;</code></td>
+                  <td>Parst eine LDtk-Entity anhand ihrer Custom-Properties.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>2. <code>Light</code> Basisklasse (<code>mklib.light.Light</code>)</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>x</code>, <code>y</code></td>
+                  <td><code>Float</code></td>
+                  <td>Weltkoordinaten der Lichtquelle in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>radius</code></td>
+                  <td><code>Float</code></td>
+                  <td>Radius des Lichts in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>color</code></td>
+                  <td><code>FlxColor</code></td>
+                  <td>Farbe des Lichts.</td>
+                </tr>
+                <tr>
+                  <td><code>intensity</code></td>
+                  <td><code>Float</code></td>
+                  <td>Helligkeits-Multiplikator (1.0 = Standard).</td>
+                </tr>
+                <tr>
+                  <td><code>falloff</code></td>
+                  <td><code>Float</code></td>
+                  <td>Dämpfungsexponent (1.0 = sanfter Standardabfall).</td>
+                </tr>
+                <tr>
+                  <td><code>active</code> / <code>visible</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Aktivierungs- und Sichtbarkeitsstatus.</td>
+                </tr>
+                <tr>
+                  <td><code>follow</code></td>
+                  <td><code>(target:FlxObject, offsetX:Float = 0, offsetY:Float = 0, center:Bool = true):Light</code></td>
+                  <td>Bindet das Licht an ein Spielobjekt / Sprite.</td>
+                </tr>
+                <tr>
+                  <td><code>stopFollowing</code></td>
+                  <td><code>():Light</code></td>
+                  <td>Löst die Bindung an das Zielobjekt.</td>
+                </tr>
+                <tr>
+                  <td><code>setPosition</code></td>
+                  <td><code>(x:Float, y:Float):Light</code></td>
+                  <td>Setzt die Weltposition manuell.</td>
+                </tr>
+                <tr>
+                  <td><code>setColor</code></td>
+                  <td><code>(color:FlxColor, ?intensity:Float):Light</code></td>
+                  <td>Setzt Farbe und optionale Intensität.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="pathfinding.html" class="nav-page-btn">← Pathfinding & A*</a>
+            <a href="effects.html" class="nav-page-btn">Wasser & Wellen-Shader →</a>
+          </div>
+        </div>
+        <div data-lang="en">
+<h1>💡 GPU-Shader-Lighting-System (<code>mklib.light.*</code>)</h1>
+          <p class="section-desc">Hardwarebeschleunigte 2D-Echtzeitbeleuchtung auf GPU-Shader-Basis mit Viewport-Culling, 5 Licht-Typen und nativer LDtk Custom-Properties-Steuerung.</p>
+
+          <h2>🌟 Features & Highlights</h2>
+          <ul>
+            <li><strong>⚡ GLSL-Shader auf der GPU:</strong> Berechnet bis zu 32 dynamische Lichter gleichzeitig in einem einzigen Render-Pass mit sanften Hermite-Dämpfungskurven (<code>smoothstep</code>).</li>
+            <li><strong>🎯 5 Spezialisierte Licht-Typen:</strong>
+              <ul>
+                <li><strong><code>PointLight</code>:</strong> 360°-Rundumlicht mit anpassbarem 100%-Helligkeitskern (<code>innerRadius</code>).</li>
+                <li><strong><code>SpotLight</code>:</strong> Gerichteter Scheinwerfer mit Abstrahlwinkel, Gesamtkegel und weichem Fokusübergang (<code>innerAngle</code>).</li>
+                <li><strong><code>TorchLight</code>:</strong> Naturgetreues Fackelflackern durch multi-harmonische Wellen und Flammen-Wobble (<code>flameJitter</code>).</li>
+                <li><strong><code>GlowLight</code>:</strong> Sanft atmendes Magie-/Aura-Licht mit konfigurierbaren Min/Max-Bereichen und Puls-Geschwindigkeit.</li>
+                <li><strong><code>DirectionalLight</code>:</strong> Globales Sonnen-, Mond- und Umgebungslicht mit Einfallswinkel.</li>
+              </ul>
+            </li>
+            <li><strong>🚀 Automatisches Frustum-Culling:</strong> In großen Welten werden pro Frame nur die aktuell im Kamerabereich sichtbaren Lichter an die GPU gesendet.</li>
+            <li><strong>🧲 Zielverfolgung (<code>follow</code>):</strong> Lichter folgen Spielfiguren oder Objekten automatisch mit konfigurierbarem Versatz.</li>
+            <li><strong>🗺️ Volle LDtk-Integration:</strong> Alle Lichteigenschaften können direkt in LDtk als <em>Custom Fields</em> definiert und automatisiert geladen werden.</li>
+          </ul>
+
+          <h2>🚀 Code-Beispiele</h2>
+
+          <h3>1. Basic Setup in PlayState</h3>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> mklib.state.State;
+<span class="hl-keyword">import</span> mklib.light.LightingSystem;
+
+<span class="hl-keyword">class</span> <span class="hl-type">PlayState</span> <span class="hl-keyword">extends</span> <span class="hl-type">State</span>&lt;Data.Data_Level&gt; {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> lighting:<span class="hl-type">LightingSystem</span>;
+
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">create</span>():<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.create();
+
+        <span class="hl-comment">// 1. LightingSystem mit dunkler Nacht-Atmosphäre erstellen (Overlay-Sprite)</span>
+        lighting = <span class="hl-keyword">new</span> <span class="hl-type">LightingSystem</span>(<span class="hl-num">0xFF141424</span>, <span class="hl-num">0.2</span>);
+
+        <span class="hl-comment">// 2. Fackellicht erzeugen</span>
+        <span class="hl-keyword">var</span> torch = lighting.createTorchLight(<span class="hl-num">100</span>, <span class="hl-num">100</span>, <span class="hl-num">120</span>, <span class="hl-num">0xFFFFAA44</span>, <span class="hl-num">1.0</span>);
+
+        <span class="hl-comment">// 3. Scheinwerfer erzeugen</span>
+        <span class="hl-keyword">var</span> spot = lighting.createSpotLight(<span class="hl-num">200</span>, <span class="hl-num">80</span>, <span class="hl-num">160</span>, <span class="hl-num">90</span>, <span class="hl-num">45</span>, <span class="hl-num">0xFFFFFFFF</span>);
+
+        <span class="hl-comment">// 4. Pulsierenden Kristall erzeugen</span>
+        <span class="hl-keyword">var</span> glow = lighting.createGlowLight(<span class="hl-num">350</span>, <span class="hl-num">120</span>, <span class="hl-num">30</span>, <span class="hl-num">70</span>, <span class="hl-num">0xFF55AAFF</span>, <span class="hl-num">0.3</span>, <span class="hl-num">1.0</span>, <span class="hl-num">2.0</span>);
+
+        <span class="hl-comment">// 5. Zum State hinzufügen</span>
+        add(lighting);
+    }
+}</code></pre>
+          </div>
+
+          <h3>2. Attach Light to Player Entity</h3>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-comment">// Fackel folgt der Spielerfigur automatisch</span>
+<span class="hl-keyword">var</span> playerLight = lighting.createTorchLight(<span class="hl-num">0</span>, <span class="hl-num">0</span>, <span class="hl-num">120</span>, <span class="hl-num">0xFFFF9933</span>, <span class="hl-num">1.0</span>);
+playerLight.follow(heroSprite, <span class="hl-num">0</span>, <span class="hl-num">0</span>, <span class="hl-keyword">true</span>);</code></pre>
+          </div>
+
+          <h3>3. Aim Spotlight at Target</h3>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-comment">// In der update()-Schleife: Scheinwerfer folgt der Maus oder einem Objekt</span>
+spot.pointAt(FlxG.mouse.x, FlxG.mouse.y);
+<span class="hl-comment">// oder:</span>
+spot.lookAt(targetEnemy);</code></pre>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🗺️ LDtk Custom Properties (Editor Configuration)</h2>
+          <p>Lichter können komplett im LDtk-Editor über benutzerdefinierte Entity-Felder (Custom Fields) konfiguriert werden. <code>LightingSystem.loadFromLevel(data)</code> liest alle Licht-Entities automatisch ein:</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>LDtk-Feldname</th>
+                  <th>Type</th>
+                  <th>Betroffene Lichter</th>
+                  <th>Beschreibung & Standardwert</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>type</code> / <code>light_type</code></td>
+                  <td><code>String</code> / <code>Enum</code></td>
+                  <td>Alle</td>
+                  <td><code>"point"</code>, <code>"spot"</code>, <code>"torch"</code>, <code>"glow"</code>, <code>"directional"</code> (Fallback: Entity-Identifier).</td>
+                </tr>
+                <tr>
+                  <td><code>radius</code> / <code>light_radius</code></td>
+                  <td><code>Float</code> / <code>Int</code></td>
+                  <td>Alle</td>
+                  <td>Lichtradius in Pixeln (Standard: <code>100.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>color</code> / <code>light_color</code></td>
+                  <td><code>Color</code> / <code>Int</code> / <code>Hex</code></td>
+                  <td>Alle</td>
+                  <td>Lichtfarbe (Standard: Weiß <code>0xFFFFFFFF</code> bzw. Fackel <code>0xFFFFAA44</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>intensity</code> / <code>light_intensity</code></td>
+                  <td><code>Float</code></td>
+                  <td>Alle</td>
+                  <td>Helligkeit (Standard: <code>1.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>falloff</code> / <code>light_falloff</code></td>
+                  <td><code>Float</code></td>
+                  <td>Alle</td>
+                  <td>Dämpfungsexponent (Standard: <code>1.0</code> für weiche Kante).</td>
+                </tr>
+                <tr>
+                  <td><code>innerRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>PointLight</code></td>
+                  <td>Radius für 100% Leuchtkraft vor Beginn des Helligkeitsabfalls (Standard: <code>0.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>angle</code> / <code>direction</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>SpotLight</code>, <code>Directional</code></td>
+                  <td>Abstrahlwinkel in Grad (0° = rechts, 90° = unten, Standard: <code>0.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>spotAngle</code> / <code>coneAngle</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>SpotLight</code></td>
+                  <td>Gesamtöffnungswinkel des Strahls in Grad (Standard: <code>45.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>innerAngle</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>SpotLight</code></td>
+                  <td>Innerer Fokuswinkel für sanfte Strahlränder (Standard: <code>15.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flickerSpeed</code> / <code>speed</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>TorchLight</code></td>
+                  <td>Frequenz des Flackerns in Hz (Standard: <code>8.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flickerIntensity</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>TorchLight</code></td>
+                  <td>Helligkeits-Schwankung der Flamme (Standard: <code>0.15</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flickerRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>TorchLight</code></td>
+                  <td>Radius-Schwankung in Pixeln (Standard: <code>10.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flameJitter</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>TorchLight</code></td>
+                  <td>Docht-Wobble / Flammenverschiebung in Pixeln (Standard: <code>2.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>minRadius</code> / <code>maxRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>GlowLight</code></td>
+                  <td>Minimaler und maximaler Radius beim Pulsieren.</td>
+                </tr>
+                <tr>
+                  <td><code>minIntensity</code> / <code>maxIntensity</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>GlowLight</code></td>
+                  <td>Minimale und maximale Helligkeit beim Pulsieren.</td>
+                </tr>
+                <tr>
+                  <td><code>pulseSpeed</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>GlowLight</code></td>
+                  <td>Geschwindigkeit des Pulsierens (Standard: <code>2.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>active</code> / <code>enabled</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Alle</td>
+                  <td>Ob das Licht initial aktiv ist (Standard: <code>true</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>offsetX</code> / <code>offsetY</code></td>
+                  <td><code>Float</code></td>
+                  <td>Alle</td>
+                  <td>Versatz relativ zur Entity (Standard: Entity-Zentrum).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🏛️ Detaillierte API-Referenz</h2>
+
+          <h3>1. <code>LightingSystem</code> (<code>mklib.light.LightingSystem</code>)</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>ambientColor</code></td>
+                  <td><code>FlxColor</code> (Standard: <code>0xFF141424</code>)</td>
+                  <td>Grundfarbe der Umgebung / Dunkelheit.</td>
+                </tr>
+                <tr>
+                  <td><code>ambientIntensity</code></td>
+                  <td><code>Float</code> (Standard: <code>0.2</code>)</td>
+                  <td>Grundhelligkeit der Umgebung (0.0 = stockdunkel, 1.0 = voll ausgeleuchtet).</td>
+                </tr>
+                <tr>
+                  <td><code>autoCull</code></td>
+                  <td><code>Bool</code> (Standard: <code>true</code>)</td>
+                  <td>Aktiviert automatisches Frustum-Culling für maximale GPU-Performance.</td>
+                </tr>
+                <tr>
+                  <td><code>lights</code></td>
+                  <td><code>Array&lt;Light&gt;</code></td>
+                  <td>Liste aller registrierten Lichter.</td>
+                </tr>
+                <tr>
+                  <td><code>addLight</code></td>
+                  <td><code>&lt;T:Light&gt;(light:T):T</code></td>
+                  <td>Registriert ein Licht im System.</td>
+                </tr>
+                <tr>
+                  <td><code>removeLight</code></td>
+                  <td><code>&lt;T:Light&gt;(light:T, destroy:Bool = false):T</code></td>
+                  <td>Entfernt ein Licht aus dem System.</td>
+                </tr>
+                <tr>
+                  <td><code>createPointLight</code></td>
+                  <td><code>(x, y, radius, color, intensity, innerRadius, falloff):PointLight</code></td>
+                  <td>Erzeugt und registriert ein Punktlicht.</td>
+                </tr>
+                <tr>
+                  <td><code>createSpotLight</code></td>
+                  <td><code>(x, y, radius, angle, spotAngle, color, intensity, innerAngle, falloff):SpotLight</code></td>
+                  <td>Erzeugt und registriert einen Scheinwerfer.</td>
+                </tr>
+                <tr>
+                  <td><code>createTorchLight</code></td>
+                  <td><code>(x, y, radius, color, intensity, flickerSpeed, flickerIntensity, flickerRadius, flameJitter):TorchLight</code></td>
+                  <td>Erzeugt und registriert eine flackernde Fackel.</td>
+                </tr>
+                <tr>
+                  <td><code>createGlowLight</code></td>
+                  <td><code>(x, y, minRadius, maxRadius, color, minIntensity, maxIntensity, pulseSpeed, pulsePhase):GlowLight</code></td>
+                  <td>Erzeugt und registriert ein pulsierendes Magielicht.</td>
+                </tr>
+                <tr>
+                  <td><code>createDirectionalLight</code></td>
+                  <td><code>(directionAngle, color, intensity):DirectionalLight</code></td>
+                  <td>Erzeugt und registriert ein globales Sonnen-/Mondlicht.</td>
+                </tr>
+                <tr>
+                  <td><code>loadFromLevel</code></td>
+                  <td><code>(levelData:Dynamic):Int</code></td>
+                  <td>Lädt alle Licht-Entities aus einem LDtk-Level automatisch.</td>
+                </tr>
+                <tr>
+                  <td><code>fromEntity</code></td>
+                  <td><code>(entity:ldtk.Entity):Null&lt;Light&gt;</code></td>
+                  <td>Parst eine LDtk-Entity anhand ihrer Custom-Properties.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>2. <code>Light</code> Basisklasse (<code>mklib.light.Light</code>)</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>x</code>, <code>y</code></td>
+                  <td><code>Float</code></td>
+                  <td>Weltkoordinaten der Lichtquelle in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>radius</code></td>
+                  <td><code>Float</code></td>
+                  <td>Radius des Lichts in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>color</code></td>
+                  <td><code>FlxColor</code></td>
+                  <td>Farbe des Lichts.</td>
+                </tr>
+                <tr>
+                  <td><code>intensity</code></td>
+                  <td><code>Float</code></td>
+                  <td>Helligkeits-Multiplikator (1.0 = Standard).</td>
+                </tr>
+                <tr>
+                  <td><code>falloff</code></td>
+                  <td><code>Float</code></td>
+                  <td>Dämpfungsexponent (1.0 = sanfter Standardabfall).</td>
+                </tr>
+                <tr>
+                  <td><code>active</code> / <code>visible</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Aktivierungs- und Sichtbarkeitsstatus.</td>
+                </tr>
+                <tr>
+                  <td><code>follow</code></td>
+                  <td><code>(target:FlxObject, offsetX:Float = 0, offsetY:Float = 0, center:Bool = true):Light</code></td>
+                  <td>Bindet das Licht an ein Spielobjekt / Sprite.</td>
+                </tr>
+                <tr>
+                  <td><code>stopFollowing</code></td>
+                  <td><code>():Light</code></td>
+                  <td>Löst die Bindung an das Zielobjekt.</td>
+                </tr>
+                <tr>
+                  <td><code>setPosition</code></td>
+                  <td><code>(x:Float, y:Float):Light</code></td>
+                  <td>Setzt die Weltposition manuell.</td>
+                </tr>
+                <tr>
+                  <td><code>setColor</code></td>
+                  <td><code>(color:FlxColor, ?intensity:Float):Light</code></td>
+                  <td>Setzt Farbe und optionale Intensität.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="pathfinding.html" class="nav-page-btn">← Pathfinding & A*</a>
+            <a href="effects.html" class="nav-page-btn">Wasser & Wellen-Shader →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

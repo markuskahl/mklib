@@ -7,20 +7,20 @@
 ## 📖 Documentation & Interactive Website
 
 The complete interactive documentation, including a live A* pathfinding simulator, is available at:  
-👉 **[`docs/index.html`](docs/index.html)** (open in your browser or view via GitHub Pages)
+👉 **[`docs/html/index.html`](docs/html/index.html)** (open in your browser or view via GitHub Pages)
 
 ### Documentation Chapters:
-- [**Getting Started & Setup**](docs/getting_started.md)
-- [**State Management (`mklib.state.State`)**](docs/state.md)
-- [**Layer System (`TileLayer` & `EntityLayer`)**](docs/layers.md)
-- [**Entities & Game Objects (`EntitySprite` & `EntityNapeSprite`)**](docs/entities.md)
-- [**Save & Persistence System (`SaveManager` & `ISaveable`)**](docs/save.md)
-- [**Animation System & Macros (`AnimationBuilder` & `AnimationTypes`)**](docs/animation.md)
-- [**Physics & Sensors (`Listener` & `Tags`)**](docs/physics.md)
-- [**Pathfinding & Navigation (`NavGrid`, `NavGridBuilder`, `AStar`)**](docs/pathfinding.md)
-- [**GPU Lighting System (`LightingSystem`, `Light`, `PointLight`, `SpotLight`, `TorchLight`, `GlowLight`)**](docs/lighting.md)
-- [**Shader & Post-Processing System (`CrtShader`, `HazardLiquid*`, `WaterReflection*`)**](docs/shaders.md)
-- [**Tools & Math Utilities (`AspectRatio`, `GamepadHelper` & `MathTool`)**](docs/tools_math.md)
+- [**Getting Started & Setup**](docs/md/getting_started.md)
+- [**State Management (`mklib.state.State`)**](docs/md/state.md)
+- [**Layer System (`TileLayer` & `EntityLayer`)**](docs/md/layers.md)
+- [**Entities & Game Objects (`EntitySprite` & `EntityNapeSprite`)**](docs/md/entities.md)
+- [**Save & Persistence System (`SaveManager` & `ISaveable`)**](docs/md/save.md)
+- [**Animation System & Macros (`AnimationBuilder` & `AnimationTypes`)**](docs/md/animation.md)
+- [**Physics & Sensors (`Listener` & `Tags`)**](docs/md/physics.md)
+- [**Pathfinding & Navigation (`NavGrid`, `NavGridBuilder`, `AStar`)**](docs/md/pathfinding.md)
+- [**GPU Lighting System (`LightingSystem`, `Light`, `PointLight`, `SpotLight`, `TorchLight`, `GlowLight`)**](docs/md/lighting.md)
+- [**Shader & Post-Processing System (`CrtShader`, `HazardLiquid*`, `WaterReflection*`)**](docs/md/shaders.md)
+- [**Tools & Math Utilities (`AspectRatio`, `GamepadHelper` & `MathTool`)**](docs/md/tools_math.md)
 
 ---
 

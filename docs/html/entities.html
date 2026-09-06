@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entities & Sprites — mklib Dokumentation</title>
+  <meta name="description" content="Lückenlose Dokumentation und API-Referenz für mklib — Jede Klasse, Methode und Eigenschaft für HaxeFlixel, LDtk und Nape 2D.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Glow Backgrounds -->
+  <div class="bg-decorations">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="icon-btn mobile-menu-btn" aria-label="Menü öffnen">☰</button>
+      <a href="index.html" class="logo-group">
+        <div class="logo-badge">mk</div>
+        <div>
+          <span class="logo-title">mklib</span>
+          <span class="logo-version">v1.0.1</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Search Input -->
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="docs-search" class="search-input" placeholder="Klasse, Methode oder Feld suchen..." data-de="Klasse, Methode oder Feld suchen..." data-en="Search class, method, or field..." autocomplete="off">
+    </div>
+
+    <!-- Header Actions (Language Switcher & Theme Toggle & GitHub) -->
+    <div class="header-actions">
+      <!-- Language Switcher -->
+      <div class="lang-switch-group">
+        <button class="lang-btn active" data-set-lang="de" title="Deutsch">DE</button>
+        <button class="lang-btn" data-set-lang="en" title="English">EN</button>
+      </div>
+
+      <button id="theme-toggle" class="icon-btn" title="Thema wechseln">☀️</button>
+      <a href="https://github.com/markuskahl/mklib" target="_blank" rel="noopener noreferrer" class="github-link">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- App Layout Container -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div>
+          <div class="nav-section-title" data-de="Einführung" data-en="Introduction">Einführung</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="index.html"><span class="nav-icon">📖</span> <span data-de="Übersicht & API-Matrix" data-en="Overview & API Matrix">Übersicht & API-Matrix</span></a></li>
+            <li class="nav-item"><a href="getting-started.html"><span class="nav-icon">🚀</span> <span data-de="Schnellstart" data-en="Quick Start">Schnellstart</span></a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-section-title" data-de="Kern-Module & Klassen" data-en="Core Modules & Classes">Kern-Module & Klassen</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="ldtk-guide.html"><span class="nav-icon">🗺️</span> <span data-de="LDtk Guide & Felder" data-en="LDtk Guide & Fields">LDtk Guide & Felder</span></a></li>
+            <li class="nav-item"><a href="state.html"><span class="nav-icon">🎮</span> <span data-de="State Management" data-en="State Management">State Management</span></a></li>
+            <li class="nav-item"><a href="layers.html"><span class="nav-icon">🗺️</span> <span data-de="Layer System" data-en="Layer System">Layer System</span></a></li>
+            <li class="nav-item active"><a href="entities.html"><span class="nav-icon">👾</span> <span data-de="Entities & Sprites" data-en="Entities & Sprites">Entities & Sprites</span></a></li>
+            <li class="nav-item"><a href="save.html"><span class="nav-icon">💾</span> <span data-de="Save & Persistence" data-en="Save & Persistence">Save & Persistence</span></a></li>
+            <li class="nav-item"><a href="animation.html"><span class="nav-icon">🎬</span> <span data-de="Animationen & Makros" data-en="Animations & Macros">Animationen & Makros</span></a></li>
+            <li class="nav-item"><a href="physics.html"><span class="nav-icon">⚡</span> <span data-de="Physik & Sensoren" data-en="Physics & Sensors">Physik & Sensoren</span></a></li>
+            <li class="nav-item"><a href="pathfinding.html"><span class="nav-icon">🧭</span> <span data-de="Pathfinding & A*" data-en="Pathfinding & A*">Pathfinding & A*</span></a></li>
+            <li class="nav-item"><a href="lighting.html"><span class="nav-icon">💡</span> <span data-de="GPU Lighting System" data-en="GPU Lighting System">GPU Lighting System</span></a></li>
+            <li class="nav-item"><a href="effects.html"><span class="nav-icon">🎨</span> <span data-de="Shader & Effekte" data-en="Shaders & Effects">Shader & Effekte</span></a></li>
+            <li class="nav-item"><a href="tools-math.html"><span class="nav-icon">📐</span> <span data-de="Tools & Mathematik" data-en="Tools & Mathematics">Tools & Mathematik</span></a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Section: entities -->
+<section id="entities" class="doc-section active">
+        <div data-lang="de">
+<h1>👾 Entities & Sprites (<code>mklib.entity.*</code>)</h1>
+          <p class="section-desc">Basisklassen für visuelle und physikalische Spielobjekte.</p>
+
+          <h2>1. <code>EntitySprite</code> (<code>mklib.entity.EntitySprite</code>)</h2>
+          <p>Basisklasse für rein visuelle Entities ohne Physik. Erbt von <code>flixel.FlxSprite</code>.</p>
+
+          <h3>Eigenschaften</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Eigenschaft</th>
+                  <th>Typ</th>
+                  <th>Modifizierer</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>_entity</code></td>
+                  <td><code>ldtk.Entity</code></td>
+                  <td><code>public</code></td>
+                  <td>Die originale LDtk-Entity-Definition inklusive benutzerdefinierter Felder.</td>
+                </tr>
+                <tr>
+                  <td><code>iid</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Die weltweit eindeutige Instanz-ID der Entity aus LDtk.</td>
+                </tr>
+                <tr>
+                  <td><code>state</code></td>
+                  <td><code>mklib.state.State</code></td>
+                  <td><code>public</code></td>
+                  <td>Referenz auf den aktuellen `State`.</td>
+                </tr>
+                <tr>
+                  <td><code>graphicPath</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Der aufgelöste Pfad zur Grafikdatei (beginnend mit <code>assets/</code>, z. B. <code>assets/tilesets/Fire.png</code>), falls ein Tile zugewiesen ist, sonst <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasGraphic</code></td>
+                  <td><code>Bool</code></td>
+                  <td><code>public</code></td>
+                  <td>Gibt an, ob der Entity in LDtk eine gültige Grafikdatei zugewiesen ist (<code>true</code>), andernfalls <code>false</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methoden</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(entity:ldtk.Entity)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt das Sprite, setzt Position, Abmessungen, bindet den <code>State</code>, initialisiert <code>graphicPath</code> / <code>hasGraphic</code> und lädt automatisch die Kachelgrafik, falls vorhanden.</td>
+                </tr>
+                <tr>
+                  <td><code>getGraphicPath</code></td>
+                  <td><code>():Null&lt;String&gt;</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td>Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile in LDtk definiert ist, und setzt <code>hasGraphic</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>getField</code></td>
+                  <td><code>(identifier:String):Dynamic</code></td>
+                  <td><code>Dynamic</code></td>
+                  <td>Liest den Wert eines benutzerdefinierten LDtk-Feldes (<code>fieldInstances</code>) aus oder <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasField</code></td>
+                  <td><code>(identifier:String):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert.</td>
+                </tr>
+                <tr>
+                  <td><code>initAnimation</code></td>
+                  <td><code>(?animKey:String):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Lädt alle Animationsclips aus <code>AnimationRegistry.db</code> und startet die Standardanimation.</td>
+                </tr>
+                <tr>
+                  <td><code>createShapesFromGraphic</code></td>
+                  <td><code>(alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, clearExisting:Bool = true, cellSizeVal:Float = 1.0):Array&lt;Polygon&gt;</code></td>
+                  <td><code>Array&lt;Polygon&gt;</code></td>
+                  <td>Erzeugt Nape-Polygon-Shapes vollautomatisch aus der sichtbaren Pixelgrafik des Sprites via Marching Squares.</td>
+                </tr>
+                <tr>
+                  <td><code>resolvePixelCollision</code></td>
+                  <td><code>(obstacle:flixel.FlxSprite):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Löst eine pixelgenaue Überlappung (<code>FlxG.pixelPerfectOverlap</code>) verzögerungsfrei auf (Positionskorrektur, Geschwindigkeitsstopp, Wall-Sliding). Gibt <code>true</code> zurück, wenn eine Kollision vorlag.</td>
+                </tr>
+                <tr>
+                  <td><code>isPixelBlocked</code></td>
+                  <td><code>(dirX:Float, dirY:Float):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft vorausschauend, ob eine Bewegung in die angegebene Richtung zu einer Pixel-Überlappung mit <code>lastCollidedObstacle</code> führen würde.</td>
+                </tr>
+                <tr>
+                  <td><code>onPositionCorrected</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Callback-Hook nach einer Positionskorrektur durch <code>resolvePixelCollision</code> (kann in Unterklassen überschrieben werden).</td>
+                </tr>
+                <tr>
+                  <td><code>getFromInteractor</code></td>
+                  <td><code>(interactor:nape.phys.Interactor):Null&lt;EntityNapeSprite&gt;</code></td>
+                  <td><code>Null&lt;EntityNapeSprite&gt;</code></td>
+                  <td>Statische Hilfsmethode: Ermittelt die <code>EntityNapeSprite</code>-Instanz aus einem Nape-Interactor (Shape oder Body).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>EntityNapeSprite</code> (<code>mklib.entity.EntityNapeSprite</code>)</h2>
+          <p>Erweiterte Basisklasse für Nape-Physik-Objekte. Erbt von <code>flixel.addons.nape.FlxNapeSprite</code>.</p>
+
+          <h3>Eigenschaften</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Eigenschaft</th>
+                  <th>Typ</th>
+                  <th>Modifizierer</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>_entity</code></td>
+                  <td><code>ldtk.Entity</code></td>
+                  <td><code>public</code></td>
+                  <td>Die zugrundeliegende LDtk-Entity mit allen Feldern.</td>
+                </tr>
+                <tr>
+                  <td><code>iid</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Die eindeutige LDtk-Instanz-ID.</td>
+                </tr>
+                <tr>
+                  <td><code>state</code></td>
+                  <td><code>mklib.state.State</code></td>
+                  <td><code>public</code></td>
+                  <td>Referenz auf den aktiven `State`.</td>
+                </tr>
+                <tr>
+                  <td><code>graphicPath</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Der aufgelöste Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile zugewiesen ist, sonst <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasGraphic</code></td>
+                  <td><code>Bool</code></td>
+                  <td><code>public</code></td>
+                  <td>Gibt an, ob der Entity in LDtk eine gültige Grafikdatei zugewiesen ist (<code>true</code>), andernfalls <code>false</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>body</code></td>
+                  <td><code>nape.phys.Body</code></td>
+                  <td><code>public</code></td>
+                  <td>*(Ererbt)* Der physikalische Nape-Körper.</td>
+                </tr>
+                <tr>
+                  <td><code>prevBodyX</code> / <code>prevBodyY</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public</code></td>
+                  <td>Nape-Körperposition vor dem aktuellen Physik-Schritt.</td>
+                </tr>
+                <tr>
+                  <td><code>lastCollidedObstacle</code></td>
+                  <td><code>Null&lt;flixel.FlxSprite&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Zuletzt berührtes Hindernis für vorausschauende Pixel-Blockade-Prüfungen (<code>isPixelBlocked</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>facingX</code> / <code>facingY</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Aktuelle diskrete Blickrichtung der Entity (-1, 0, 1).</td>
+                </tr>
+                <tr>
+                  <td><code>gridSize</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Standard-Rastergröße für Gitterabfragen in Pixeln (Standard: <code>8</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>recoilTimer</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public</code></td>
+                  <td>Verbleibende Rückstoß-Dauer (Recoil / Knockback) in Sekunden.</td>
+                </tr>
+                <tr>
+                  <td><code>recoilVx</code> / <code>recoilVy</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public</code></td>
+                  <td>Aktuelle Rückstoß-Geschwindigkeit in X- bzw. Y-Richtung.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methoden</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(entity:ldtk.Entity)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt das Nape-Sprite. Bei vorhandenem <code>TileRect</code>-Feld wird der Tileset-Ausschnitt geladen, die Größe angepasst, ein statischer Nape-Körper (<code>BodyType.STATIC</code>) erzeugt und optional als Sensor konfiguriert.</td>
+                </tr>
+                <tr>
+                  <td><code>resolveTilesetPath</code></td>
+                  <td><code>(tilesetUid:Int):Null&lt;String&gt;</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td>Löst den relativen Asset-Pfad einer Tileset-Grafik anhand ihrer UID im LDtk-Projekt auf.</td>
+                </tr>
+                <tr>
+                  <td><code>loadTileRectGraphic</code></td>
+                  <td><code>(path:String, tileX:Int, tileY:Int, tileW:Int, tileH:Int):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Schneidet den angegebenen Bereich aus der Tileset-Textur aus, cacht diesen in <code>FlxG.bitmap</code> und weist ihn dem Sprite zu.</td>
+                </tr>
+                <tr>
+                  <td><code>getGraphicPath</code></td>
+                  <td><code>():Null&lt;String&gt;</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td>Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile oder <code>TileRect</code> in LDtk definiert ist.</td>
+                </tr>
+                <tr>
+                  <td><code>getField</code></td>
+                  <td><code>(identifier:String):Dynamic</code></td>
+                  <td><code>Dynamic</code></td>
+                  <td>Liest den Wert eines benutzerdefinierten LDtk-Feldes (<code>fieldInstances</code>) aus oder <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasField</code></td>
+                  <td><code>(identifier:String):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert.</td>
+                </tr>
+                <tr>
+                  <td><code>sensorEnabled</code></td>
+                  <td><code>(?enable:Null&lt;Bool&gt;):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Setzt die <code>sensorEnabled</code>-Eigenschaft für alle Shapes des Körpers. Ohne Parameter wird der Wert aus dem LDtk-Feld <code>"sensor"</code> bzw. <code>"sensorEnabled"</code> ausgelesen.</td>
+                </tr>
+                <tr>
+                  <td><code>addCbType</code></td>
+                  <td><code>(name:String = null):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Weist dem Nape-Körper Tags zu. Liest bei <code>name == null</code> automatisch die LDtk-Felder <code>"Tag"</code> oder <code>"Tags"</code> aus. Setzt <code>body.userData.instance = this</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>updateShapePosition</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Zentriert den Nape-Körper im Mittelpunkt der Entity- bzw. Sprite-Maße (<code>pixelX + width/2, pixelY + height/2</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>initAnimation</code></td>
+                  <td><code>(?animKey:String):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Lädt alle Animationsclips aus <code>AnimationRegistry.db</code> und startet die Standardanimation.</td>
+                </tr>
+                <tr>
+                  <td><code>applyRecoil</code></td>
+                  <td><code>(dirX:Float, dirY:Float, speed:Float = 65, duration:Float = 0.12):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Löst einen physikalischen Rückstoß-Impuls (Recoil / Knockback / Zelda-Bounce) in die angegebene Richtung aus.</td>
+                </tr>
+                <tr>
+                  <td><code>isRecoiling</code></td>
+                  <td><code>():Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Gibt an, ob sich die Entity aktuell in einer aktiven Rückstoß-Phase befindet (<code>recoilTimer &gt; 0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>getGridX</code></td>
+                  <td><code>(gSize:Int = -1, offsetX:Float = 0):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Berechnet die diskrete Raster-Spalte (X) auf Basis der Körperposition und eines optionalen Offsets.</td>
+                </tr>
+                <tr>
+                  <td><code>getGridY</code></td>
+                  <td><code>(gSize:Int = -1, offsetY:Float = 0):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Berechnet die diskrete Raster-Zeile (Y) auf Basis der Körperposition und eines optionalen Fußpunkt-Offsets.</td>
+                </tr>
+                <tr>
+                  <td><code>getActiveState</code></td>
+                  <td><code>():Null&lt;State&lt;Dynamic&gt;&gt;</code></td>
+                  <td><code>Null&lt;State&lt;Dynamic&gt;&gt;</code></td>
+                  <td>Liefert dynamisch und sicher die aktive <code>State</code>-Instanz aus der Instanz-Referenz oder <code>FlxG.state</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasEntityAtGrid</code></td>
+                  <td><code>(cx:Int, cy:Int, ?tags:Dynamic, ?entityClass:Class&lt;Dynamic&gt;, gSize:Int = -1):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob sich in der Rasterzelle <code>(cx, cy)</code> eine Entity mit bestimmtem Tag (String oder Array, z. B. <code>["Obstacle", "Platform", "Wall", "Solid"]</code>) oder Klassentyp befindet.</td>
+                </tr>
+                <tr>
+                  <td><code>hasObstacleInFacingCell</code></td>
+                  <td><code>(dirX:Int = 0, dirY:Int = 0, ?tags:Dynamic, gSize:Int = -1, footOffsetY:Float = 0):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob die Nachbarzelle in Blickrichtung durch ein Hindernis oder eine Wand (prüft standardmäßig <code>["Obstacle", "Platform", "Wall", "Solid"]</code>) belegt ist.</td>
+                </tr>
+                <tr>
+                  <td><code>createShapesFromGraphic</code></td>
+                  <td><code>(alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, clearExisting:Bool = true, cellSizeVal:Float = 1.0):Array&lt;Polygon&gt;</code></td>
+                  <td><code>Array&lt;Polygon&gt;</code></td>
+                  <td>Erzeugt Nape-Polygon-Shapes vollautomatisch aus der sichtbaren Pixelgrafik des Sprites via Marching Squares.</td>
+                </tr>
+                <tr>
+                  <td><code>resolvePixelCollision</code></td>
+                  <td><code>(obstacle:flixel.FlxSprite):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Löst eine pixelgenaue Überlappung (<code>FlxG.pixelPerfectOverlap</code>) verzögerungsfrei auf (Positionskorrektur, Geschwindigkeitsstopp, Wall-Sliding). Gibt <code>true</code> zurück, wenn eine Kollision vorlag.</td>
+                </tr>
+                <tr>
+                  <td><code>isPixelBlocked</code></td>
+                  <td><code>(dirX:Float, dirY:Float):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft vorausschauend, ob eine Bewegung in die angegebene Richtung zu einer Pixel-Überlappung mit <code>lastCollidedObstacle</code> führen würde.</td>
+                </tr>
+                <tr>
+                  <td><code>onPositionCorrected</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Callback-Hook nach einer Positionskorrektur durch <code>resolvePixelCollision</code> (kann in Unterklassen überschrieben werden).</td>
+                </tr>
+                <tr>
+                  <td><code>getFromInteractor</code></td>
+                  <td><code>(interactor:nape.phys.Interactor):Null&lt;EntityNapeSprite&gt;</code></td>
+                  <td><code>Null&lt;EntityNapeSprite&gt;</code></td>
+                  <td>Statische Hilfsmethode: Ermittelt die <code>EntityNapeSprite</code>-Instanz aus einem Nape-Interactor (Shape oder Body).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="layers.html" class="nav-page-btn">← Layer System</a>
+            <a href="save.html" class="nav-page-btn">Save & Persistence →</a>
+          </div>
+        </div>
+        <div data-lang="en">
+<h1>👾 Entities & Sprites (<code>mklib.entity.*</code>)</h1>
+          <p class="section-desc">Basisklassen für visuelle und physikalische Spielobjekte.</p>
+
+          <h2>1. <code>EntitySprite</code> (<code>mklib.entity.EntitySprite</code>)</h2>
+          <p>Basisklasse für rein visuelle Entities ohne Physik. Erbt von <code>flixel.FlxSprite</code>.</p>
+
+          <h3>Properties</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>_entity</code></td>
+                  <td><code>ldtk.Entity</code></td>
+                  <td><code>public</code></td>
+                  <td>Die originale LDtk-Entity-Definition inklusive benutzerdefinierter Felder.</td>
+                </tr>
+                <tr>
+                  <td><code>iid</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Die weltweit eindeutige Instanz-ID der Entity aus LDtk.</td>
+                </tr>
+                <tr>
+                  <td><code>state</code></td>
+                  <td><code>mklib.state.State</code></td>
+                  <td><code>public</code></td>
+                  <td>Referenz auf den aktuellen `State`.</td>
+                </tr>
+                <tr>
+                  <td><code>graphicPath</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Der aufgelöste Pfad zur Grafikdatei (beginnend mit <code>assets/</code>, z. B. <code>assets/tilesets/Fire.png</code>), falls ein Tile zugewiesen ist, sonst <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasGraphic</code></td>
+                  <td><code>Bool</code></td>
+                  <td><code>public</code></td>
+                  <td>Gibt an, ob der Entity in LDtk eine gültige Grafikdatei zugewiesen ist (<code>true</code>), andernfalls <code>false</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methods</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(entity:ldtk.Entity)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt das Sprite, setzt Position, Abmessungen, bindet den <code>State</code>, initialisiert <code>graphicPath</code> / <code>hasGraphic</code> und lädt automatisch die Kachelgrafik, falls vorhanden.</td>
+                </tr>
+                <tr>
+                  <td><code>getGraphicPath</code></td>
+                  <td><code>():Null&lt;String&gt;</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td>Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile in LDtk definiert ist, und setzt <code>hasGraphic</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>getField</code></td>
+                  <td><code>(identifier:String):Dynamic</code></td>
+                  <td><code>Dynamic</code></td>
+                  <td>Liest den Wert eines benutzerdefinierten LDtk-Feldes (<code>fieldInstances</code>) aus oder <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasField</code></td>
+                  <td><code>(identifier:String):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert.</td>
+                </tr>
+                <tr>
+                  <td><code>initAnimation</code></td>
+                  <td><code>(?animKey:String):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Lädt alle Animationsclips aus <code>AnimationRegistry.db</code> und startet die Standardanimation.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>EntityNapeSprite</code> (<code>mklib.entity.EntityNapeSprite</code>)</h2>
+          <p>Erweiterte Basisklasse für Nape-Physik-Objekte. Erbt von <code>flixel.addons.nape.FlxNapeSprite</code>.</p>
+
+          <h3>Properties</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>_entity</code></td>
+                  <td><code>ldtk.Entity</code></td>
+                  <td><code>public</code></td>
+                  <td>Die zugrundeliegende LDtk-Entity mit allen Feldern.</td>
+                </tr>
+                <tr>
+                  <td><code>iid</code></td>
+                  <td><code>String</code></td>
+                  <td><code>public</code></td>
+                  <td>Die eindeutige LDtk-Instanz-ID.</td>
+                </tr>
+                <tr>
+                  <td><code>state</code></td>
+                  <td><code>mklib.state.State</code></td>
+                  <td><code>public</code></td>
+                  <td>Referenz auf den aktiven `State`.</td>
+                </tr>
+                <tr>
+                  <td><code>graphicPath</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Der aufgelöste Pfad zur Grafikdatei (beginnend mit <code>assets/</code>), falls ein Tile zugewiesen ist, sonst <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasGraphic</code></td>
+                  <td><code>Bool</code></td>
+                  <td><code>public</code></td>
+                  <td>Gibt an, ob der Entity in LDtk eine gültige Grafikdatei zugewiesen ist (<code>true</code>), andernfalls <code>false</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>body</code></td>
+                  <td><code>nape.phys.Body</code></td>
+                  <td><code>public</code></td>
+                  <td>*(Inherited)* The physical Nape body.</td>
+                </tr>
+                <tr>
+                  <td><code>prevBodyX</code> / <code>prevBodyY</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public</code></td>
+                  <td>Nape body position before the current physics step.</td>
+                </tr>
+                <tr>
+                  <td><code>lastCollidedObstacle</code></td>
+                  <td><code>Null&lt;flixel.FlxSprite&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Last collided obstacle for predictive pixel blockage checks (<code>isPixelBlocked</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>facingX</code> / <code>facingY</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Current discrete facing direction of the entity (-1, 0, 1).</td>
+                </tr>
+                <tr>
+                  <td><code>gridSize</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Default raster grid size in pixels (default: <code>8</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>recoilTimer</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public</code></td>
+                  <td>Remaining recoil / knockback duration in seconds.</td>
+                </tr>
+                <tr>
+                  <td><code>recoilVx</code> / <code>recoilVy</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public</code></td>
+                  <td>Current recoil velocity along X or Y axis.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methods</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(entity:ldtk.Entity)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Creates the Nape sprite. If a non-null <code>TileRect</code> field is present, loads the tileset crop, adjusts size, creates a static Nape body (<code>BodyType.STATIC</code>), and optionally configures it as a sensor.</td>
+                </tr>
+                <tr>
+                  <td><code>resolveTilesetPath</code></td>
+                  <td><code>(tilesetUid:Int):Null&lt;String&gt;</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td>Resolves the relative asset path for a tileset graphic based on its UID in the LDtk project.</td>
+                </tr>
+                <tr>
+                  <td><code>loadTileRectGraphic</code></td>
+                  <td><code>(path:String, tileX:Int, tileY:Int, tileW:Int, tileH:Int):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Crops the specified region from the tileset texture, caches it in <code>FlxG.bitmap</code>, and assigns it to the sprite.</td>
+                </tr>
+                <tr>
+                  <td><code>getGraphicPath</code></td>
+                  <td><code>():Null&lt;String&gt;</code></td>
+                  <td><code>Null&lt;String&gt;</code></td>
+                  <td>Resolves and normalizes the path to the graphic file (starting with <code>assets/</code>), if a tile or <code>TileRect</code> is defined in LDtk.</td>
+                </tr>
+                <tr>
+                  <td><code>getField</code></td>
+                  <td><code>(identifier:String):Dynamic</code></td>
+                  <td><code>Dynamic</code></td>
+                  <td>Reads the value of a custom LDtk field (<code>fieldInstances</code>) or <code>null</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasField</code></td>
+                  <td><code>(identifier:String):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Checks if a custom LDtk field exists for this entity.</td>
+                </tr>
+                <tr>
+                  <td><code>sensorEnabled</code></td>
+                  <td><code>(?enable:Null&lt;Bool&gt;):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Sets the <code>sensorEnabled</code> property for all shapes of the body. Without parameters, reads the value from the LDtk field <code>"sensor"</code> or <code>"sensorEnabled"</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>addCbType</code></td>
+                  <td><code>(name:String = null):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Assigns tags to the Nape body. Automatically reads LDtk fields <code>"Tag"</code> or <code>"Tags"</code> if <code>name == null</code>. Sets <code>body.userData.instance = this</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>updateShapePosition</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Centers the Nape body on the entity / sprite center (<code>pixelX + width/2, pixelY + height/2</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>initAnimation</code></td>
+                  <td><code>(?animKey:String):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Loads all animation clips from <code>AnimationRegistry.db</code> and starts the default animation.</td>
+                </tr>
+                <tr>
+                  <td><code>applyRecoil</code></td>
+                  <td><code>(dirX:Float, dirY:Float, speed:Float = 65, duration:Float = 0.12):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Triggers a physical recoil / knockback impulse in the specified direction.</td>
+                </tr>
+                <tr>
+                  <td><code>isRecoiling</code></td>
+                  <td><code>():Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Returns whether the entity is currently in an active recoil phase (<code>recoilTimer &gt; 0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>getGridX</code></td>
+                  <td><code>(gSize:Int = -1, offsetX:Float = 0):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Calculates the discrete raster column (X) from the body position and optional offset.</td>
+                </tr>
+                <tr>
+                  <td><code>getGridY</code></td>
+                  <td><code>(gSize:Int = -1, offsetY:Float = 0):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Calculates the discrete raster row (Y) from the body position and optional foot offset.</td>
+                </tr>
+                <tr>
+                  <td><code>getActiveState</code></td>
+                  <td><code>():Null&lt;State&lt;Dynamic&gt;&gt;</code></td>
+                  <td><code>Null&lt;State&lt;Dynamic&gt;&gt;</code></td>
+                  <td>Dynamically and safely resolves the active <code>State</code> instance from the reference or <code>FlxG.state</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasEntityAtGrid</code></td>
+                  <td><code>(cx:Int, cy:Int, ?tags:Dynamic, ?entityClass:Class&lt;Dynamic&gt;, gSize:Int = -1):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Checks if a specific entity tag (string or array, e.g. <code>["Obstacle", "Platform", "Wall", "Solid"]</code>) or class occupies the raster grid cell <code>(cx, cy)</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>hasObstacleInFacingCell</code></td>
+                  <td><code>(dirX:Int = 0, dirY:Int = 0, ?tags:Dynamic, gSize:Int = -1, footOffsetY:Float = 0):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Checks whether the neighbor cell in the facing direction contains an obstacle or wall (defaults to <code>["Obstacle", "Platform", "Wall", "Solid"]</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>createShapesFromGraphic</code></td>
+                  <td><code>(alphaThreshold:Int = 128, simplify:Float = 1.0, sensor:Bool = false, ?cbType:CbType, clearExisting:Bool = true, cellSizeVal:Float = 1.0):Array&lt;Polygon&gt;</code></td>
+                  <td><code>Array&lt;Polygon&gt;</code></td>
+                  <td>Generates Nape polygon shapes automatically from visible graphic pixels via Marching Squares.</td>
+                </tr>
+                <tr>
+                  <td><code>resolvePixelCollision</code></td>
+                  <td><code>(obstacle:flixel.FlxSprite):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Resolves pixel-perfect overlap (<code>FlxG.pixelPerfectOverlap</code>) with zero latency (position correction, velocity stop, wall-sliding). Returns <code>true</code> if collision occurred.</td>
+                </tr>
+                <tr>
+                  <td><code>isPixelBlocked</code></td>
+                  <td><code>(dirX:Float, dirY:Float):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Checks predictively whether movement in the specified direction would cause pixel overlap with <code>lastCollidedObstacle</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>onPositionCorrected</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Callback hook invoked after position correction by <code>resolvePixelCollision</code> (can be overridden in subclasses).</td>
+                </tr>
+                <tr>
+                  <td><code>getFromInteractor</code></td>
+                  <td><code>(interactor:nape.phys.Interactor):Null&lt;EntityNapeSprite&gt;</code></td>
+                  <td><code>Null&lt;EntityNapeSprite&gt;</code></td>
+                  <td>Static helper: Retrieves the <code>EntityNapeSprite</code> instance from a Nape interactor (shape or body).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="layers.html" class="nav-page-btn">← Layer System</a>
+            <a href="save.html" class="nav-page-btn">Save & Persistence →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

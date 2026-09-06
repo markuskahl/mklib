@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schnellstart & Setup — mklib Dokumentation</title>
+  <meta name="description" content="Lückenlose Dokumentation und API-Referenz für mklib — Jede Klasse, Methode und Eigenschaft für HaxeFlixel, LDtk und Nape 2D.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Glow Backgrounds -->
+  <div class="bg-decorations">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="icon-btn mobile-menu-btn" aria-label="Menü öffnen">☰</button>
+      <a href="index.html" class="logo-group">
+        <div class="logo-badge">mk</div>
+        <div>
+          <span class="logo-title">mklib</span>
+          <span class="logo-version">v1.0.1</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Search Input -->
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="docs-search" class="search-input" placeholder="Klasse, Methode oder Feld suchen..." data-de="Klasse, Methode oder Feld suchen..." data-en="Search class, method, or field..." autocomplete="off">
+    </div>
+
+    <!-- Header Actions (Language Switcher & Theme Toggle & GitHub) -->
+    <div class="header-actions">
+      <!-- Language Switcher -->
+      <div class="lang-switch-group">
+        <button class="lang-btn active" data-set-lang="de" title="Deutsch">DE</button>
+        <button class="lang-btn" data-set-lang="en" title="English">EN</button>
+      </div>
+
+      <button id="theme-toggle" class="icon-btn" title="Thema wechseln">☀️</button>
+      <a href="https://github.com/markuskahl/mklib" target="_blank" rel="noopener noreferrer" class="github-link">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- App Layout Container -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div>
+          <div class="nav-section-title" data-de="Einführung" data-en="Introduction">Einführung</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="index.html"><span class="nav-icon">📖</span> <span data-de="Übersicht & API-Matrix" data-en="Overview & API Matrix">Übersicht & API-Matrix</span></a></li>
+            <li class="nav-item active"><a href="getting-started.html"><span class="nav-icon">🚀</span> <span data-de="Schnellstart" data-en="Quick Start">Schnellstart</span></a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-section-title" data-de="Kern-Module & Klassen" data-en="Core Modules & Classes">Kern-Module & Klassen</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="ldtk-guide.html"><span class="nav-icon">🗺️</span> <span data-de="LDtk Guide & Felder" data-en="LDtk Guide & Fields">LDtk Guide & Felder</span></a></li>
+            <li class="nav-item"><a href="state.html"><span class="nav-icon">🎮</span> <span data-de="State Management" data-en="State Management">State Management</span></a></li>
+            <li class="nav-item"><a href="layers.html"><span class="nav-icon">🗺️</span> <span data-de="Layer System" data-en="Layer System">Layer System</span></a></li>
+            <li class="nav-item"><a href="entities.html"><span class="nav-icon">👾</span> <span data-de="Entities & Sprites" data-en="Entities & Sprites">Entities & Sprites</span></a></li>
+            <li class="nav-item"><a href="save.html"><span class="nav-icon">💾</span> <span data-de="Save & Persistence" data-en="Save & Persistence">Save & Persistence</span></a></li>
+            <li class="nav-item"><a href="animation.html"><span class="nav-icon">🎬</span> <span data-de="Animationen & Makros" data-en="Animations & Macros">Animationen & Makros</span></a></li>
+            <li class="nav-item"><a href="physics.html"><span class="nav-icon">⚡</span> <span data-de="Physik & Sensoren" data-en="Physics & Sensors">Physik & Sensoren</span></a></li>
+            <li class="nav-item"><a href="pathfinding.html"><span class="nav-icon">🧭</span> <span data-de="Pathfinding & A*" data-en="Pathfinding & A*">Pathfinding & A*</span></a></li>
+            <li class="nav-item"><a href="lighting.html"><span class="nav-icon">💡</span> <span data-de="GPU Lighting System" data-en="GPU Lighting System">GPU Lighting System</span></a></li>
+            <li class="nav-item"><a href="effects.html"><span class="nav-icon">🎨</span> <span data-de="Shader & Effekte" data-en="Shaders & Effects">Shader & Effekte</span></a></li>
+            <li class="nav-item"><a href="tools-math.html"><span class="nav-icon">📐</span> <span data-de="Tools & Mathematik" data-en="Tools & Mathematics">Tools & Mathematik</span></a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Section: getting-started -->
+<section id="getting-started" class="doc-section active">
+        <div data-lang="de">
+<h1>🚀 Schnellstart & Einrichtung</h1>
+          <p class="section-desc">Schritt-für-Schritt-Anleitung zur Installation und Einbindung in dein HaxeFlixel-Projekt.</p>
+
+          <h2>1. Abhängigkeiten in Project.xml</h2>
+          <p>Füge <code>mklib</code> und die benötigten Bibliotheken zu deiner <code>Project.xml</code> hinzu:</p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">XML</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code>&lt;haxelib name="openfl" /&gt;
+&lt;haxelib name="flixel" /&gt;
+&lt;haxelib name="flixel-addons" /&gt;
+&lt;haxelib name="nape-haxe4" /&gt;
+&lt;haxelib name="ldtk-haxe-api" /&gt;
+&lt;haxelib name="mklib" /&gt;</code></pre>
+          </div>
+
+          <h2>2. LDtk Makro-Setup (Data.hx)</h2>
+          <p>Erstelle die Datei <code>source/Data.hx</code>. Das Makro analysiert deine <code>map.ldtk</code>-Datei zur Compile-Zeit und erzeugt typisierte Klassen:</p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-comment">/**
+ * LDtk-Makro-Kompilierung: Liest zur Compile-Zeit die Datei "assets/data/map.ldtk"
+ * ein und generiert typisierte Klassen und Enums für alle Level, Layer und Entities.
+ */</span>
+<span class="hl-keyword">private</span> <span class="hl-keyword">typedef</span> _Tmp = haxe.macro.MacroType&lt;[ ldtk.Project.build(<span class="hl-string">"assets/data/map.ldtk"</span>) ]&gt;;</code></pre>
+          </div>
+
+          <h2>3. Spielstart in Main.hx</h2>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> flixel.FlxGame;
+<span class="hl-keyword">import</span> openfl.display.Sprite;
+
+<span class="hl-comment">/**
+ * Haupteinstiegspunkt der Anwendung.
+ */</span>
+<span class="hl-keyword">class</span> <span class="hl-type">Main</span> <span class="hl-keyword">extends</span> <span class="hl-type">Sprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>() {
+        <span class="hl-keyword">super</span>();
+        addChild(<span class="hl-keyword">new</span> <span class="hl-type">FlxGame</span>(<span class="hl-num">320</span>, <span class="hl-num">180</span>, PlayState, <span class="hl-num">60</span>, <span class="hl-num">60</span>, <span class="hl-keyword">true</span>, <span class="hl-keyword">false</span>));
+    }
+}</code></pre>
+          </div>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">💡</div>
+            <div>
+              <strong>Tipp zur Dead-Code-Elimination (DCE):</strong> Versehe deine dynamisch geladenen Entity-Klassen stets mit der Annotation <code>@:keep</code>, damit der Haxe-Compiler sie bei Release-Builds nicht wegoptimiert.
+            </div>
+          </div>
+
+          <h2>4. ⚡ Performance- & Hardware-Richtwerte</h2>
+          <p>Dank der Zero-Allocation Render-Pipeline und der internen 160×90-Pixel-Basisauflösung ist <code>mklib</code> extrem ressourcenschonend. Richtwerte für <strong>konstante 60 FPS</strong> auf schwachen Office-Notebooks (Intel HD / UHD / Iris Xe iGPU):</p>
+          
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Richtwert (Notebook / iGPU)</th>
+                  <th>Desktop-PC (GTX / RTX)</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Sichtbare Sprites</strong></td>
+                  <td><span class="badge badge-success">~ 2.000 Sprites</span></td>
+                  <td>20.000+ Sprites</td>
+                  <td>Hardware-Batching via OpenFL / Flixel DrawTiles</td>
+                </tr>
+                <tr>
+                  <td><strong>Nape Physik-Körper</strong></td>
+                  <td><span class="badge badge-success">~ 300 Bodies</span></td>
+                  <td>3.000+ Bodies</td>
+                  <td>Aktive Rigid Bodies mit <code>NAPE_RELEASE_BUILD</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Shader-Lichtquellen</strong></td>
+                  <td><span class="badge badge-success">32 Lichter im Viewport</span></td>
+                  <td>32 Lichter im Viewport</td>
+                  <td>Unbegrenzt im Level via Frustum Culling (<code>autoCull</code>)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-info">
+            <div class="callout-icon">⚡</div>
+            <div>
+              <strong>Timing-Konfiguration in State.hx:</strong> <code>FlxG.fixedTimestep = false</code> (verhindert Nachhol-Lags), <code>FlxG.maxElapsed = 0.05</code> (Notbremse bei Rucklern) und <code>FlxG.autoPause = false</code> (verhindert Einfrieren bei Fokusverlust).
+            </div>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="index.html" class="nav-page-btn">← Übersicht</a>
+            <a href="ldtk-guide.html" class="nav-page-btn">LDtk Guide →</a>
+          </div>
+        </div>
+        <div data-lang="en">
+<h1>🚀 Quick Start & Setup</h1>
+          <p class="section-desc">Step-by-step guide to installing and integrating mklib into your HaxeFlixel project.</p>
+
+          <h2>1. Dependencies in Project.xml</h2>
+          <p>Add <code>mklib</code> and the required libraries to your <code>Project.xml</code>:</p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">XML</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code>&lt;haxelib name="openfl" /&gt;
+&lt;haxelib name="flixel" /&gt;
+&lt;haxelib name="flixel-addons" /&gt;
+&lt;haxelib name="nape-haxe4" /&gt;
+&lt;haxelib name="ldtk-haxe-api" /&gt;
+&lt;haxelib name="mklib" /&gt;</code></pre>
+          </div>
+
+          <h2>2. LDtk Macro Setup (Data.hx)</h2>
+          <p>Create the file <code>source/Data.hx</code>. The macro analyzes your <code>map.ldtk</code> file at compile time and generates typed classes:</p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-comment">/**
+ * LDtk macro compilation: Reads "assets/data/map.ldtk" at compile time
+ * and generates typed classes and enums for all levels, layers, and entities.
+ */</span>
+<span class="hl-keyword">private</span> <span class="hl-keyword">typedef</span> _Tmp = haxe.macro.MacroType&lt;[ ldtk.Project.build(<span class="hl-string">"assets/data/map.ldtk"</span>) ]&gt;;</code></pre>
+          </div>
+
+          <h2>3. Game Entry Point in Main.hx</h2>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> flixel.FlxGame;
+<span class="hl-keyword">import</span> openfl.display.Sprite;
+
+<span class="hl-comment">/**
+ * Haupteinstiegspunkt der Anwendung.
+ */</span>
+<span class="hl-keyword">class</span> <span class="hl-type">Main</span> <span class="hl-keyword">extends</span> <span class="hl-type">Sprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>() {
+        <span class="hl-keyword">super</span>();
+        addChild(<span class="hl-keyword">new</span> <span class="hl-type">FlxGame</span>(<span class="hl-num">320</span>, <span class="hl-num">180</span>, PlayState, <span class="hl-num">60</span>, <span class="hl-num">60</span>, <span class="hl-keyword">true</span>, <span class="hl-keyword">false</span>));
+    }
+}</code></pre>
+          </div>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">💡</div>
+            <div>
+              <strong>Tipp zur Dead-Code-Elimination (DCE):</strong> Versehe deine dynamisch geladenen Entity-Klassen stets mit der Annotation <code>@:keep</code>, damit der Haxe-Compiler sie bei Release-Builds nicht wegoptimiert.
+            </div>
+          </div>
+
+          <h2>4. ⚡ Performance & Hardware Guidelines</h2>
+          <p>Thanks to the zero-allocation rendering pipeline and 160×90 internal pixel base resolution, <code>mklib</code> is extremely lightweight. Target guidelines for <strong>rock-solid 60 FPS</strong> on low-end office laptops (Intel HD / UHD / Iris Xe iGPU):</p>
+          
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Guideline (Laptop / iGPU)</th>
+                  <th>Desktop PC (GTX / RTX)</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Visible Sprites</strong></td>
+                  <td><span class="badge badge-success">~ 2,000 Sprites</span></td>
+                  <td>20,000+ Sprites</td>
+                  <td>Hardware batching via OpenFL / Flixel DrawTiles</td>
+                </tr>
+                <tr>
+                  <td><strong>Nape Physics Bodies</strong></td>
+                  <td><span class="badge badge-success">~ 300 Bodies</span></td>
+                  <td>3,000+ Bodies</td>
+                  <td>Active rigid bodies with <code>NAPE_RELEASE_BUILD</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Shader Lights</strong></td>
+                  <td><span class="badge badge-success">32 lights in viewport</span></td>
+                  <td>32 lights in viewport</td>
+                  <td>Unlimited in level via frustum culling (<code>autoCull</code>)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-info">
+            <div class="callout-icon">⚡</div>
+            <div>
+              <strong>Timing configuration in State.hx:</strong> <code>FlxG.fixedTimestep = false</code> (prevents catch-up lags), <code>FlxG.maxElapsed = 0.05</code> (failsafe clamp during lag spikes), and <code>FlxG.autoPause = false</code> (prevents focus-loss freeze).
+            </div>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="index.html" class="nav-page-btn">← Übersicht</a>
+            <a href="ldtk-guide.html" class="nav-page-btn">LDtk Guide →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

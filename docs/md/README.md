@@ -4,6 +4,10 @@
 
 ---
 
+> 💡 **Interaktive HTML-Dokumentation:** Die vollständige interaktive Web-Dokumentation mit interaktivem A\*-Simulator und Suchfunktion befindet sich unter [`../html/index.html`](../html/index.html).
+
+---
+
 ## 📚 Table of Contents
 
 1. [**Getting Started & Setup**](getting_started.md)

@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animationen & Makros — mklib Dokumentation</title>
+  <meta name="description" content="Lückenlose Dokumentation und API-Referenz für mklib — Jede Klasse, Methode und Eigenschaft für HaxeFlixel, LDtk und Nape 2D.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Glow Backgrounds -->
+  <div class="bg-decorations">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="icon-btn mobile-menu-btn" aria-label="Menü öffnen">☰</button>
+      <a href="index.html" class="logo-group">
+        <div class="logo-badge">mk</div>
+        <div>
+          <span class="logo-title">mklib</span>
+          <span class="logo-version">v1.0.1</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Search Input -->
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="docs-search" class="search-input" placeholder="Klasse, Methode oder Feld suchen..." data-de="Klasse, Methode oder Feld suchen..." data-en="Search class, method, or field..." autocomplete="off">
+    </div>
+
+    <!-- Header Actions (Language Switcher & Theme Toggle & GitHub) -->
+    <div class="header-actions">
+      <!-- Language Switcher -->
+      <div class="lang-switch-group">
+        <button class="lang-btn active" data-set-lang="de" title="Deutsch">DE</button>
+        <button class="lang-btn" data-set-lang="en" title="English">EN</button>
+      </div>
+
+      <button id="theme-toggle" class="icon-btn" title="Thema wechseln">☀️</button>
+      <a href="https://github.com/markuskahl/mklib" target="_blank" rel="noopener noreferrer" class="github-link">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- App Layout Container -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div>
+          <div class="nav-section-title" data-de="Einführung" data-en="Introduction">Einführung</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="index.html"><span class="nav-icon">📖</span> <span data-de="Übersicht & API-Matrix" data-en="Overview & API Matrix">Übersicht & API-Matrix</span></a></li>
+            <li class="nav-item"><a href="getting-started.html"><span class="nav-icon">🚀</span> <span data-de="Schnellstart" data-en="Quick Start">Schnellstart</span></a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-section-title" data-de="Kern-Module & Klassen" data-en="Core Modules & Classes">Kern-Module & Klassen</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="ldtk-guide.html"><span class="nav-icon">🗺️</span> <span data-de="LDtk Guide & Felder" data-en="LDtk Guide & Fields">LDtk Guide & Felder</span></a></li>
+            <li class="nav-item"><a href="state.html"><span class="nav-icon">🎮</span> <span data-de="State Management" data-en="State Management">State Management</span></a></li>
+            <li class="nav-item"><a href="layers.html"><span class="nav-icon">🗺️</span> <span data-de="Layer System" data-en="Layer System">Layer System</span></a></li>
+            <li class="nav-item"><a href="entities.html"><span class="nav-icon">👾</span> <span data-de="Entities & Sprites" data-en="Entities & Sprites">Entities & Sprites</span></a></li>
+            <li class="nav-item"><a href="save.html"><span class="nav-icon">💾</span> <span data-de="Save & Persistence" data-en="Save & Persistence">Save & Persistence</span></a></li>
+            <li class="nav-item active"><a href="animation.html"><span class="nav-icon">🎬</span> <span data-de="Animationen & Makros" data-en="Animations & Macros">Animationen & Makros</span></a></li>
+            <li class="nav-item"><a href="physics.html"><span class="nav-icon">⚡</span> <span data-de="Physik & Sensoren" data-en="Physics & Sensors">Physik & Sensoren</span></a></li>
+            <li class="nav-item"><a href="pathfinding.html"><span class="nav-icon">🧭</span> <span data-de="Pathfinding & A*" data-en="Pathfinding & A*">Pathfinding & A*</span></a></li>
+            <li class="nav-item"><a href="lighting.html"><span class="nav-icon">💡</span> <span data-de="GPU Lighting System" data-en="GPU Lighting System">GPU Lighting System</span></a></li>
+            <li class="nav-item"><a href="effects.html"><span class="nav-icon">🎨</span> <span data-de="Shader & Effekte" data-en="Shaders & Effects">Shader & Effekte</span></a></li>
+            <li class="nav-item"><a href="tools-math.html"><span class="nav-icon">📐</span> <span data-de="Tools & Mathematik" data-en="Tools & Mathematics">Tools & Mathematik</span></a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Section: animation -->
+<section id="animation" class="doc-section active">
+        <div data-lang="de">
+<h1>🎬 Animationssystem & Makros (<code>mklib.animation.*</code> & <code>mklib.macro.*</code>)</h1>
+          <p class="section-desc">Automatisiertes Compile-Time-Laden von JSON-Spritesheet-Animationen ohne Laufzeit-Overhead.</p>
+
+          <h2>1. Übersicht & Funktionsweise</h2>
+          <p>
+            Das Animationssystem von <code>mklib</code> besteht aus typsicheren Datenstrukturen (<code>AnimationTypes</code>), einem Compile-Time-Makro (<code>AnimationBuilder</code>) und einer zentralen Datenbank (<code>AnimationRegistry</code>).
+          </p>
+          <div class="feature-grid" style="margin: 1.5rem 0;">
+            <div class="feature-card">
+              <div class="feature-icon">📁</div>
+              <h3>JSON Definitions</h3>
+              <p>Clips, Frameraten und Rastermaße werden als übersichtliche <code>.json</code>-Dateien in <code>assets/data/animations/</code> abgelegt.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>Compile-Time Macro</h3>
+              <p><code>AnimationBuilder.buildDatabase()</code> liest alle JSONs beim Kompilieren ein, normalisiert Pfade und erzeugt ein getyptes Map-Literal.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🚀</div>
+              <h3>Zero Runtime Cost</h3>
+              <p>Kein JSON-Parsing zur Laufzeit. Entities greifen direkt auf die typisierte <code>AnimationRegistry.db</code> zu.</p>
+            </div>
+          </div>
+
+          <h2>2. Datenstrukturen (<code>mklib.animation.AnimationTypes</code>)</h2>
+          
+          <h3><code>FrameConfig</code></h3>
+          <p>Konfiguriert Kachelabmessungen und Abstände auf dem Spritesheet.</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Feld</th>
+                  <th>Typ</th>
+                  <th>Optional</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>width</code></td>
+                  <td><code>Int</code></td>
+                  <td>Nein</td>
+                  <td>Breite eines einzelnen Frames in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>height</code></td>
+                  <td><code>Int</code></td>
+                  <td>Nein</td>
+                  <td>Höhe eines einzelnen Frames in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>spacing</code></td>
+                  <td><code>Null&lt;Int&gt;</code></td>
+                  <td>Ja</td>
+                  <td>Abstand zwischen Frames in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>margin</code></td>
+                  <td><code>Null&lt;Int&gt;</code></td>
+                  <td>Ja</td>
+                  <td>Äußerer Rand des Spritesheets in Pixeln.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3><code>AnimationClip</code></h3>
+          <p>Definiert einen Animationsabschnitt mit Bildfolge, Geschwindigkeit und Wiederholung.</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Feld</th>
+                  <th>Typ</th>
+                  <th>Optional</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>name</code></td>
+                  <td><code>String</code></td>
+                  <td>Nein</td>
+                  <td>Name des Clips (z. B. <code>"burn"</code>, <code>"walk"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>fps</code></td>
+                  <td><code>Int</code></td>
+                  <td>Nein</td>
+                  <td>Abspielgeschwindigkeit (Frames pro Sekunde).</td>
+                </tr>
+                <tr>
+                  <td><code>loop</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Nein</td>
+                  <td>Endlosschleife aktivieren (<code>true</code>/<code>false</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flipX</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Nein</td>
+                  <td>Horizontale Spiegelung der Frames.</td>
+                </tr>
+                <tr>
+                  <td><code>flipY</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Nein</td>
+                  <td>Vertikale Spiegelung der Frames.</td>
+                </tr>
+                <tr>
+                  <td><code>frames</code></td>
+                  <td><code>Array&lt;Int&gt;</code></td>
+                  <td>Nein</td>
+                  <td>Liste der Frame-Indizes (z. B. <code>[0, 1, 2, 3]</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3><code>SpriteSheetData</code></h3>
+          <p>Vollständiger Datensatz für ein animiertes Spritesheet.</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Feld</th>
+                  <th>Typ</th>
+                  <th>Optional</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>imagePath</code></td>
+                  <td><code>String</code></td>
+                  <td>Nein</td>
+                  <td>Pfad zur Grafikdatei (z. B. <code>"assets/tilesets/Fire.png"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>config</code></td>
+                  <td><code>FrameConfig</code></td>
+                  <td>Nein</td>
+                  <td>Kachel- und Rastereinstellungen.</td>
+                </tr>
+                <tr>
+                  <td><code>animations</code></td>
+                  <td><code>Array&lt;AnimationClip&gt;</code></td>
+                  <td>Nein</td>
+                  <td>Liste aller definierten Clips.</td>
+                </tr>
+                <tr>
+                  <td><code>defaultAnimation</code></td>
+                  <td><code>String</code></td>
+                  <td>Nein</td>
+                  <td>Name des standardmäßig abzuspielenden Clips.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>3. Compile-Time-Makro (<code>mklib.macro.AnimationBuilder</code>)</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>buildDatabase</code></td>
+                  <td><code>(folderPath:String):Expr</code></td>
+                  <td><code>Expr</code> (Makro)</td>
+                  <td>Liest alle <code>.json</code>-Dateien im Ordner zur Compile-Zeit ein, normalisiert Asset-Pfade und generiert eine <code>Map&lt;String, SpriteSheetData&gt;</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>4. Die <code>AnimationRegistry</code> im Detail</h2>
+          <p>
+            Die Klasse <code>AnimationRegistry</code> (<code>source/AnimationRegistry.hx</code>) dient als <strong>globale Datenbank</strong> für alle Spritesheet-Animationen im Spielprojekt. Durch das Zusammenspiel mit dem Makro <code>AnimationBuilder.buildDatabase</code> werden alle Animationsdefinitionen bereits beim Kompilieren geparst und direkt als typisierter Code eingebettet.
+          </p>
+
+          <div class="callout callout-tip">
+            <span class="callout-icon">💡</span>
+            <div>
+              <strong>Compile-Time Transformation:</strong>
+              Das Makro liest zur Compile-Zeit alle <code>.json</code>-Dateien aus <code>assets/data/animations/</code> ein, wandelt absolute Pfade in relative <code>assets/...</code>-Pfade um und hinterlegt die Daten unter dem Dateinamen (z.&nbsp;B. <code>"Fire"</code> für <code>Fire.json</code>) in der statischen Map <code>AnimationRegistry.db</code>.
+            </div>
+          </div>
+
+          <h2>5. Praxis-Setup & Codebeispiele</h2>
+
+          <h3>1. JSON-Animationsdatei (<code>assets/data/animations/Fire.json</code>)</h3>
+          <p>Definiert Bildquelle, Kachelmaße und beliebig viele Animationsclips:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">JSON</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code>{
+  <span class="hl-str">"imagePath"</span>: <span class="hl-str">"assets/tilesets/Fire.png"</span>,
+  <span class="hl-str">"config"</span>: {
+    <span class="hl-str">"width"</span>: 16,
+    <span class="hl-str">"height"</span>: 16,
+    <span class="hl-str">"spacing"</span>: 0,
+    <span class="hl-str">"margin"</span>: 0
+  },
+  <span class="hl-str">"animations"</span>: [
+    {
+      <span class="hl-str">"name"</span>: <span class="hl-str">"burn"</span>,
+      <span class="hl-str">"fps"</span>: 12,
+      <span class="hl-str">"loop"</span>: <span class="hl-keyword">true</span>,
+      <span class="hl-str">"flipX"</span>: <span class="hl-keyword">false</span>,
+      <span class="hl-str">"flipY"</span>: <span class="hl-keyword">false</span>,
+      <span class="hl-str">"frames"</span>: [0, 1, 2, 3]
+    }
+  ],
+  <span class="hl-str">"defaultAnimation"</span>: <span class="hl-str">"burn"</span>
+}</code></pre>
+          </div>
+
+          <h3>2. Registry-Klasse (<code>source/AnimationRegistry.hx</code>)</h3>
+          <p>Definiert die zentrale Datenbank <code>db</code>, die beim Kompilieren mit allen Animationen befüllt wird:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> mklib.animation.AnimationTypes;
+<span class="hl-keyword">import</span> mklib.macro.AnimationBuilder;
+
+<span class="hl-keyword">@:keep</span>
+<span class="hl-keyword">class</span> <span class="hl-type">AnimationRegistry</span> {
+    <span class="hl-comment">// Liest alle JSON-Dateien aus "assets/data/animations" zur Compile-Zeit ein</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">static</span> <span class="hl-keyword">var</span> db:<span class="hl-type">Map</span>&lt;<span class="hl-type">String</span>, <span class="hl-type">SpriteSheetData</span>&gt; = <span class="hl-type">AnimationBuilder</span>.<span class="hl-func">buildDatabase</span>(<span class="hl-str">"assets/data/animations"</span>);
+}</code></pre>
+          </div>
+
+          <h3>3. LDtk-Workflow: Das Enum <code>Animations</code> (Best Practice)</h3>
+          <p>
+            Um Tippfehler zu vermeiden und im Level-Editor ein komfortables Dropdown-Menü bereitzustellen, empfiehlt sich in LDtk die Verwendung eines Enums:
+          </p>
+          <ol style="margin-left: 1.25rem; margin-bottom: 1.25rem;">
+            <li><strong>Enum anlegen:</strong> Erstelle in LDtk unter <em>Project Settings &rarr; Enums</em> ein Enum namens <code>Animations</code> mit den Namen der Animationsdateien (z.&nbsp;B. <code>Fire</code>, <code>Hero</code>, <code>Platform</code>).</li>
+            <li><strong>Entity-Feld definieren:</strong> Füge der gewünschten Entity-Definition ein Feld namens <code>Animations</code> vom Typ <code>Enum.Animations</code> hinzu.</li>
+            <li><strong>Level platzieren:</strong> Wähle beim Platzieren der Entity im Level-Editor einfach die gewünschte Animation aus dem Dropdown-Menü aus.</li>
+          </ol>
+
+          <div class="callout callout-info">
+            <span class="callout-icon">ℹ️</span>
+            <div>
+              <strong>Automatische Bindung:</strong> <code>EntitySprite</code> und <code>EntityNapeSprite</code> prüfen im Basis-Konstruktor automatisch mit <code>hasField("Animations")</code>, lesen den gewählten Enum-Wert als String aus (z.&nbsp;B. <code>"Fire"</code>) und laden die Grafik sowie Clips direkt aus <code>AnimationRegistry.db</code>.
+            </div>
+          </div>
+
+          <h3>4. Entity-Klasse im Code (<code>source/entities/Fire.hx</code>)</h3>
+          <p>
+            Durch das gesetzte LDtk-Feld <code>Animations</code> ist im Code keinerlei manuelle Animationsinitialisierung nötig:
+          </p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span> entities;
+ 
+<span class="hl-keyword">import</span> mklib.entity.EntitySprite;
+<span class="hl-keyword">import</span> ldtk.Entity;
+ 
+<span class="hl-keyword">@:keep</span>
+<span class="hl-keyword">class</span> <span class="hl-type">Fire</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntitySprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:ldtk.<span class="hl-type">Entity</span>) {
+        <span class="hl-comment">// super(entity) liest getField("Animations") ("Fire") </span>
+        <span class="hl-comment">// und lädt Grafik + Clips vollautomatisch aus AnimationRegistry.db!</span>
+        <span class="hl-keyword">super</span>(entity);
+    }
+}</code></pre>
+          </div>
+
+          <h3>5. Manuelles Laden & Wechseln auf Entities</h3>
+          <p>Animationen können jederzeit auch manuell über den Schlüssel zugewiesen oder gewechselt werden:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-comment">// Lädt nachträglich oder wechselt das Animationsset auf "Fire":</span>
+myEntity.<span class="hl-func">initAnimation</span>(<span class="hl-str">"Fire"</span>);
+
+<span class="hl-comment">// Manueller Wechsel des aktuellen Animationsclips:</span>
+myEntity.animation.<span class="hl-func">play</span>(<span class="hl-str">"burn"</span>);</code></pre>
+          </div>
+
+          <h3>5. Direkter Zugriff auf die Rohdaten</h3>
+          <p>Für eigene Sprites oder Flixel-Objekte kann direkt auf die typisierte Map zugegriffen werden:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> AnimationRegistry;
+
+<span class="hl-keyword">var</span> fireData = <span class="hl-type">AnimationRegistry</span>.db.<span class="hl-func">get</span>(<span class="hl-str">"Fire"</span>);
+<span class="hl-keyword">if</span> (fireData != <span class="hl-keyword">null</span>) {
+    trace(<span class="hl-str">"Grafikpfad: "</span> + fireData.imagePath);          <span class="hl-comment">// "assets/tilesets/Fire.png"</span>
+    trace(<span class="hl-str">"Frame-Breite: "</span> + fireData.config.width);     <span class="hl-comment">// 16</span>
+    trace(<span class="hl-str">"Default: "</span> + fireData.defaultAnimation);      <span class="hl-comment">// "burn"</span>
+}</code></pre>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="save.html" class="nav-page-btn">← Save & Persistence</a>
+            <a href="physics.html" class="nav-page-btn">Physik & Sensoren →</a>
+          </div>
+        </div>
+        <div data-lang="en">
+<h1>🎬 Animation System & Macros (<code>mklib.animation.*</code> & <code>mklib.macro.*</code>)</h1>
+          <p class="section-desc">Automatisiertes Compile-Time-Laden von JSON-Spritesheet-Animationen ohne Laufzeit-Overhead.</p>
+
+          <h2>1. Overview & Architecture</h2>
+          <p>
+            Das Animationssystem von <code>mklib</code> besteht aus typsicheren Datenstrukturen (<code>AnimationTypes</code>), einem Compile-Time-Makro (<code>AnimationBuilder</code>) und einer zentralen Datenbank (<code>AnimationRegistry</code>).
+          </p>
+          <div class="feature-grid" style="margin: 1.5rem 0;">
+            <div class="feature-card">
+              <div class="feature-icon">📁</div>
+              <h3>JSON Definitions</h3>
+              <p>Clips, Frameraten und Rastermaße werden als übersichtliche <code>.json</code>-Dateien in <code>assets/data/animations/</code> abgelegt.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>Compile-Time Macro</h3>
+              <p><code>AnimationBuilder.buildDatabase()</code> liest alle JSONs beim Kompilieren ein, normalisiert Pfade und erzeugt ein getyptes Map-Literal.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🚀</div>
+              <h3>Zero Runtime Cost</h3>
+              <p>Kein JSON-Parsing zur Laufzeit. Entities greifen direkt auf die typisierte <code>AnimationRegistry.db</code> zu.</p>
+            </div>
+          </div>
+
+          <h2>2. Data Structures (<code>mklib.animation.AnimationTypes</code>)</h2>
+          
+          <h3><code>FrameConfig</code></h3>
+          <p>Konfiguriert Kachelabmessungen und Abstände auf dem Spritesheet.</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Optional</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>width</code></td>
+                  <td><code>Int</code></td>
+                  <td>Nein</td>
+                  <td>Width of a single frame in pixels.</td>
+                </tr>
+                <tr>
+                  <td><code>height</code></td>
+                  <td><code>Int</code></td>
+                  <td>Nein</td>
+                  <td>Height of a single frame in pixels.</td>
+                </tr>
+                <tr>
+                  <td><code>spacing</code></td>
+                  <td><code>Null&lt;Int&gt;</code></td>
+                  <td>Ja</td>
+                  <td>Abstand zwischen Frames in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>margin</code></td>
+                  <td><code>Null&lt;Int&gt;</code></td>
+                  <td>Ja</td>
+                  <td>Äußerer Rand des Spritesheets in Pixeln.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3><code>AnimationClip</code></h3>
+          <p>Definiert einen Animationsabschnitt mit Bildfolge, Geschwindigkeit und Wiederholung.</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Optional</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>name</code></td>
+                  <td><code>String</code></td>
+                  <td>Nein</td>
+                  <td>Name des Clips (z. B. <code>"burn"</code>, <code>"walk"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>fps</code></td>
+                  <td><code>Int</code></td>
+                  <td>Nein</td>
+                  <td>Abspielgeschwindigkeit (Frames pro Sekunde).</td>
+                </tr>
+                <tr>
+                  <td><code>loop</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Nein</td>
+                  <td>Endlosschleife aktivieren (<code>true</code>/<code>false</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>flipX</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Nein</td>
+                  <td>Horizontale Spiegelung der Frames.</td>
+                </tr>
+                <tr>
+                  <td><code>flipY</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Nein</td>
+                  <td>Vertikale Spiegelung der Frames.</td>
+                </tr>
+                <tr>
+                  <td><code>frames</code></td>
+                  <td><code>Array&lt;Int&gt;</code></td>
+                  <td>Nein</td>
+                  <td>Liste der Frame-Indizes (z. B. <code>[0, 1, 2, 3]</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3><code>SpriteSheetData</code></h3>
+          <p>Vollständiger Datensatz für ein animiertes Spritesheet.</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Optional</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>imagePath</code></td>
+                  <td><code>String</code></td>
+                  <td>Nein</td>
+                  <td>Pfad zur Grafikdatei (z. B. <code>"assets/tilesets/Fire.png"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>config</code></td>
+                  <td><code>FrameConfig</code></td>
+                  <td>Nein</td>
+                  <td>Kachel- und Rastereinstellungen.</td>
+                </tr>
+                <tr>
+                  <td><code>animations</code></td>
+                  <td><code>Array&lt;AnimationClip&gt;</code></td>
+                  <td>Nein</td>
+                  <td>Liste aller definierten Clips.</td>
+                </tr>
+                <tr>
+                  <td><code>defaultAnimation</code></td>
+                  <td><code>String</code></td>
+                  <td>Nein</td>
+                  <td>Name des standardmäßig abzuspielenden Clips.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>3. Compile-Time Macro (<code>mklib.macro.AnimationBuilder</code>)</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>buildDatabase</code></td>
+                  <td><code>(folderPath:String):Expr</code></td>
+                  <td><code>Expr</code> (Makro)</td>
+                  <td>Liest alle <code>.json</code>-Dateien im Ordner zur Compile-Zeit ein, normalisiert Asset-Pfade und generiert eine <code>Map&lt;String, SpriteSheetData&gt;</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>4. The <code>AnimationRegistry</code> in Detail</h2>
+          <p>
+            Die Klasse <code>AnimationRegistry</code> (<code>source/AnimationRegistry.hx</code>) dient als <strong>globale Datenbank</strong> für alle Spritesheet-Animationen im Spielprojekt. Durch das Zusammenspiel mit dem Makro <code>AnimationBuilder.buildDatabase</code> werden alle Animationsdefinitionen bereits beim Kompilieren geparst und direkt als typisierter Code eingebettet.
+          </p>
+
+          <div class="callout callout-tip">
+            <span class="callout-icon">💡</span>
+            <div>
+              <strong>Compile-Time Transformation:</strong>
+              Das Makro liest zur Compile-Zeit alle <code>.json</code>-Dateien aus <code>assets/data/animations/</code> ein, wandelt absolute Pfade in relative <code>assets/...</code>-Pfade um und hinterlegt die Daten unter dem Dateinamen (z.&nbsp;B. <code>"Fire"</code> für <code>Fire.json</code>) in der statischen Map <code>AnimationRegistry.db</code>.
+            </div>
+          </div>
+
+          <h2>5. Real-World Setup & Code Examples</h2>
+
+          <h3>1. JSON Animation File (<code>assets/data/animations/Fire.json</code>)</h3>
+          <p>Definiert Bildquelle, Kachelmaße und beliebig viele Animationsclips:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">JSON</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code>{
+  <span class="hl-str">"imagePath"</span>: <span class="hl-str">"assets/tilesets/Fire.png"</span>,
+  <span class="hl-str">"config"</span>: {
+    <span class="hl-str">"width"</span>: 16,
+    <span class="hl-str">"height"</span>: 16,
+    <span class="hl-str">"spacing"</span>: 0,
+    <span class="hl-str">"margin"</span>: 0
+  },
+  <span class="hl-str">"animations"</span>: [
+    {
+      <span class="hl-str">"name"</span>: <span class="hl-str">"burn"</span>,
+      <span class="hl-str">"fps"</span>: 12,
+      <span class="hl-str">"loop"</span>: <span class="hl-keyword">true</span>,
+      <span class="hl-str">"flipX"</span>: <span class="hl-keyword">false</span>,
+      <span class="hl-str">"flipY"</span>: <span class="hl-keyword">false</span>,
+      <span class="hl-str">"frames"</span>: [0, 1, 2, 3]
+    }
+  ],
+  <span class="hl-str">"defaultAnimation"</span>: <span class="hl-str">"burn"</span>
+}</code></pre>
+          </div>
+
+          <h3>2. Registry Class (<code>source/AnimationRegistry.hx</code>)</h3>
+          <p>Definiert die zentrale Datenbank <code>db</code>, die beim Kompilieren mit allen Animationen befüllt wird:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> mklib.animation.AnimationTypes;
+<span class="hl-keyword">import</span> mklib.macro.AnimationBuilder;
+
+<span class="hl-keyword">@:keep</span>
+<span class="hl-keyword">class</span> <span class="hl-type">AnimationRegistry</span> {
+    <span class="hl-comment">// Liest alle JSON-Dateien aus "assets/data/animations" zur Compile-Zeit ein</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">static</span> <span class="hl-keyword">var</span> db:<span class="hl-type">Map</span>&lt;<span class="hl-type">String</span>, <span class="hl-type">SpriteSheetData</span>&gt; = <span class="hl-type">AnimationBuilder</span>.<span class="hl-func">buildDatabase</span>(<span class="hl-str">"assets/data/animations"</span>);
+}</code></pre>
+          </div>
+
+          <h3>3. LDtk Workflow: The <code>Animations</code> Enum (Best Practice)</h3>
+          <p>
+            Um Tippfehler zu vermeiden und im Level-Editor ein komfortables Dropdown-Menü bereitzustellen, empfiehlt sich in LDtk die Verwendung eines Enums:
+          </p>
+          <ol style="margin-left: 1.25rem; margin-bottom: 1.25rem;">
+            <li><strong>Enum anlegen:</strong> Erstelle in LDtk unter <em>Project Settings &rarr; Enums</em> ein Enum namens <code>Animations</code> mit den Namen der Animationsdateien (z.&nbsp;B. <code>Fire</code>, <code>Hero</code>, <code>Platform</code>).</li>
+            <li><strong>Entity-Feld definieren:</strong> Füge der gewünschten Entity-Definition ein Feld namens <code>Animations</code> vom Typ <code>Enum.Animations</code> hinzu.</li>
+            <li><strong>Level platzieren:</strong> Wähle beim Platzieren der Entity im Level-Editor einfach die gewünschte Animation aus dem Dropdown-Menü aus.</li>
+          </ol>
+
+          <div class="callout callout-info">
+            <span class="callout-icon">ℹ️</span>
+            <div>
+              <strong>Automatische Bindung:</strong> <code>EntitySprite</code> und <code>EntityNapeSprite</code> prüfen im Basis-Konstruktor automatisch mit <code>hasField("Animations")</code>, lesen den gewählten Enum-Wert als String aus (z.&nbsp;B. <code>"Fire"</code>) und laden die Grafik sowie Clips direkt aus <code>AnimationRegistry.db</code>.
+            </div>
+          </div>
+
+          <h3>4. Entity Class in Code (<code>source/entities/Fire.hx</code>)</h3>
+          <p>
+            Durch das gesetzte LDtk-Feld <code>Animations</code> ist im Code keinerlei manuelle Animationsinitialisierung nötig:
+          </p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span> entities;
+ 
+<span class="hl-keyword">import</span> mklib.entity.EntitySprite;
+<span class="hl-keyword">import</span> ldtk.Entity;
+ 
+<span class="hl-keyword">@:keep</span>
+<span class="hl-keyword">class</span> <span class="hl-type">Fire</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntitySprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:ldtk.<span class="hl-type">Entity</span>) {
+        <span class="hl-comment">// super(entity) liest getField("Animations") ("Fire") </span>
+        <span class="hl-comment">// und lädt Grafik + Clips vollautomatisch aus AnimationRegistry.db!</span>
+        <span class="hl-keyword">super</span>(entity);
+    }
+}</code></pre>
+          </div>
+
+          <h3>5. Manual Loading & Switching on Entities</h3>
+          <p>Animationen können jederzeit auch manuell über den Schlüssel zugewiesen oder gewechselt werden:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-comment">// Lädt nachträglich oder wechselt das Animationsset auf "Fire":</span>
+myEntity.<span class="hl-func">initAnimation</span>(<span class="hl-str">"Fire"</span>);
+
+<span class="hl-comment">// Manueller Wechsel des aktuellen Animationsclips:</span>
+myEntity.animation.<span class="hl-func">play</span>(<span class="hl-str">"burn"</span>);</code></pre>
+          </div>
+
+          <h3>6. Direct Access to Raw Animation Data</h3>
+          <p>Für eigene Sprites oder Flixel-Objekte kann direkt auf die typisierte Map zugegriffen werden:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> AnimationRegistry;
+
+<span class="hl-keyword">var</span> fireData = <span class="hl-type">AnimationRegistry</span>.db.<span class="hl-func">get</span>(<span class="hl-str">"Fire"</span>);
+<span class="hl-keyword">if</span> (fireData != <span class="hl-keyword">null</span>) {
+    trace(<span class="hl-str">"Grafikpfad: "</span> + fireData.imagePath);          <span class="hl-comment">// "assets/tilesets/Fire.png"</span>
+    trace(<span class="hl-str">"Frame-Breite: "</span> + fireData.config.width);     <span class="hl-comment">// 16</span>
+    trace(<span class="hl-str">"Default: "</span> + fireData.defaultAnimation);      <span class="hl-comment">// "burn"</span>
+}</code></pre>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="save.html" class="nav-page-btn">← Save & Persistence</a>
+            <a href="physics.html" class="nav-page-btn">Physik & Sensoren →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

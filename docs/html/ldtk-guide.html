@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LDtk Guide & Felder — mklib Dokumentation</title>
+  <meta name="description" content="Lückenlose Dokumentation und API-Referenz für mklib — Jede Klasse, Methode und Eigenschaft für HaxeFlixel, LDtk und Nape 2D.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Glow Backgrounds -->
+  <div class="bg-decorations">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="icon-btn mobile-menu-btn" aria-label="Menü öffnen">☰</button>
+      <a href="index.html" class="logo-group">
+        <div class="logo-badge">mk</div>
+        <div>
+          <span class="logo-title">mklib</span>
+          <span class="logo-version">v1.0.1</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Search Input -->
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="docs-search" class="search-input" placeholder="Klasse, Methode oder Feld suchen..." data-de="Klasse, Methode oder Feld suchen..." data-en="Search class, method, or field..." autocomplete="off">
+    </div>
+
+    <!-- Header Actions (Language Switcher & Theme Toggle & GitHub) -->
+    <div class="header-actions">
+      <!-- Language Switcher -->
+      <div class="lang-switch-group">
+        <button class="lang-btn active" data-set-lang="de" title="Deutsch">DE</button>
+        <button class="lang-btn" data-set-lang="en" title="English">EN</button>
+      </div>
+
+      <button id="theme-toggle" class="icon-btn" title="Thema wechseln">☀️</button>
+      <a href="https://github.com/markuskahl/mklib" target="_blank" rel="noopener noreferrer" class="github-link">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- App Layout Container -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div>
+          <div class="nav-section-title" data-de="Einführung" data-en="Introduction">Einführung</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="index.html"><span class="nav-icon">📖</span> <span data-de="Übersicht & API-Matrix" data-en="Overview & API Matrix">Übersicht & API-Matrix</span></a></li>
+            <li class="nav-item"><a href="getting-started.html"><span class="nav-icon">🚀</span> <span data-de="Schnellstart" data-en="Quick Start">Schnellstart</span></a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-section-title" data-de="Kern-Module & Klassen" data-en="Core Modules & Classes">Kern-Module & Klassen</div>
+          <ul class="nav-list">
+            <li class="nav-item active"><a href="ldtk-guide.html"><span class="nav-icon">🗺️</span> <span data-de="LDtk Guide & Felder" data-en="LDtk Guide & Fields">LDtk Guide & Felder</span></a></li>
+            <li class="nav-item"><a href="state.html"><span class="nav-icon">🎮</span> <span data-de="State Management" data-en="State Management">State Management</span></a></li>
+            <li class="nav-item"><a href="layers.html"><span class="nav-icon">🗺️</span> <span data-de="Layer System" data-en="Layer System">Layer System</span></a></li>
+            <li class="nav-item"><a href="entities.html"><span class="nav-icon">👾</span> <span data-de="Entities & Sprites" data-en="Entities & Sprites">Entities & Sprites</span></a></li>
+            <li class="nav-item"><a href="save.html"><span class="nav-icon">💾</span> <span data-de="Save & Persistence" data-en="Save & Persistence">Save & Persistence</span></a></li>
+            <li class="nav-item"><a href="animation.html"><span class="nav-icon">🎬</span> <span data-de="Animationen & Makros" data-en="Animations & Macros">Animationen & Makros</span></a></li>
+            <li class="nav-item"><a href="physics.html"><span class="nav-icon">⚡</span> <span data-de="Physik & Sensoren" data-en="Physics & Sensors">Physik & Sensoren</span></a></li>
+            <li class="nav-item"><a href="pathfinding.html"><span class="nav-icon">🧭</span> <span data-de="Pathfinding & A*" data-en="Pathfinding & A*">Pathfinding & A*</span></a></li>
+            <li class="nav-item"><a href="lighting.html"><span class="nav-icon">💡</span> <span data-de="GPU Lighting System" data-en="GPU Lighting System">GPU Lighting System</span></a></li>
+            <li class="nav-item"><a href="effects.html"><span class="nav-icon">🎨</span> <span data-de="Shader & Effekte" data-en="Shaders & Effects">Shader & Effekte</span></a></li>
+            <li class="nav-item"><a href="tools-math.html"><span class="nav-icon">📐</span> <span data-de="Tools & Mathematik" data-en="Tools & Mathematics">Tools & Mathematik</span></a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Section: ldtk-guide -->
+<section id="ldtk-guide" class="doc-section active">
+        <div data-lang="de">
+          <h1>🗺️ LDtk Level-Editor Guide & Property-Referenz</h1>
+          <p class="section-desc">
+            Ausführliche Anleitung und vollständige Referenz aller <strong>Felder (Custom Fields)</strong>, <strong>Enums</strong>, <strong>Layer-Typen</strong> und <strong>Lichteigenschaften</strong> im LDtk-Editor und deren automatische Verarbeitung in <strong>mklib</strong>.
+          </p>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">🏷️</div>
+              <h3>Enum &bdquo;Tags&ldquo;</h3>
+              <p>Wird beim State-Start automatisch in Nape-<code>CbType</code>s konvertiert und &uuml;ber <code>Tags.get("...")</code> bereitgestellt.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🖼️</div>
+              <h3>TileRect Single Value</h3>
+              <p>Schneidet Kacheln pixelgenau aus dem Tileset zu und erzeugt automatisch feste <code>STATIC</code>-Nape-K&ouml;rper.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>Sensor- &amp; Bewegungs-Flags</h3>
+              <p><code>sensor: true</code> und <code>allowMovement</code> steuern Kollisions-Trigger und physikalische Tr&auml;gheit ohne Code.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">💡</div>
+              <h3>GPU-Lighting Integration</h3>
+              <p>Lichtquellen (Point, Spot, Torch, Glow) werden direkt aus LDtk-Entity-Feldern mit Radius, Farbe und Flackern erzeugt.</p>
+            </div>
+          </div>
+
+          <h2>1. 🏛️ Architektur &amp; Workflow</h2>
+          <p>
+            In <strong>mklib</strong> sind alle Leveldaten deklarativ im LDtk Level-Editor aufgebaut. Das offizielle Haxe LDtk-Makro (<code>Data.hx</code>) liest die Projektdatei zur Compile-Zeit aus und generiert typsichere Strukturen. Zur Laufzeit &uuml;bernimmt <code>mklib</code> die vollautomatische Instanziierung:
+          </p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe Workflow</span>
+            </div>
+            <pre><code><span class="hl-keyword">class</span> <span class="hl-type">PlayState</span> <span class="hl-keyword">extends</span> <span class="hl-type">State</span>&lt;Data.Data_Level&gt; {
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">create</span>():<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.create();
+
+        <span class="hl-comment">// 1. Initialisiert Nape &amp; erzeugt CbTypes aus dem LDtk-Enum "Tags"</span>
+        napeInit(<span class="hl-num">0</span>, <span class="hl-num">0</span>);
+
+        <span class="hl-comment">// 2. Rendert Kachelebenen (Tiles / AutoLayer)</span>
+        add(<span class="hl-keyword">new</span> <span class="hl-type">TileLayer</span>(data.l_Tiles.identifier));
+        add(<span class="hl-keyword">new</span> <span class="hl-type">TileLayer</span>(data.l_Props.identifier));
+
+        <span class="hl-comment">// 3. Instanziiert alle Entities (sucht Klassen in "entities.*")</span>
+        add(<span class="hl-keyword">new</span> <span class="hl-type">EntityLayer</span>(data.l_Entities));
+        add(<span class="hl-keyword">new</span> <span class="hl-type">EntityLayer</span>(data.l_HeroLayer));
+
+        <span class="hl-comment">// 4. Erzeugt A* Navigationsraster aus IntGrid und Kacheln</span>
+        <span class="hl-keyword">var</span> navGrid = <span class="hl-type">NavGridBuilder</span>.autoBuild(data);
+
+        <span class="hl-comment">// 5. L&auml;dt GPU-Lichter (Point, Spot, Torch, Glow) aus LDtk-Entities</span>
+        <span class="hl-keyword">var</span> lighting = <span class="hl-keyword">new</span> <span class="hl-type">LightingSystem</span>(<span class="hl-num">0xFF101018</span>, <span class="hl-num">1.5</span>);
+        lighting.loadFromLevel(data);
+        add(lighting);
+    }
+}</code></pre>
+          </div>
+
+          <h2>2. 🏷️ Projektweites Enum: <code>Tags</code></h2>
+          <p>
+            Das Enum <code>Tags</code> ist das fundamentale Bindeglied zwischen LDtk-Objekten und dem <strong>Nape 2D Physik-Kollisionssystem</strong>.
+          </p>
+
+          <div class="callout callout-info">
+            <div class="callout-icon">ℹ️</div>
+            <div>
+              <strong>Wo anlegen:</strong> Klicke in LDtk auf <strong>Project Settings</strong> (Zahnrad oben links) &rarr; <strong>Enums</strong> &rarr; Neues Enum mit dem Namen <code>Tags</code> <em>(Gro&szlig;schreibung beachten!)</em>.
+            </div>
+          </div>
+
+          <h3>Empfohlene Enum-Werte in LDtk:</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Enum-Wert</th>
+                  <th>Typischer Zweck</th>
+                  <th>Nape CbType Abfrage im Code</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Hero</code> / <code>Player</code></td>
+                  <td>Hauptfigur / steuerbarer Charakter</td>
+                  <td><code>Tags.get("Hero")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Solid</code> / <code>Obstacle</code></td>
+                  <td>Feste W&auml;nde, B&ouml;den, unzerst&ouml;rbare Hindernisse</td>
+                  <td><code>Tags.get("Solid")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Platform</code></td>
+                  <td>Bewegliche oder statische Plattformen</td>
+                  <td><code>Tags.get("Platform")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Enemy</code></td>
+                  <td>Gegner und aggressive NPCs</td>
+                  <td><code>Tags.get("Enemy")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Coin</code> / <code>Gem</code></td>
+                  <td>Aufsammelbare Items / Punkte</td>
+                  <td><code>Tags.get("Coin")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Checkpoint</code></td>
+                  <td>Speicherpunkte / Respawn-Zonen</td>
+                  <td><code>Tags.get("Checkpoint")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Door</code> / <code>Portal</code></td>
+                  <td>Level-&Uuml;berg&auml;nge und T&uuml;ren</td>
+                  <td><code>Tags.get("Door")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Hazard</code> / <code>Spikes</code></td>
+                  <td>T&ouml;dliche Fallen, Stacheln, Lava</td>
+                  <td><code>Tags.get("Hazard")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Water</code></td>
+                  <td>Wasserzonen / Schwimmbereiche / Shader-Ebenen</td>
+                  <td><code>Tags.get("Water")</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Kollisions- und Sensor-Callbacks werden anschlie&szlig;end mit <code>Listener</code> gebunden:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Callback Binding</span>
+            </div>
+            <pre><code><span class="hl-comment">// Feste Kollision zwischen Spieler und Wand</span>
+<span class="hl-type">Listener</span>.addCollisionBeginListener(<span class="hl-type">Tags</span>.get(<span class="hl-string">"Hero"</span>), <span class="hl-type">Tags</span>.get(<span class="hl-string">"Solid"</span>), onHeroHitWall);
+
+<span class="hl-comment">// Sensor-&Uuml;berlappung beim Einsammeln von M&uuml;nzen</span>
+<span class="hl-type">Listener</span>.addSensorBeginListener(<span class="hl-type">Tags</span>.get(<span class="hl-string">"Hero"</span>), <span class="hl-type">Tags</span>.get(<span class="hl-string">"Coin"</span>), onHeroCollectCoin);</code></pre>
+          </div>
+
+          <h2>3. 🗺️ Layer-Typen in LDtk</h2>
+          <p>In LDtk k&ouml;nnen drei Layer-Kategorien definiert werden, die von <code>mklib</code> unterschiedlich verarbeitet werden:</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>LDtk Layer-Typ</th>
+                  <th>Empfohlene Namen</th>
+                  <th>mklib Klasse</th>
+                  <th>Funktionsweise &amp; Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Tiles / AutoLayer</strong></td>
+                  <td><code>Tiles</code>, <code>Background</code>, <code>Props</code>, <code>Foreground</code></td>
+                  <td><code>mklib.layer.TileLayer</code></td>
+                  <td>Rendert Kacheln &uuml;ber die native LDtk-Render-Pipeline in eine FlxSpriteGroup. Unterst&uuml;tzt Auto-Tiling und mehrere Kachelebenen.</td>
+                </tr>
+                <tr>
+                  <td><strong>Entities</strong></td>
+                  <td><code>Entities</code>, <code>HeroLayer</code>, <code>Interactive</code></td>
+                  <td><code>mklib.layer.EntityLayer</code></td>
+                  <td>Durchsucht das Package <code>entities.*</code> nach passenden Klassennamen (z. B. Entity <code>Hero</code> &rarr; <code>entities.Hero</code>). Erzeugt automatisch <code>EntityNapeSprite</code> (bei Physikfeldern) oder <code>EntitySprite</code> (visuell). Pr&uuml;ft automatisch <code>SaveManager</code> auf zerst&ouml;rte Objekte.</td>
+                </tr>
+                <tr>
+                  <td><strong>IntGrid</strong></td>
+                  <td><code>Collisions</code>, <code>Walls</code>, <code>NavGrid</code></td>
+                  <td><code>mklib.path.NavGridBuilder</code></td>
+                  <td>Generiert das 2D-Raster f&uuml;r die A*-Pfadfindung. Werte <code>!= 0</code> werden als unpassierbare Rasterzellen markiert.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>4. 📋 Vollst&auml;ndige Entity-Feld-Referenz (Custom Fields)</h2>
+          <p>
+            Folgende benutzerdefinierten Felder kannst du in LDtk unter <strong>Project Settings &rarr; Entities &rarr; (Entity w&auml;hlen) &rarr; Fields</strong> anlegen:
+          </p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Feldname (Identifier)</th>
+                  <th>LDtk Feldtyp</th>
+                  <th>Unterst&uuml;tzt von</th>
+                  <th>Standardwert</th>
+                  <th>Effekt in mklib</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong><code>Tag</code></strong></td>
+                  <td><code>Enum (Tags)</code> oder <code>String</code></td>
+                  <td><code>EntityNapeSprite</code>, <code>EntityLayer</code></td>
+                  <td><code>null</code></td>
+                  <td>Weist dem Nape-Physikk&ouml;rper der Entity den entsprechenden <code>CbType</code> aus dem Enum <code>Tags</code> zu. L&ouml;st automatische Instanziierung als <code>EntityNapeSprite</code> aus.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>Tags</code></strong></td>
+                  <td><code>Array&lt;Enum (Tags)&gt;</code> oder <code>Array&lt;String&gt;</code></td>
+                  <td><code>EntityNapeSprite</code>, <code>EntityLayer</code></td>
+                  <td><code>null</code></td>
+                  <td>Weist dem Nape-K&ouml;rper mehrere <code>CbType</code>s gleichzeitig zu (z. B. <code>["Solid", "Platform"]</code>).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>TileRect</code></strong> / <code>tileRect</code></td>
+                  <td><code>Tile (Single value)</code></td>
+                  <td><code>EntitySprite</code>, <code>EntityNapeSprite</code>, <code>EntityLayer</code></td>
+                  <td><code>null</code></td>
+                  <td>Schneidet die im Level ausgew&auml;hlte Kachel (X, Y, W, H) pixelgenau aus dem Tileset zu, passt die Sprite-Ma&szlig;e an und erzeugt bei <code>EntityNapeSprite</code> automatisch einen festen <code>STATIC</code>-Nape-K&ouml;rper.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>sensor</code></strong> / <code>sensorEnabled</code></td>
+                  <td><code>Boolean</code></td>
+                  <td><code>EntityNapeSprite</code>, <code>EntityLayer</code></td>
+                  <td><code>false</code></td>
+                  <td>Schaltet alle Shapes des Nape-K&ouml;rpers auf <strong>Sensor</strong> (<code>shape.sensorEnabled = true</code>). Erkennt Kollisionen/&Uuml;berlappungen in Listenern, ohne physisch abzuprallen oder zu blockieren (z. B. f&uuml;r M&uuml;nzen, Trigger, Checkpoints).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>allowMovement</code></strong></td>
+                  <td><code>Boolean</code></td>
+                  <td><code>EntityNapeSprite</code>, <code>EntityLayer</code></td>
+                  <td><code>true</code></td>
+                  <td>Steuert <code>body.allowMovement</code>. Verhindert Translation/Verschiebung durch Nape-Kr&auml;fte, wenn auf <code>false</code> gesetzt.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>Animations</code></strong> / <code>animations</code></td>
+                  <td><code>String</code></td>
+                  <td><code>EntitySprite</code>, <code>EntityNapeSprite</code></td>
+                  <td><code>null</code></td>
+                  <td>Name des Animations-Schl&uuml;ssels in <code>AnimationRegistry.db</code> (z. B. <code>"Fire"</code>, <code>"Hero"</code>). L&auml;dt das Spritesheet, registriert alle Clips und startet die Standardanimation.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>visible</code></strong></td>
+                  <td><code>Boolean</code></td>
+                  <td><code>EntitySprite</code>, <code>EntityNapeSprite</code></td>
+                  <td><code>true</code></td>
+                  <td>Steuert die Sichtbarkeit des Sprites (<code>sprite.visible</code>) beim Spawnen.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>alpha</code></strong></td>
+                  <td><code>Float</code> (0.0 bis 1.0)</td>
+                  <td><code>EntitySprite</code>, <code>EntityNapeSprite</code></td>
+                  <td><code>1.0</code></td>
+                  <td>Steuert die Deckkraft / Transparenz (<code>sprite.alpha</code>) des Sprites.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>iid</code></strong></td>
+                  <td><code>String</code> <em>(LDtk intern)</em></td>
+                  <td><code>SaveManager</code>, alle Entities</td>
+                  <td>Eindeutige UUID</td>
+                  <td>Weltweit eindeutige Instanz-ID aus LDtk. Wird von <code>SaveManager.markEntityDestroyed(iid)</code> genutzt, um zerst&ouml;rte/aufgesammelte Objekte dauerhaft im Spielstand zu merken.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>5. 💡 GPU-Lighting System Felder</h2>
+          <p>
+            Das hardwarebeschleunigte GPU-Shader-Beleuchtungssystem (<code>LightingSystem</code>) parst LDtk-Entities vollautomatisch, wenn <code>lighting.loadFromLevel(data)</code> aufgerufen wird:
+          </p>
+          <ul>
+            <li>Entities, deren Name <code>light</code>, <code>torch</code>, <code>lamp</code>, <code>candle</code>, <code>glow</code> oder <code>spot</code> enth&auml;lt.</li>
+            <li>Entities mit einem Feld <code>type</code>, <code>light_type</code> oder <code>radius</code>.</li>
+          </ul>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Feldname (Identifier)</th>
+                  <th>Aliasse / Varianten</th>
+                  <th>LDtk Feldtyp</th>
+                  <th>Standardwert</th>
+                  <th>Beschreibung &amp; Funktion</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong><code>type</code></strong></td>
+                  <td><code>light_type</code>, <code>lightType</code></td>
+                  <td><code>String</code> oder <code>Enum</code></td>
+                  <td><code>"point"</code> (oder aus Entity-Name)</td>
+                  <td>Lichttyp: <code>"point"</code>, <code>"spot"</code>, <code>"torch"</code>, <code>"glow"</code>, <code>"directional"</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>radius</code></strong></td>
+                  <td><code>light_radius</code>, <code>Radius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>100.0</code> px</td>
+                  <td>Reichweite / Radius der Lichtquelle in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>intensity</code></strong></td>
+                  <td><code>light_intensity</code>, <code>Intensity</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>1.0</code></td>
+                  <td>Helligkeits-Multiplikator des Lichts (0.0 bis 5.0+).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>falloff</code></strong></td>
+                  <td><code>light_falloff</code>, <code>Falloff</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>1.0</code></td>
+                  <td>Exponent der Lichtabschw&auml;chung nach au&szlig;en (1.0 = linear, 2.0 = quadratisch).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>color</code></strong></td>
+                  <td><code>light_color</code>, <code>Color</code></td>
+                  <td><code>Color</code> oder <code>String</code> (<code>#RRGGBB</code>)</td>
+                  <td>Torch: <code>#FFAA44</code><br>Glow: <code>#55AAFF</code><br>Sonst: <code>#FFFFFF</code></td>
+                  <td>Lichtfarbe und T&ouml;nung. Unterst&uuml;tzt den LDtk-Farbausw&auml;hler oder Hex-Strings.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>active</code></strong></td>
+                  <td><code>enabled</code>, <code>light_active</code></td>
+                  <td><code>Boolean</code></td>
+                  <td><code>true</code></td>
+                  <td>Schaltet das Licht beim Levelstart ein (<code>true</code>) oder aus (<code>false</code>).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>offsetX</code></strong> / <strong><code>offsetY</code></strong></td>
+                  <td><code>offset_x</code>, <code>offset_y</code>, <code>pivotX</code>, <code>pivotY</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>width * 0.5</code>, <code>height * 0.5</code></td>
+                  <td>Relativer Versatz des Lichtursprungs bezogen auf die Entity-Position.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>angle</code></strong></td>
+                  <td><code>direction</code>, <code>light_angle</code>, <code>Angle</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.0</code>&deg;</td>
+                  <td>Abstrahlwinkel in Grad (f&uuml;r SpotLight und DirectionalLight). 0&deg; = Rechts, 90&deg; = Unten, 180&deg; = Links, 270&deg; = Oben.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>spotAngle</code></strong></td>
+                  <td><code>cone</code>, <code>coneAngle</code>, <code>light_spotAngle</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>45.0</code>&deg;</td>
+                  <td>&Auml;u&szlig;erer &Ouml;ffnungswinkel des Scheinwerfer-Kegels bei <code>SpotLight</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>innerAngle</code></strong></td>
+                  <td><code>focusAngle</code>, <code>light_innerAngle</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>15.0</code>&deg;</td>
+                  <td>Innerer Fokuswinkel mit 100% voller Helligkeit bei <code>SpotLight</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>innerRadius</code></strong></td>
+                  <td><code>coreRadius</code>, <code>light_innerRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.0</code> px</td>
+                  <td>Innerer Kernbereich ohne Helligkeitsabfall bei <code>PointLight</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>flickerSpeed</code></strong></td>
+                  <td><code>speed</code>, <code>light_flickerSpeed</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>8.0</code></td>
+                  <td>Flacker-Geschwindigkeit bei Fackeln (<code>TorchLight</code>).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>flickerIntensity</code></strong></td>
+                  <td><code>flickerAmount</code>, <code>light_flickerIntensity</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.15</code></td>
+                  <td>St&auml;rke der Helligkeitsschwankung beim Fackelflackern (0.0 bis 1.0).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>flickerRadius</code></strong></td>
+                  <td><code>light_flickerRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>10.0</code> px</td>
+                  <td>Schwankungsbereich des Lichtradius beim Flackern.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>flameJitter</code></strong></td>
+                  <td><code>jitter</code>, <code>light_flameJitter</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>2.0</code> px</td>
+                  <td>R&auml;umliches Zittern der Flammenposition bei Fackeln.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>minRadius</code></strong> / <strong><code>maxRadius</code></strong></td>
+                  <td><code>light_minRadius</code>, <code>light_maxRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td>Min: <code>radius * 0.5</code><br>Max: <code>radius</code></td>
+                  <td>Pulsierender Radiusbereich bei gl&uuml;henden/atmenden Lichtern (<code>GlowLight</code>).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>minIntensity</code></strong> / <strong><code>maxIntensity</code></strong></td>
+                  <td><code>light_minIntensity</code>, <code>light_maxIntensity</code></td>
+                  <td><code>Float</code></td>
+                  <td>Min: <code>intensity * 0.4</code><br>Max: <code>intensity</code></td>
+                  <td>Pulsierender Helligkeitsbereich bei <code>GlowLight</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>pulseSpeed</code></strong></td>
+                  <td><code>speed</code>, <code>light_pulseSpeed</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>2.0</code></td>
+                  <td>Pulsierfrequenz / Atemfrequenz bei <code>GlowLight</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>pulsePhase</code></strong></td>
+                  <td><code>phase</code>, <code>light_pulsePhase</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.0</code></td>
+                  <td>Start-Phasenverschiebung (0.0 bis 6.28), um mehrere Glow-Lichter asynchron atmen zu lassen.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>6. 💻 Eigene Custom Fields im Haxe-Code abfragen</h2>
+          <p>
+            Du kannst beliebige eigene Felder in LDtk anlegen (z. B. <code>hp</code>, <code>dialogKey</code>, <code>targetLevel</code>, <code>isLocked</code>, <code>patrolPoints</code>) und im Haxe-Code auf zwei Arten abrufen:
+          </p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Custom Entity mit getField()</span>
+            </div>
+            <pre><code><span class="hl-keyword">package</span> entities;
+
+<span class="hl-keyword">import</span> mklib.entity.EntitySprite;
+<span class="hl-keyword">import</span> ldtk.Entity;
+
+<span class="hl-keyword">@:keep</span>
+<span class="hl-keyword">class</span> <span class="hl-type">Chest</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntitySprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> isLocked:<span class="hl-type">Bool</span> = <span class="hl-keyword">false</span>;
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> lootItemId:<span class="hl-type">String</span> = <span class="hl-string">"potion"</span>;
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> lootCount:<span class="hl-type">Int</span> = <span class="hl-num">1</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:ldtk.<span class="hl-type">Entity</span>) {
+        <span class="hl-keyword">super</span>(entity);
+
+        <span class="hl-keyword">if</span> (hasField(<span class="hl-string">"isLocked"</span>)) {
+            isLocked = getField(<span class="hl-string">"isLocked"</span>);
+        }
+        <span class="hl-keyword">if</span> (hasField(<span class="hl-string">"lootItemId"</span>)) {
+            lootItemId = getField(<span class="hl-string">"lootItemId"</span>);
+        }
+        <span class="hl-keyword">if</span> (hasField(<span class="hl-string">"lootCount"</span>)) {
+            lootCount = getField(<span class="hl-string">"lootCount"</span>);
+        }
+    }
+}</code></pre>
+          </div>
+
+          <h2>7. 💾 Persistenz &amp; Zerst&ouml;rungs-Tracking mit <code>iid</code></h2>
+          <p>
+            LDtk weist jeder Entity eine weltweit eindeutige <code>iid</code> (z. B. <code>e3d4a5b6-7c8d-9e0f-1a2b-3c4d5e6f7a8b</code>) zu. Der <code>SaveManager</code> von mklib nutzt diese ID, um aufgesammelte M&uuml;nzen, besiegte Bosse oder ge&ouml;ffnete Truhen level&uuml;bergreifend zu merken.
+          </p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Entity als zerst&ouml;rt markieren</span>
+            </div>
+            <pre><code><span class="hl-keyword">package</span> entities;
+
+<span class="hl-keyword">import</span> mklib.entity.EntityNapeSprite;
+<span class="hl-keyword">import</span> ldtk.Entity;
+
+<span class="hl-keyword">@:keep</span>
+<span class="hl-keyword">class</span> <span class="hl-type">Coin</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntityNapeSprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:ldtk.<span class="hl-type">Entity</span>) {
+        <span class="hl-keyword">super</span>(entity);
+    }
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">collect</span>():<span class="hl-type">Void</span> {
+        <span class="hl-comment">// Speichert iid im SaveManager und ruft kill() auf</span>
+        markDestroyed();
+    }
+}</code></pre>
+          </div>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">💡</div>
+            <div>
+              <strong>Automatischer Respawn-Schutz:</strong> Wenn der Spieler ein Level erneut betritt, filtert <code>EntityLayer</code> zerst&ouml;rte IIDs automatisch heraus. Aufgesammelte Gegenst&auml;nde werden gar nicht erst geladen.
+            </div>
+          </div>
+
+          <h2>8. 🛠️ Schritt-f&uuml;r-Schritt-Anleitung: Von 0 zum fertigen Level</h2>
+          <ol>
+            <li><strong>LDtk Projekt erstellen:</strong> Speichere dein Projekt z. B. als <code>assets/levels/world.ldtk</code>. Importiere dein Tileset (z. B. <code>assets/tilesets/dungeon.png</code>, Kachelgr&ouml;&szlig;e 16x16).</li>
+            <li><strong>Enum "Tags" definieren:</strong> Lege unter <em>Project Settings &rarr; Enums</em> das Enum <code>Tags</code> mit den Werten <code>Hero</code>, <code>Solid</code>, <code>Coin</code>, <code>Hazard</code>, <code>Checkpoint</code> an.</li>
+            <li><strong>Layer anlegen:</strong> Erstelle <code>Entities</code> (Typ: Entities), <code>Tiles</code> (Typ: Tiles oder AutoLayer) und <code>Collisions</code> (Typ: IntGrid).</li>
+            <li>
+              <strong>Entities mit Custom Fields konfigurieren:</strong>
+              <ul>
+                <li><strong>Hero:</strong> Field <code>Tag</code> = <code>Hero</code>.</li>
+                <li><strong>Platform:</strong> Field <code>Tag</code> = <code>Solid</code>, Field <code>TileRect</code> = <code>Tile (Single value)</code>.</li>
+                <li><strong>Coin:</strong> Field <code>Tag</code> = <code>Coin</code>, Field <code>sensor</code> = <code>true</code>, Field <code>Animations</code> = <code>"Coin"</code>.</li>
+                <li><strong>Torch:</strong> Identifier <code>Torch</code>, Field <code>color</code> = <code>#FFAA44</code>, Field <code>radius</code> = <code>120</code>, Field <code>flickerIntensity</code> = <code>0.2</code>.</li>
+              </ul>
+            </li>
+            <li><strong>Haxe State erstellen:</strong> Erbe von <code>mklib.state.State&lt;Data.Data_Level&gt;</code> und lade Ebenen, Physik und Beleuchtung.</li>
+          </ol>
+
+          <div class="section-nav-footer">
+            <a href="getting-started.html" class="nav-page-btn">&larr; Schnellstart</a>
+            <a href="state.html" class="nav-page-btn">State Management &rarr;</a>
+          </div>
+        </div>
+
+        <div data-lang="en">
+          <h1>🗺️ LDtk Level Editor Guide &amp; Property Reference</h1>
+          <p class="section-desc">
+            Comprehensive guide and complete reference of all <strong>custom fields</strong>, <strong>enums</strong>, <strong>layer types</strong>, and <strong>lighting properties</strong> in the LDtk editor and how <strong>mklib</strong> handles them automatically.
+          </p>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">🏷️</div>
+              <h3>Enum "Tags"</h3>
+              <p>Automatically converted into Nape <code>CbType</code> objects on state startup and accessible via <code>Tags.get("...")</code>.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🖼️</div>
+              <h3>TileRect Single Value</h3>
+              <p>Crops tiles pixel-perfect from the tileset and automatically creates solid <code>STATIC</code> Nape physics bodies.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>Sensor &amp; Movement Flags</h3>
+              <p><code>sensor: true</code> and <code>allowMovement</code> configure collision triggers and physics inertia with zero boilerplate.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">💡</div>
+              <h3>GPU Lighting Integration</h3>
+              <p>Light sources (Point, Spot, Torch, Glow) are spawned directly from LDtk entity fields with radius, color, and flicker parameters.</p>
+            </div>
+          </div>
+
+          <h2>1. 🏛️ Architecture &amp; Workflow</h2>
+          <p>
+            In <strong>mklib</strong>, all level data is built declaratively in the LDtk Level Editor. The official Haxe LDtk macro (<code>Data.hx</code>) reads the project file at compile-time and generates type-safe structures. At runtime, <code>mklib</code> handles automated instantiation:
+          </p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe Workflow</span>
+            </div>
+            <pre><code><span class="hl-keyword">class</span> <span class="hl-type">PlayState</span> <span class="hl-keyword">extends</span> <span class="hl-type">State</span>&lt;Data.Data_Level&gt; {
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">create</span>():<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.create();
+
+        <span class="hl-comment">// 1. Initializes Nape &amp; registers CbTypes from the LDtk enum "Tags"</span>
+        napeInit(<span class="hl-num">0</span>, <span class="hl-num">0</span>);
+
+        <span class="hl-comment">// 2. Renders tile layers (Tiles / AutoLayer)</span>
+        add(<span class="hl-keyword">new</span> <span class="hl-type">TileLayer</span>(data.l_Tiles.identifier));
+        add(<span class="hl-keyword">new</span> <span class="hl-type">TileLayer</span>(data.l_Props.identifier));
+
+        <span class="hl-comment">// 3. Instantiates all entities (scans package "entities.*")</span>
+        add(<span class="hl-keyword">new</span> <span class="hl-type">EntityLayer</span>(data.l_Entities));
+        add(<span class="hl-keyword">new</span> <span class="hl-type">EntityLayer</span>(data.l_HeroLayer));
+
+        <span class="hl-comment">// 4. Builds A* navigation grid from IntGrid and tile layers</span>
+        <span class="hl-keyword">var</span> navGrid = <span class="hl-type">NavGridBuilder</span>.autoBuild(data);
+
+        <span class="hl-comment">// 5. Loads GPU lights (Point, Spot, Torch, Glow) from LDtk entities</span>
+        <span class="hl-keyword">var</span> lighting = <span class="hl-keyword">new</span> <span class="hl-type">LightingSystem</span>(<span class="hl-num">0xFF101018</span>, <span class="hl-num">1.5</span>);
+        lighting.loadFromLevel(data);
+        add(lighting);
+    }
+}</code></pre>
+          </div>
+
+          <h2>2. 🏷️ Project-Wide Enum: <code>Tags</code></h2>
+          <p>
+            The enum <code>Tags</code> is the core bridge between LDtk level objects and the <strong>Nape 2D Physics Collision System</strong>.
+          </p>
+
+          <div class="callout callout-info">
+            <div class="callout-icon">ℹ️</div>
+            <div>
+              <strong>Where to create:</strong> In LDtk, click <strong>Project Settings</strong> (gear icon top-left) &rarr; <strong>Enums</strong> &rarr; New enum with identifier <code>Tags</code> <em>(Case sensitive!)</em>.
+            </div>
+          </div>
+
+          <h3>Recommended Enum Values in LDtk:</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Enum Value</th>
+                  <th>Typical Purpose</th>
+                  <th>Nape CbType Access in Code</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Hero</code> / <code>Player</code></td>
+                  <td>Main player character</td>
+                  <td><code>Tags.get("Hero")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Solid</code> / <code>Obstacle</code></td>
+                  <td>Solid walls, floors, indestructible obstacles</td>
+                  <td><code>Tags.get("Solid")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Platform</code></td>
+                  <td>Moving or static platforms</td>
+                  <td><code>Tags.get("Platform")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Enemy</code></td>
+                  <td>Enemies and hostile NPCs</td>
+                  <td><code>Tags.get("Enemy")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Coin</code> / <code>Gem</code></td>
+                  <td>Collectible items / score pickups</td>
+                  <td><code>Tags.get("Coin")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Checkpoint</code></td>
+                  <td>Save points / respawn zones</td>
+                  <td><code>Tags.get("Checkpoint")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Door</code> / <code>Portal</code></td>
+                  <td>Level transitions and doors</td>
+                  <td><code>Tags.get("Door")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Hazard</code> / <code>Spikes</code></td>
+                  <td>Deadly traps, spikes, lava</td>
+                  <td><code>Tags.get("Hazard")</code></td>
+                </tr>
+                <tr>
+                  <td><code>Water</code></td>
+                  <td>Water bodies / swimming areas / shader planes</td>
+                  <td><code>Tags.get("Water")</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Collision and sensor callbacks are then bound using <code>Listener</code>:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Callback Binding</span>
+            </div>
+            <pre><code><span class="hl-comment">// Solid collision between player and wall</span>
+<span class="hl-type">Listener</span>.addCollisionBeginListener(<span class="hl-type">Tags</span>.get(<span class="hl-string">"Hero"</span>), <span class="hl-type">Tags</span>.get(<span class="hl-string">"Solid"</span>), onHeroHitWall);
+
+<span class="hl-comment">// Sensor overlap when collecting coins</span>
+<span class="hl-type">Listener</span>.addSensorBeginListener(<span class="hl-type">Tags</span>.get(<span class="hl-string">"Hero"</span>), <span class="hl-type">Tags</span>.get(<span class="hl-string">"Coin"</span>), onHeroCollectCoin);</code></pre>
+          </div>
+
+          <h2>3. 🗺️ Layer Types in LDtk</h2>
+          <p>LDtk supports three layer categories that are handled automatically by <code>mklib</code>:</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>LDtk Layer Type</th>
+                  <th>Recommended Names</th>
+                  <th>mklib Class</th>
+                  <th>Behavior &amp; Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Tiles / AutoLayer</strong></td>
+                  <td><code>Tiles</code>, <code>Background</code>, <code>Props</code>, <code>Foreground</code></td>
+                  <td><code>mklib.layer.TileLayer</code></td>
+                  <td>Renders tiles using LDtk's native render pipeline into a FlxSpriteGroup. Supports auto-tiling and multi-layer rendering.</td>
+                </tr>
+                <tr>
+                  <td><strong>Entities</strong></td>
+                  <td><code>Entities</code>, <code>HeroLayer</code>, <code>Interactive</code></td>
+                  <td><code>mklib.layer.EntityLayer</code></td>
+                  <td>Scans the package <code>entities.*</code> for matching classes (e.g. entity <code>Hero</code> &rarr; <code>entities.Hero</code>). Automatically creates <code>EntityNapeSprite</code> (if physics fields exist) or <code>EntitySprite</code> (visual). Auto-checks <code>SaveManager</code> for destroyed items.</td>
+                </tr>
+                <tr>
+                  <td><strong>IntGrid</strong></td>
+                  <td><code>Collisions</code>, <code>Walls</code>, <code>NavGrid</code></td>
+                  <td><code>mklib.path.NavGridBuilder</code></td>
+                  <td>Generates the 2D grid for A* pathfinding. Values <code>!= 0</code> are marked as solid impassable cells.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>4. 📋 Full Entity Field Reference (Custom Fields)</h2>
+          <p>
+            The following custom fields can be configured in LDtk under <strong>Project Settings &rarr; Entities &rarr; (Select Entity) &rarr; Fields</strong>:
+          </p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Field Name (Identifier)</th>
+                  <th>LDtk Field Type</th>
+                  <th>Supported In</th>
+                  <th>Default Value</th>
+                  <th>Effect in mklib</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong><code>Tag</code></strong></td>
+                  <td><code>Enum (Tags)</code> or <code>String</code></td>
+                  <td><code>EntityNapeSprite</code>, <code>EntityLayer</code></td>
+                  <td><code>null</code></td>
+                  <td>Assigns the corresponding <code>CbType</code> from the enum <code>Tags</code> to the Nape body. Triggers automatic instantiation as <code>EntityNapeSprite</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>Tags</code></strong></td>
+                  <td><code>Array&lt;Enum (Tags)&gt;</code> or <code>Array&lt;String&gt;</code></td>
+                  <td><code>EntityNapeSprite</code>, <code>EntityLayer</code></td>
+                  <td><code>null</code></td>
+                  <td>Assigns multiple <code>CbType</code>s simultaneously (e.g. <code>["Solid", "Platform"]</code>).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>TileRect</code></strong> / <code>tileRect</code></td>
+                  <td><code>Tile (Single value)</code></td>
+                  <td><code>EntitySprite</code>, <code>EntityNapeSprite</code>, <code>EntityLayer</code></td>
+                  <td><code>null</code></td>
+                  <td>Crops the selected tile (X, Y, W, H) from the tileset, updates sprite dimensions, and creates a solid <code>STATIC</code> Nape physics body in <code>EntityNapeSprite</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>sensor</code></strong> / <code>sensorEnabled</code></td>
+                  <td><code>Boolean</code></td>
+                  <td><code>EntityNapeSprite</code>, <code>EntityLayer</code></td>
+                  <td><code>false</code></td>
+                  <td>Sets all body shapes to <strong>sensor mode</strong> (<code>shape.sensorEnabled = true</code>). Detects collisions in listeners without physical pushback (e.g. coins, triggers, checkpoints).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>allowMovement</code></strong></td>
+                  <td><code>Boolean</code></td>
+                  <td><code>EntityNapeSprite</code>, <code>EntityLayer</code></td>
+                  <td><code>true</code></td>
+                  <td>Controls <code>body.allowMovement</code>. Prevents movement translation by physics forces when set to <code>false</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>Animations</code></strong> / <code>animations</code></td>
+                  <td><code>String</code></td>
+                  <td><code>EntitySprite</code>, <code>EntityNapeSprite</code></td>
+                  <td><code>null</code></td>
+                  <td>Name of the animation key in <code>AnimationRegistry.db</code> (e.g. <code>"Fire"</code>, <code>"Hero"</code>). Loads spritesheet, registers clips, and plays default animation.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>visible</code></strong></td>
+                  <td><code>Boolean</code></td>
+                  <td><code>EntitySprite</code>, <code>EntityNapeSprite</code></td>
+                  <td><code>true</code></td>
+                  <td>Controls initial sprite visibility (<code>sprite.visible</code>) upon spawning.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>alpha</code></strong></td>
+                  <td><code>Float</code> (0.0 to 1.0)</td>
+                  <td><code>EntitySprite</code>, <code>EntityNapeSprite</code></td>
+                  <td><code>1.0</code></td>
+                  <td>Controls sprite opacity / transparency (<code>sprite.alpha</code>).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>iid</code></strong></td>
+                  <td><code>String</code> <em>(LDtk internal)</em></td>
+                  <td><code>SaveManager</code>, all entities</td>
+                  <td>Unique UUID</td>
+                  <td>Globally unique instance ID from LDtk. Used by <code>SaveManager.markEntityDestroyed(iid)</code> to track collected/destroyed objects across level transitions.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>5. 💡 GPU Lighting System Fields</h2>
+          <p>
+            The GPU-accelerated shader lighting system (<code>LightingSystem</code>) automatically parses LDtk entities when calling <code>lighting.loadFromLevel(data)</code>:
+          </p>
+          <ul>
+            <li>Entities whose identifier contains <code>light</code>, <code>torch</code>, <code>lamp</code>, <code>candle</code>, <code>glow</code>, or <code>spot</code>.</li>
+            <li>Entities defining a field <code>type</code>, <code>light_type</code>, or <code>radius</code>.</li>
+          </ul>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Field Name (Identifier)</th>
+                  <th>Aliases / Keys</th>
+                  <th>LDtk Field Type</th>
+                  <th>Default Value</th>
+                  <th>Description &amp; Behavior</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong><code>type</code></strong></td>
+                  <td><code>light_type</code>, <code>lightType</code></td>
+                  <td><code>String</code> or <code>Enum</code></td>
+                  <td><code>"point"</code> (or inferred)</td>
+                  <td>Light type: <code>"point"</code>, <code>"spot"</code>, <code>"torch"</code>, <code>"glow"</code>, <code>"directional"</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>radius</code></strong></td>
+                  <td><code>light_radius</code>, <code>Radius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>100.0</code> px</td>
+                  <td>Light range / radius in game pixels.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>intensity</code></strong></td>
+                  <td><code>light_intensity</code>, <code>Intensity</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>1.0</code></td>
+                  <td>Brightness multiplier (0.0 to 5.0+).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>falloff</code></strong></td>
+                  <td><code>light_falloff</code>, <code>Falloff</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>1.0</code></td>
+                  <td>Light attenuation curve exponent (1.0 = linear, 2.0 = quadratic).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>color</code></strong></td>
+                  <td><code>light_color</code>, <code>Color</code></td>
+                  <td><code>Color</code> or <code>String</code> (<code>#RRGGBB</code>)</td>
+                  <td>Torch: <code>#FFAA44</code><br>Glow: <code>#55AAFF</code><br>Other: <code>#FFFFFF</code></td>
+                  <td>Light tint color. Supports LDtk color picker or hex strings.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>active</code></strong></td>
+                  <td><code>enabled</code>, <code>light_active</code></td>
+                  <td><code>Boolean</code></td>
+                  <td><code>true</code></td>
+                  <td>Initial active/visible state upon level load.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>offsetX</code></strong> / <strong><code>offsetY</code></strong></td>
+                  <td><code>offset_x</code>, <code>offset_y</code>, <code>pivotX</code>, <code>pivotY</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>width * 0.5</code>, <code>height * 0.5</code></td>
+                  <td>Relative anchor offset from entity top-left coordinate.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>angle</code></strong></td>
+                  <td><code>direction</code>, <code>light_angle</code>, <code>Angle</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.0</code>&deg;</td>
+                  <td>Aim angle in degrees (for SpotLight and DirectionalLight). 0&deg; = Right, 90&deg; = Down, 180&deg; = Left, 270&deg; = Up.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>spotAngle</code></strong></td>
+                  <td><code>cone</code>, <code>coneAngle</code>, <code>light_spotAngle</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>45.0</code>&deg;</td>
+                  <td>Outer cone angle for <code>SpotLight</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>innerAngle</code></strong></td>
+                  <td><code>focusAngle</code>, <code>light_innerAngle</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>15.0</code>&deg;</td>
+                  <td>Inner full-brightness cone angle for <code>SpotLight</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>innerRadius</code></strong></td>
+                  <td><code>coreRadius</code>, <code>light_innerRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.0</code> px</td>
+                  <td>Inner 100% brightness core radius for <code>PointLight</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>flickerSpeed</code></strong></td>
+                  <td><code>speed</code>, <code>light_flickerSpeed</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>8.0</code></td>
+                  <td>Flicker speed for torch lights (<code>TorchLight</code>).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>flickerIntensity</code></strong></td>
+                  <td><code>flickerAmount</code>, <code>light_flickerIntensity</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.15</code></td>
+                  <td>Flicker brightness intensity variation (0.0 to 1.0).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>flickerRadius</code></strong></td>
+                  <td><code>light_flickerRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>10.0</code> px</td>
+                  <td>Radius wobble range during flame flickering.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>flameJitter</code></strong></td>
+                  <td><code>jitter</code>, <code>light_flameJitter</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>2.0</code> px</td>
+                  <td>Positional displacement wobble of the flame origin.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>minRadius</code></strong> / <strong><code>maxRadius</code></strong></td>
+                  <td><code>light_minRadius</code>, <code>light_maxRadius</code></td>
+                  <td><code>Float</code></td>
+                  <td>Min: <code>radius * 0.5</code><br>Max: <code>radius</code></td>
+                  <td>Pulsing radius bounds for breathing lights (<code>GlowLight</code>).</td>
+                </tr>
+                <tr>
+                  <td><strong><code>minIntensity</code></strong> / <strong><code>maxIntensity</code></strong></td>
+                  <td><code>light_minIntensity</code>, <code>light_maxIntensity</code></td>
+                  <td><code>Float</code></td>
+                  <td>Min: <code>intensity * 0.4</code><br>Max: <code>intensity</code></td>
+                  <td>Pulsing brightness bounds for <code>GlowLight</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>pulseSpeed</code></strong></td>
+                  <td><code>speed</code>, <code>light_pulseSpeed</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>2.0</code></td>
+                  <td>Breathing / pulsing frequency for <code>GlowLight</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>pulsePhase</code></strong></td>
+                  <td><code>phase</code>, <code>light_pulsePhase</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.0</code></td>
+                  <td>Initial phase offset (0.0 to 6.28) for asynchronous light pulsing.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>6. 💻 Accessing Custom Fields in Haxe</h2>
+          <p>
+            You can define any custom fields in LDtk (e.g. <code>hp</code>, <code>dialogKey</code>, <code>targetLevel</code>, <code>isLocked</code>, <code>patrolPoints</code>) and read them easily:
+          </p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Custom Entity with getField()</span>
+            </div>
+            <pre><code><span class="hl-keyword">package</span> entities;
+
+<span class="hl-keyword">import</span> mklib.entity.EntitySprite;
+<span class="hl-keyword">import</span> ldtk.Entity;
+
+<span class="hl-keyword">@:keep</span>
+<span class="hl-keyword">class</span> <span class="hl-type">Chest</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntitySprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> isLocked:<span class="hl-type">Bool</span> = <span class="hl-keyword">false</span>;
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> lootItemId:<span class="hl-type">String</span> = <span class="hl-string">"potion"</span>;
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> lootCount:<span class="hl-type">Int</span> = <span class="hl-num">1</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:ldtk.<span class="hl-type">Entity</span>) {
+        <span class="hl-keyword">super</span>(entity);
+
+        <span class="hl-keyword">if</span> (hasField(<span class="hl-string">"isLocked"</span>)) {
+            isLocked = getField(<span class="hl-string">"isLocked"</span>);
+        }
+        <span class="hl-keyword">if</span> (hasField(<span class="hl-string">"lootItemId"</span>)) {
+            lootItemId = getField(<span class="hl-string">"lootItemId"</span>);
+        }
+        <span class="hl-keyword">if</span> (hasField(<span class="hl-string">"lootCount"</span>)) {
+            lootCount = getField(<span class="hl-string">"lootCount"</span>);
+        }
+    }
+}</code></pre>
+          </div>
+
+          <h2>7. 💾 Persistence &amp; Destruction Tracking with <code>iid</code></h2>
+          <p>
+            LDtk assigns a globally unique <code>iid</code> to every entity. The <code>SaveManager</code> in mklib uses this ID to persist destroyed enemies, collected coins, or opened chests across levels.
+          </p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Mark Entity Destroyed</span>
+            </div>
+            <pre><code><span class="hl-keyword">package</span> entities;
+
+<span class="hl-keyword">import</span> mklib.entity.EntityNapeSprite;
+<span class="hl-keyword">import</span> ldtk.Entity;
+
+<span class="hl-keyword">@:keep</span>
+<span class="hl-keyword">class</span> <span class="hl-type">Coin</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntityNapeSprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:ldtk.<span class="hl-type">Entity</span>) {
+        <span class="hl-keyword">super</span>(entity);
+    }
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">collect</span>():<span class="hl-type">Void</span> {
+        <span class="hl-comment">// Saves iid in SaveManager and calls kill()</span>
+        markDestroyed();
+    }
+}</code></pre>
+          </div>
+
+          <div class="callout callout-tip">
+            <div class="callout-icon">💡</div>
+            <div>
+              <strong>Automatic Respawn Protection:</strong> When re-entering a level, <code>EntityLayer</code> automatically filters out destroyed IIDs so collected items are never instantiated again.
+            </div>
+          </div>
+
+          <h2>8. 🛠️ Step-by-Step Tutorial: Level from Scratch</h2>
+          <ol>
+            <li><strong>Create LDtk Project:</strong> Save as <code>assets/levels/world.ldtk</code>. Import tileset (e.g. <code>assets/tilesets/dungeon.png</code>, tile size 16x16).</li>
+            <li><strong>Define Enum "Tags":</strong> In <em>Project Settings &rarr; Enums</em>, add enum <code>Tags</code> with values <code>Hero</code>, <code>Solid</code>, <code>Coin</code>, <code>Hazard</code>, <code>Checkpoint</code>.</li>
+            <li><strong>Create Layers:</strong> Add <code>Entities</code> (type: Entities), <code>Tiles</code> (type: Tiles/AutoLayer), and <code>Collisions</code> (type: IntGrid).</li>
+            <li>
+              <strong>Configure Entities with Custom Fields:</strong>
+              <ul>
+                <li><strong>Hero:</strong> Field <code>Tag</code> = <code>Hero</code>.</li>
+                <li><strong>Platform:</strong> Field <code>Tag</code> = <code>Solid</code>, Field <code>TileRect</code> = <code>Tile (Single value)</code>.</li>
+                <li><strong>Coin:</strong> Field <code>Tag</code> = <code>Coin</code>, Field <code>sensor</code> = <code>true</code>, Field <code>Animations</code> = <code>"Coin"</code>.</li>
+                <li><strong>Torch:</strong> Identifier <code>Torch</code>, Field <code>color</code> = <code>#FFAA44</code>, Field <code>radius</code> = <code>120</code>, Field <code>flickerIntensity</code> = <code>0.2</code>.</li>
+              </ul>
+            </li>
+            <li><strong>Create Haxe State:</strong> Inherit from <code>mklib.state.State&lt;Data.Data_Level&gt;</code> and load layers, physics, and lighting.</li>
+          </ol>
+
+          <div class="section-nav-footer">
+            <a href="getting-started.html" class="nav-page-btn">&larr; Quick Start</a>
+            <a href="state.html" class="nav-page-btn">State Management &rarr;</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

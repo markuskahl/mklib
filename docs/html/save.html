@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Save & Persistence — mklib Dokumentation</title>
+  <meta name="description" content="Lückenlose Dokumentation und API-Referenz für mklib — Jede Klasse, Methode und Eigenschaft für HaxeFlixel, LDtk und Nape 2D.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Glow Backgrounds -->
+  <div class="bg-decorations">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="icon-btn mobile-menu-btn" aria-label="Menü öffnen">☰</button>
+      <a href="index.html" class="logo-group">
+        <div class="logo-badge">mk</div>
+        <div>
+          <span class="logo-title">mklib</span>
+          <span class="logo-version">v1.0.1</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Search Input -->
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="docs-search" class="search-input" placeholder="Klasse, Methode oder Feld suchen..." data-de="Klasse, Methode oder Feld suchen..." data-en="Search class, method, or field..." autocomplete="off">
+    </div>
+
+    <!-- Header Actions (Language Switcher & Theme Toggle & GitHub) -->
+    <div class="header-actions">
+      <!-- Language Switcher -->
+      <div class="lang-switch-group">
+        <button class="lang-btn active" data-set-lang="de" title="Deutsch">DE</button>
+        <button class="lang-btn" data-set-lang="en" title="English">EN</button>
+      </div>
+
+      <button id="theme-toggle" class="icon-btn" title="Thema wechseln">☀️</button>
+      <a href="https://github.com/markuskahl/mklib" target="_blank" rel="noopener noreferrer" class="github-link">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- App Layout Container -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div>
+          <div class="nav-section-title" data-de="Einführung" data-en="Introduction">Einführung</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="index.html"><span class="nav-icon">📖</span> <span data-de="Übersicht & API-Matrix" data-en="Overview & API Matrix">Übersicht & API-Matrix</span></a></li>
+            <li class="nav-item"><a href="getting-started.html"><span class="nav-icon">🚀</span> <span data-de="Schnellstart" data-en="Quick Start">Schnellstart</span></a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-section-title" data-de="Kern-Module & Klassen" data-en="Core Modules & Classes">Kern-Module & Klassen</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="ldtk-guide.html"><span class="nav-icon">🗺️</span> <span data-de="LDtk Guide & Felder" data-en="LDtk Guide & Fields">LDtk Guide & Felder</span></a></li>
+            <li class="nav-item"><a href="state.html"><span class="nav-icon">🎮</span> <span data-de="State Management" data-en="State Management">State Management</span></a></li>
+            <li class="nav-item"><a href="layers.html"><span class="nav-icon">🗺️</span> <span data-de="Layer System" data-en="Layer System">Layer System</span></a></li>
+            <li class="nav-item"><a href="entities.html"><span class="nav-icon">👾</span> <span data-de="Entities & Sprites" data-en="Entities & Sprites">Entities & Sprites</span></a></li>
+            <li class="nav-item active"><a href="save.html"><span class="nav-icon">💾</span> <span data-de="Save & Persistence" data-en="Save & Persistence">Save & Persistence</span></a></li>
+            <li class="nav-item"><a href="animation.html"><span class="nav-icon">🎬</span> <span data-de="Animationen & Makros" data-en="Animations & Macros">Animationen & Makros</span></a></li>
+            <li class="nav-item"><a href="physics.html"><span class="nav-icon">⚡</span> <span data-de="Physik & Sensoren" data-en="Physics & Sensors">Physik & Sensoren</span></a></li>
+            <li class="nav-item"><a href="pathfinding.html"><span class="nav-icon">🧭</span> <span data-de="Pathfinding & A*" data-en="Pathfinding & A*">Pathfinding & A*</span></a></li>
+            <li class="nav-item"><a href="lighting.html"><span class="nav-icon">💡</span> <span data-de="GPU Lighting System" data-en="GPU Lighting System">GPU Lighting System</span></a></li>
+            <li class="nav-item"><a href="effects.html"><span class="nav-icon">🎨</span> <span data-de="Shader & Effekte" data-en="Shaders & Effects">Shader & Effekte</span></a></li>
+            <li class="nav-item"><a href="tools-math.html"><span class="nav-icon">📐</span> <span data-de="Tools & Mathematik" data-en="Tools & Mathematics">Tools & Mathematik</span></a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Section: save -->
+<section id="save" class="doc-section active">
+        <div data-lang="de">
+          <h1>💾 Save- & Persistence-System (<code>mklib.save.*</code>)</h1>
+          <p class="section-desc">
+            Leichtgewichtiges, plattformübergreifendes Speichersystem mit Checkpoints, Multi-Level-Caching, Entity-IID-Tracking und optionaler Datenverschleierung.
+          </p>
+
+          <div class="feature-grid" style="margin: 1.5rem 0;">
+            <div class="feature-card">
+              <div class="feature-icon">🕹️</div>
+              <h3>FlxSave Checkpoints</h3>
+              <p>Plattformübergreifende Persistenz im LocalStorage oder auf der Festplatte via HaxeFlixel <code>FlxSave</code>.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🗺️</div>
+              <h3>Multi-Level Caching</h3>
+              <p>RAM-Session-Cache merkt sich Änderungen in allen besuchten Leveln bei Reisen durch offene Welten.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">👾</div>
+              <h3>Entity-IID Tracking</h3>
+              <p>Zerstörte Münzen, Truhen oder Bosse werden beim erneuten Betreten des Levels automatisch gefiltert.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔒</div>
+              <h3>XOR / Base64 Schutz</h3>
+              <p>Optionale Datenverschleierung zur Vermeidung von Manipulationen im LocalStorage oder Speicherstand.</p>
+            </div>
+          </div>
+
+          <h2>1. <code>SaveManager</code> (<code>mklib.save.SaveManager</code>)</h2>
+          <p>Die zentrale statische Fassade für alle Speicher-, Lade- und Checkpoint-Operationen.</p>
+
+          <h3>Properties</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>config</code></td>
+                  <td><code>SaveConfig</code></td>
+                  <td><code>public static</code></td>
+                  <td>Konfigurationseinstellungen für den Speichernamen, Obfuscation und Salt.</td>
+                </tr>
+                <tr>
+                  <td><code>playTime</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public static</code></td>
+                  <td>Akkumulierte Gesamtspielzeit in Sekunden.</td>
+                </tr>
+                <tr>
+                  <td><code>globals</code></td>
+                  <td><code>Map&lt;String, Dynamic&gt;</code></td>
+                  <td><code>public static</code></td>
+                  <td>Globale spielübergreifende Variablen (z. B. Gold, Quests, Einstellungen).</td>
+                </tr>
+                <tr>
+                  <td><code>levelStates</code></td>
+                  <td><code>Map&lt;String, LevelSaveState&gt;</code></td>
+                  <td><code>public static</code></td>
+                  <td>Im RAM gecachte Zustände aller besuchten Level.</td>
+                </tr>
+                <tr>
+                  <td><code>lastCheckpointMeta</code></td>
+                  <td><code>Null&lt;CheckpointMeta&gt;</code></td>
+                  <td><code>public static</code></td>
+                  <td>Metadaten des zuletzt gespeicherten oder geladenen Checkpoints.</td>
+                </tr>
+                <tr>
+                  <td><code>onSave</code></td>
+                  <td><code>Null&lt;CheckpointMeta-&gt;Void&gt;</code></td>
+                  <td><code>public static</code></td>
+                  <td>Optionaler Event-Callback nach erfolgreichem Speichern.</td>
+                </tr>
+                <tr>
+                  <td><code>onLoad</code></td>
+                  <td><code>Null&lt;CheckpointMeta-&gt;Void&gt;</code></td>
+                  <td><code>public static</code></td>
+                  <td>Optionaler Event-Callback nach erfolgreichem Laden.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methods</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>update</code></td>
+                  <td><code>(elapsed:Float):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Aktualisiert die akkumulierte Spielzeit. Wird in <code>State.update()</code> automatisch aufgerufen.</td>
+                </tr>
+                <tr>
+                  <td><code>saveCheckpoint</code></td>
+                  <td><code>(?customMeta:Dynamic, ?targetState:State&lt;Dynamic&gt;):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Speichert den gesamten Spielzustand (Globals, aktiver Level, Level-Cache) persistent in <code>FlxSave</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>loadCheckpoint</code></td>
+                  <td><code>():Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Lädt den persistenten Checkpoint und stellt alle Level- und Globaldaten wieder her.</td>
+                </tr>
+                <tr>
+                  <td><code>hasCheckpoint</code></td>
+                  <td><code>():Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob ein persistenter Speicherstand existiert.</td>
+                </tr>
+                <tr>
+                  <td><code>clearCheckpoint</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Löscht den persistent gespeicherten Checkpoint.</td>
+                </tr>
+                <tr>
+                  <td><code>getCheckpointMeta</code></td>
+                  <td><code>():Null&lt;CheckpointMeta&gt;</code></td>
+                  <td><code>Null&lt;CheckpointMeta&gt;</code></td>
+                  <td>Gibt die Metadaten des Checkpoints zurück, ohne das gesamte Savegame in den Speicher zu laden.</td>
+                </tr>
+                <tr>
+                  <td><code>captureLevel</code></td>
+                  <td><code>(state:State&lt;Dynamic&gt;):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erfasst alle <code>ISaveable</code>-Entities des übergebenen States im Session-Cache.</td>
+                </tr>
+                <tr>
+                  <td><code>restoreLevel</code></td>
+                  <td><code>(state:State&lt;Dynamic&gt;):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Wendet gespeicherte Zustände auf alle <code>ISaveable</code>-Entities des States an.</td>
+                </tr>
+                <tr>
+                  <td><code>clearSession</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Löscht den temporären Session-Cache aller besuchten Level aus dem RAM.</td>
+                </tr>
+                <tr>
+                  <td><code>markEntityDestroyed</code></td>
+                  <td><code>(iid:String, ?levelName:String):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Markiert eine Entity-IID als zerstört/aufgesammelt, sodass sie nicht mehr gespawnt wird.</td>
+                </tr>
+                <tr>
+                  <td><code>isEntityDestroyed</code></td>
+                  <td><code>(iid:String, ?levelName:String):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob eine Entity-IID im angegebenen Level als zerstört vermerkt ist.</td>
+                </tr>
+                <tr>
+                  <td><code>setGlobal</code></td>
+                  <td><code>(key:String, value:Dynamic):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Speichert eine globale spielübergreifende Variable.</td>
+                </tr>
+                <tr>
+                  <td><code>getGlobal</code></td>
+                  <td><code>&lt;T&gt;(key:String, ?defaultValue:T):T</code></td>
+                  <td><code>T</code></td>
+                  <td>Liest eine globale Variable typisiert aus oder liefert den Default-Wert.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>ISaveable</code>-Interface (<code>mklib.save.ISaveable</code>)</h2>
+          <p>Interface für Entities oder Spielobjekte, deren individueller Zustand gespeichert werden soll:</p>
+
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span> entities;
+
+<span class="hl-keyword">import</span> mklib.entity.EntitySprite;
+<span class="hl-keyword">import</span> mklib.save.ISaveable;
+
+<span class="hl-keyword">class</span> <span class="hl-type">Chest</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntitySprite</span> <span class="hl-keyword">implements</span> <span class="hl-type">ISaveable</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> isOpened:<span class="hl-type">Bool</span> = <span class="hl-keyword">false</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">saveState</span>():<span class="hl-type">Dynamic</span> {
+        <span class="hl-keyword">return</span> { isOpened: <span class="hl-keyword">this</span>.isOpened };
+    }
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">loadState</span>(data:<span class="hl-type">Dynamic</span>):<span class="hl-type">Void</span> {
+        <span class="hl-keyword">if</span> (data != <span class="hl-keyword">null</span> &amp;&amp; data.isOpened != <span class="hl-keyword">null</span>) {
+            <span class="hl-keyword">this</span>.isOpened = data.isOpened;
+        }
+    }
+}</code></pre>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="entities.html" class="nav-page-btn">← Entities & Sprites</a>
+            <a href="animation.html" class="nav-page-btn">Animationen & Makros →</a>
+          </div>
+        </div>
+
+        <div data-lang="en">
+          <h1>💾 Save & Persistence System (<code>mklib.save.*</code>)</h1>
+          <p class="section-desc">
+            Lightweight, cross-platform persistence system with checkpoints, multi-level caching, entity IID tracking, and optional data obfuscation.
+          </p>
+
+          <div class="feature-grid" style="margin: 1.5rem 0;">
+            <div class="feature-card">
+              <div class="feature-icon">🕹️</div>
+              <h3>FlxSave Checkpoints</h3>
+              <p>Cross-platform storage via HaxeFlixel <code>FlxSave</code> (LocalStorage / Desktop file system).</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🗺️</div>
+              <h3>Multi-Level Caching</h3>
+              <p>In-memory session cache preserves changes across all visited levels during open-world exploration.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">👾</div>
+              <h3>Entity-IID Tracking</h3>
+              <p>Destroyed items, coins, and defeated enemies are automatically filtered when revisiting levels.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔒</div>
+              <h3>XOR / Base64 Security</h3>
+              <p>Optional payload obfuscation and checksum validation to prevent casual save tampering.</p>
+            </div>
+          </div>
+
+          <h2>1. <code>SaveManager</code> (<code>mklib.save.SaveManager</code>)</h2>
+          <p>Static facade for all save, load, session-cache, and checkpoint operations.</p>
+
+          <h3>Properties</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>config</code></td>
+                  <td><code>SaveConfig</code></td>
+                  <td><code>public static</code></td>
+                  <td>Configuration settings for save name, obfuscation, and salt.</td>
+                </tr>
+                <tr>
+                  <td><code>playTime</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>public static</code></td>
+                  <td>Accumulated play time in seconds.</td>
+                </tr>
+                <tr>
+                  <td><code>globals</code></td>
+                  <td><code>Map&lt;String, Dynamic&gt;</code></td>
+                  <td><code>public static</code></td>
+                  <td>Global cross-level variables (inventory, flags, settings).</td>
+                </tr>
+                <tr>
+                  <td><code>levelStates</code></td>
+                  <td><code>Map&lt;String, LevelSaveState&gt;</code></td>
+                  <td><code>public static</code></td>
+                  <td>RAM-cached states of all visited levels.</td>
+                </tr>
+                <tr>
+                  <td><code>lastCheckpointMeta</code></td>
+                  <td><code>Null&lt;CheckpointMeta&gt;</code></td>
+                  <td><code>public static</code></td>
+                  <td>Metadata of the most recent saved or loaded checkpoint.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methods</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Returns</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>saveCheckpoint</code></td>
+                  <td><code>(?customMeta:Dynamic, ?targetState:State&lt;Dynamic&gt;):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Saves the complete game state (globals, active level, level-cache) to <code>FlxSave</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>loadCheckpoint</code></td>
+                  <td><code>():Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Loads the persistent checkpoint and restores all levels and global data.</td>
+                </tr>
+                <tr>
+                  <td><code>hasCheckpoint</code></td>
+                  <td><code>():Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Checks if a valid save checkpoint exists.</td>
+                </tr>
+                <tr>
+                  <td><code>clearCheckpoint</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erases the persistent checkpoint.</td>
+                </tr>
+                <tr>
+                  <td><code>captureLevel</code></td>
+                  <td><code>(state:State&lt;Dynamic&gt;):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Captures all <code>ISaveable</code> entities of the given state in the session cache.</td>
+                </tr>
+                <tr>
+                  <td><code>restoreLevel</code></td>
+                  <td><code>(state:State&lt;Dynamic&gt;):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Applies saved state to all <code>ISaveable</code> entities in the state.</td>
+                </tr>
+                <tr>
+                  <td><code>markEntityDestroyed</code></td>
+                  <td><code>(iid:String, ?levelName:String):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Marks an entity IID as destroyed/collected so it will not spawn again.</td>
+                </tr>
+                <tr>
+                  <td><code>setGlobal</code></td>
+                  <td><code>(key:String, value:Dynamic):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Stores a global game variable.</td>
+                </tr>
+                <tr>
+                  <td><code>getGlobal</code></td>
+                  <td><code>&lt;T&gt;(key:String, ?defaultValue:T):T</code></td>
+                  <td><code>T</code></td>
+                  <td>Reads a typed global variable with an optional default value.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="entities.html" class="nav-page-btn">← Entities & Sprites</a>
+            <a href="animation.html" class="nav-page-btn">Animations & Macros →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

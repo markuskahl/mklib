@@ -128,61 +128,26 @@ function setLanguage(lang) {
 }
 
 /* ==========================================================================
-   Navigation & Section Switching
+   Navigation & Multi-Page Link Support
    ========================================================================== */
 function initNavigation() {
-  const navItems = document.querySelectorAll('.nav-item a, .nav-page-btn');
-  const sections = document.querySelectorAll('.doc-section');
   const sidebar = document.querySelector('.sidebar');
   const mobileBtn = document.querySelector('.mobile-menu-btn');
 
-  function showSection(sectionId) {
-    if (!sectionId || sectionId === '#') sectionId = 'overview';
-    sectionId = sectionId.replace('#', '');
+  // Determine current page filename (e.g. "state.html" or "index.html")
+  const path = window.location.pathname;
+  let currentPage = path.substring(path.lastIndexOf('/') + 1);
+  if (!currentPage || currentPage === '') currentPage = 'index.html';
 
-    let found = false;
-    sections.forEach(sec => {
-      if (sec.id === sectionId) {
-        sec.classList.add('active');
-        found = true;
-      } else {
-        sec.classList.remove('active');
-      }
-    });
-
-    if (!found && sections.length > 0) {
-      sections[0].classList.add('active');
-      sectionId = sections[0].id;
-    }
-
-    // Update active nav link
-    document.querySelectorAll('.nav-item').forEach(item => {
-      const link = item.querySelector('a');
-      if (link && link.getAttribute('href') === `#${sectionId}`) {
-        item.classList.add('active');
-      } else {
-        item.classList.remove('active');
-      }
-    });
-
-    // Close mobile menu if open
-    if (sidebar && sidebar.classList.contains('open')) {
-      sidebar.classList.remove('open');
-    }
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // Intercept nav clicks
-  document.addEventListener('click', (e) => {
-    const link = e.target.closest('a[href^="#"]');
-    if (link) {
-      const href = link.getAttribute('href');
-      if (href && href.startsWith('#')) {
-        e.preventDefault();
-        history.pushState(null, '', href);
-        showSection(href);
-      }
+  // Highlight active sidebar navigation item
+  document.querySelectorAll('.nav-item').forEach(item => {
+    const link = item.querySelector('a');
+    if (!link) return;
+    const href = link.getAttribute('href') || '';
+    if (href === currentPage || (currentPage === 'index.html' && (href === './' || href === 'index.html'))) {
+      item.classList.add('active');
+    } else {
+      item.classList.remove('active');
     }
   });
 
@@ -191,15 +156,14 @@ function initNavigation() {
     mobileBtn.addEventListener('click', () => {
       sidebar.classList.toggle('open');
     });
+
+    // Close on click outside on mobile
+    document.addEventListener('click', (e) => {
+      if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !mobileBtn.contains(e.target)) {
+        sidebar.classList.remove('open');
+      }
+    });
   }
-
-  // Handle back/forward navigation
-  window.addEventListener('popstate', () => {
-    showSection(window.location.hash);
-  });
-
-  // Load initial section from hash or default to overview
-  showSection(window.location.hash);
 }
 
 /* ==========================================================================
@@ -265,59 +229,155 @@ function initCodeCopy() {
 }
 
 /* ==========================================================================
-   Search Functionality
+   Search Functionality (Global Autocomplete & In-Page Table Filter)
    ========================================================================== */
+const SEARCH_INDEX = [
+  { name: 'State<TLevel>', type: 'Klasse', module: 'mklib.state', url: 'state.html', desc: 'Typisierter LDtk- & Nape-Basis-State mit automatischem Lifecycle' },
+  { name: 'TileLayer', type: 'Klasse', module: 'mklib.layer', url: 'layers.html', desc: 'Performante Kachelebenen-Darstellung aus LDtk' },
+  { name: 'EntityLayer', type: 'Klasse', module: 'mklib.layer', url: 'layers.html', desc: 'Dynamische Reflection-Instanziierung aller Level-Entities' },
+  { name: 'EntityLayerSource', type: 'Typedef', module: 'mklib.layer', url: 'layers.html', desc: 'Typisierter Entity-Layer-Provider aus LDtk-Generaten' },
+  { name: 'EntitySprite', type: 'Klasse', module: 'mklib.entity', url: 'entities.html', desc: 'Erweitertes FlxSprite mit LDtk Custom-Field-Zugriff' },
+  { name: 'EntityNapeSprite', type: 'Klasse', module: 'mklib.entity', url: 'entities.html', desc: 'EntitySprite mit integriertem Nape-Physikkörper und Sensor' },
+  { name: 'SaveManager', type: 'Klasse', module: 'mklib.save', url: 'save.html', desc: 'Zentrales Speichersystem mit Checkpoints, Spielzeit und Level-Snapshots' },
+  { name: 'ISaveable', type: 'Interface', module: 'mklib.save', url: 'save.html', desc: 'Schnittstelle für automatische Entity-Persistenz' },
+  { name: 'CheckpointMeta', type: 'Typedef', module: 'mklib.save', url: 'save.html', desc: 'Metadaten für Spielstände und Checkpoint-Slots' },
+  { name: 'AnimationBuilder', type: 'Makro', module: 'mklib.macro', url: 'animation.html', desc: 'Compile-Time-Makro zur automatischen Animation-Datenbankerzeugung' },
+  { name: 'FrameConfig', type: 'Typedef', module: 'mklib.animation', url: 'animation.html', desc: 'Konfiguration für Spritesheet-Frames und Animationen' },
+  { name: 'Listener', type: 'Klasse', module: 'mklib.physic', url: 'physics.html', desc: '13 spezialisierte Nape Kollisions- und Sensor-Listener' },
+  { name: 'ShapeBuilder', type: 'Klasse', module: 'mklib.physic', url: 'physics.html', desc: 'Generiert Nape-Polygon-Shapes direkt aus Bitmap/Spritesheets' },
+  { name: 'Tags', type: 'Klasse', module: 'mklib.tools', url: 'physics.html', desc: 'String-basierte Nape CbType-Verwaltung' },
+  { name: 'NavGrid', type: 'Klasse', module: 'mklib.path', url: 'pathfinding.html', desc: '2D-Wegfindungsraster mit Koordinatenumrechnung und Hindernissen' },
+  { name: 'NavGridBuilder', type: 'Klasse', module: 'mklib.path', url: 'pathfinding.html', desc: 'Baut automatisch NavGrids aus LDtk IntGrid oder Tiles' },
+  { name: 'AStar', type: 'Klasse', module: 'mklib.path', url: 'pathfinding.html', desc: 'High-Performance 2D A*-Algorithmus mit Pfadglättung' },
+  { name: 'GridPoint', type: 'Klasse', module: 'mklib.path', url: 'pathfinding.html', desc: '2D-Rasterpunkt mit Koordinatenvergleich' },
+  { name: 'LightingSystem', type: 'Klasse', module: 'mklib.light', url: 'lighting.html', desc: 'GPU-Shader Multi-Light-System mit weichen Schatten und Occludern' },
+  { name: 'Light', type: 'Klasse', module: 'mklib.light', url: 'lighting.html', desc: 'Dynamische GPU-Lichtquelle mit Zielverfolgung und Frustum-Culling' },
+  { name: 'SpotLight', type: 'Klasse', module: 'mklib.light', url: 'lighting.html', desc: 'Gerichteter Scheinwerfer mit Abstrahlwinkel und Fokus' },
+  { name: 'TorchLight', type: 'Klasse', module: 'mklib.light', url: 'lighting.html', desc: 'Flackernde Fackellichtquelle mit Multi-Harmonik' },
+  { name: 'GlowLight', type: 'Klasse', module: 'mklib.light', url: 'lighting.html', desc: 'Pulsierendes Aura- und Kristalllicht' },
+  { name: 'PointLight', type: 'Klasse', module: 'mklib.light', url: 'lighting.html', desc: '360-Grad Rundumlichtquelle mit Kernradius' },
+  { name: 'DirectionalLight', type: 'Klasse', module: 'mklib.light', url: 'lighting.html', desc: 'Globales Sonnen-/Mond- und Umgebungslicht' },
+  { name: 'CrtShader', type: 'Klasse', module: 'mklib.effect', url: 'effects.html', desc: 'Retro-Arcade CRT Post-Processing Shader mit Scanlines & Krümmung' },
+  { name: 'HazardLiquidShader', type: 'Klasse', module: 'mklib.effect', url: 'effects.html', desc: 'Prozeduraler GPU-Flüssigkeitsshader für Lava, Säure und Schleim' },
+  { name: 'HazardLiquidPlane', type: 'Klasse', module: 'mklib.effect', url: 'effects.html', desc: 'FlxSprite-Flüssigkeitsebene mit Schaden über Zeit' },
+  { name: 'HazardLiquidType', type: 'Enum', module: 'mklib.effect', url: 'effects.html', desc: 'Vordefinierte Flüssigkeitstypen: LAVA, ACID_SLIME, TOXIC_WATER' },
+  { name: 'WaterReflectionShader', type: 'Klasse', module: 'mklib.effect', url: 'effects.html', desc: 'Echtzeit-Wasserspiegelung mit Wellenverzerrung und Gischt' },
+  { name: 'WaterReflectionPlane', type: 'Klasse', module: 'mklib.effect', url: 'effects.html', desc: 'Spiegelungsebene für Wasserflächen im Level' },
+  { name: 'EntityWaterReflection', type: 'Klasse', module: 'mklib.effect', url: 'effects.html', desc: 'Dynamische Wasserspiegelung für einzelne Spielfiguren' },
+  { name: 'AspectRatio', type: 'Klasse', module: 'mklib.tools', url: 'tools-math.html', desc: 'Dynamische Viewport- und Seitenverhältnisskalierung' },
+  { name: 'GamepadHelper', type: 'Klasse', module: 'mklib.tools', url: 'tools-math.html', desc: 'Controller-Vibrations- und Rumble-Steuerung' },
+  { name: 'MathTool', type: 'Klasse', module: 'mklib.math', url: 'tools-math.html', desc: 'Mathematische Hilfsfunktionen (z. B. floatFix)' },
+  { name: 'LDtk Guide & Workflow', type: 'Thema', module: 'ldtk', url: 'ldtk-guide.html', desc: 'LDtk-Editor Einrichtung, Custom Fields, Enums und Layer' },
+  { name: 'Schnellstart & Installation', type: 'Thema', module: 'setup', url: 'getting-started.html', desc: 'Project.xml, HaxeFlixel-Einbindung und Bootstrapping' },
+  { name: 'Übersicht & API-Matrix', type: 'Thema', module: 'mklib', url: 'index.html', desc: 'Vollständige Matrix aller 32 Klassen und Module' }
+];
+
 function initSearch() {
   const searchInput = document.getElementById('docs-search');
-  if (!searchInput) return;
+  const searchContainer = document.querySelector('.header-search');
+  if (!searchInput || !searchContainer) return;
+
+  // Create dropdown element
+  let dropdown = searchContainer.querySelector('.search-dropdown');
+  if (!dropdown) {
+    dropdown = document.createElement('div');
+    dropdown.className = 'search-dropdown';
+    searchContainer.appendChild(dropdown);
+  }
+
+  let activeIndex = -1;
+
+  function renderDropdown(matches) {
+    if (matches.length === 0) {
+      dropdown.innerHTML = `<div class="search-no-results">${currentLang === 'en' ? 'No matching classes or topics found' : 'Keine passenden Klassen oder Themen gefunden'}</div>`;
+      dropdown.classList.add('open');
+      activeIndex = -1;
+      return;
+    }
+
+    dropdown.innerHTML = matches.map((item, idx) => `
+      <a href="${item.url}" class="search-item ${idx === activeIndex ? 'active' : ''}" data-idx="${idx}">
+        <div class="search-item-top">
+          <span class="search-item-name">${item.name}</span>
+          <span class="search-item-badge">${item.type}</span>
+        </div>
+        <div class="search-item-desc">${item.desc}</div>
+      </a>
+    `).join('');
+    dropdown.classList.add('open');
+  }
+
+  function closeDropdown() {
+    dropdown.classList.remove('open');
+    dropdown.innerHTML = '';
+    activeIndex = -1;
+  }
 
   searchInput.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase().trim();
-    const navItems = document.querySelectorAll('.nav-item');
 
     if (!query) {
-      navItems.forEach(item => item.style.display = '');
+      closeDropdown();
+      // Reset table row filter
       document.querySelectorAll('.api-table tbody tr').forEach(row => row.style.display = '');
       return;
     }
 
-    // Check which sections have matching content (class names, methods, properties)
-    const sectionMatchMap = new Map();
-    document.querySelectorAll('.doc-section').forEach(sec => {
-      const secText = sec.textContent.toLowerCase();
-      sectionMatchMap.set(sec.id, secText.includes(query));
-    });
+    // Filter index
+    const matches = SEARCH_INDEX.filter(item =>
+      item.name.toLowerCase().includes(query) ||
+      item.module.toLowerCase().includes(query) ||
+      item.desc.toLowerCase().includes(query)
+    ).slice(0, 8);
 
-    navItems.forEach(item => {
-      const link = item.querySelector('a');
-      const href = link?.getAttribute('href') || '';
-      const secId = href.replace('#', '');
-      const itemText = item.textContent.toLowerCase();
+    renderDropdown(matches);
 
-      if (itemText.includes(query) || href.includes(query) || sectionMatchMap.get(secId)) {
-        item.style.display = '';
-      } else {
-        item.style.display = 'none';
-      }
-    });
-
-    // Also filter table rows within the active section
+    // Also filter tables on current page
     document.querySelectorAll('.api-table tbody tr').forEach(row => {
       const rowText = row.textContent.toLowerCase();
-      if (!query || rowText.includes(query)) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
+      row.style.display = rowText.includes(query) ? '' : 'none';
     });
   });
 
   searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      const firstVisible = document.querySelector('.nav-item:not([style*="display: none"]) a');
-      if (firstVisible) {
-        firstVisible.click();
+    const items = dropdown.querySelectorAll('.search-item');
+    if (!dropdown.classList.contains('open') || items.length === 0) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIndex = (activeIndex + 1) % items.length;
+      updateActiveItem(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIndex = (activeIndex - 1 + items.length) % items.length;
+      updateActiveItem(items);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (activeIndex >= 0 && activeIndex < items.length) {
+        items[activeIndex].click();
+      } else if (items.length > 0) {
+        items[0].click();
       }
+    } else if (e.key === 'Escape') {
+      closeDropdown();
+    }
+  });
+
+  function updateActiveItem(items) {
+    items.forEach((item, idx) => {
+      if (idx === activeIndex) {
+        item.classList.add('active');
+        item.scrollIntoView({ block: 'nearest' });
+      } else {
+        item.classList.remove('active');
+      }
+    });
+  }
+
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!searchContainer.contains(e.target)) {
+      closeDropdown();
     }
   });
 }

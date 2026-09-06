@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pathfinding & A* — mklib Dokumentation</title>
+  <meta name="description" content="Lückenlose Dokumentation und API-Referenz für mklib — Jede Klasse, Methode und Eigenschaft für HaxeFlixel, LDtk und Nape 2D.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Glow Backgrounds -->
+  <div class="bg-decorations">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="icon-btn mobile-menu-btn" aria-label="Menü öffnen">☰</button>
+      <a href="index.html" class="logo-group">
+        <div class="logo-badge">mk</div>
+        <div>
+          <span class="logo-title">mklib</span>
+          <span class="logo-version">v1.0.1</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Search Input -->
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="docs-search" class="search-input" placeholder="Klasse, Methode oder Feld suchen..." data-de="Klasse, Methode oder Feld suchen..." data-en="Search class, method, or field..." autocomplete="off">
+    </div>
+
+    <!-- Header Actions (Language Switcher & Theme Toggle & GitHub) -->
+    <div class="header-actions">
+      <!-- Language Switcher -->
+      <div class="lang-switch-group">
+        <button class="lang-btn active" data-set-lang="de" title="Deutsch">DE</button>
+        <button class="lang-btn" data-set-lang="en" title="English">EN</button>
+      </div>
+
+      <button id="theme-toggle" class="icon-btn" title="Thema wechseln">☀️</button>
+      <a href="https://github.com/markuskahl/mklib" target="_blank" rel="noopener noreferrer" class="github-link">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- App Layout Container -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div>
+          <div class="nav-section-title" data-de="Einführung" data-en="Introduction">Einführung</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="index.html"><span class="nav-icon">📖</span> <span data-de="Übersicht & API-Matrix" data-en="Overview & API Matrix">Übersicht & API-Matrix</span></a></li>
+            <li class="nav-item"><a href="getting-started.html"><span class="nav-icon">🚀</span> <span data-de="Schnellstart" data-en="Quick Start">Schnellstart</span></a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-section-title" data-de="Kern-Module & Klassen" data-en="Core Modules & Classes">Kern-Module & Klassen</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="ldtk-guide.html"><span class="nav-icon">🗺️</span> <span data-de="LDtk Guide & Felder" data-en="LDtk Guide & Fields">LDtk Guide & Felder</span></a></li>
+            <li class="nav-item"><a href="state.html"><span class="nav-icon">🎮</span> <span data-de="State Management" data-en="State Management">State Management</span></a></li>
+            <li class="nav-item"><a href="layers.html"><span class="nav-icon">🗺️</span> <span data-de="Layer System" data-en="Layer System">Layer System</span></a></li>
+            <li class="nav-item"><a href="entities.html"><span class="nav-icon">👾</span> <span data-de="Entities & Sprites" data-en="Entities & Sprites">Entities & Sprites</span></a></li>
+            <li class="nav-item"><a href="save.html"><span class="nav-icon">💾</span> <span data-de="Save & Persistence" data-en="Save & Persistence">Save & Persistence</span></a></li>
+            <li class="nav-item"><a href="animation.html"><span class="nav-icon">🎬</span> <span data-de="Animationen & Makros" data-en="Animations & Macros">Animationen & Makros</span></a></li>
+            <li class="nav-item"><a href="physics.html"><span class="nav-icon">⚡</span> <span data-de="Physik & Sensoren" data-en="Physics & Sensors">Physik & Sensoren</span></a></li>
+            <li class="nav-item active"><a href="pathfinding.html"><span class="nav-icon">🧭</span> <span data-de="Pathfinding & A*" data-en="Pathfinding & A*">Pathfinding & A*</span></a></li>
+            <li class="nav-item"><a href="lighting.html"><span class="nav-icon">💡</span> <span data-de="GPU Lighting System" data-en="GPU Lighting System">GPU Lighting System</span></a></li>
+            <li class="nav-item"><a href="effects.html"><span class="nav-icon">🎨</span> <span data-de="Shader & Effekte" data-en="Shaders & Effects">Shader & Effekte</span></a></li>
+            <li class="nav-item"><a href="tools-math.html"><span class="nav-icon">📐</span> <span data-de="Tools & Mathematik" data-en="Tools & Mathematics">Tools & Mathematik</span></a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Section: pathfinding -->
+<section id="pathfinding" class="doc-section active">
+        <div data-lang="de">
+<h1>🧭 Pathfinding & A* (<code>mklib.path.*</code>)</h1>
+          <p class="section-desc">Performante 2D A*-Wegfindung für 4- und 8-Wege-Bewegung sowie Multi-Tile-Einheiten.</p>
+
+          <!-- Interactive Live Demo -->
+          <div class="simulator-card">
+            <div class="simulator-header">
+              <h3>⚡ Interaktiver Live-A*-Simulator</h3>
+              <div class="sim-controls">
+                <label class="sim-switch-label">
+                  <input type="checkbox" id="sim-diagonal"> Diagonale (8-Wege)
+                </label>
+                <label class="sim-switch-label">
+                  Größe:
+                  <select id="sim-span" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px;">
+                    <option value="1">1x1 Kachel</option>
+                    <option value="2">2x2 Kacheln</option>
+                  </select>
+                </label>
+                <button id="sim-maze" class="sim-btn">🎲 Zufallswände</button>
+                <button id="sim-clear" class="sim-btn">🗑️ Leeren</button>
+              </div>
+            </div>
+
+            <div class="canvas-container">
+              <canvas id="astar-canvas"></canvas>
+            </div>
+
+            <div class="sim-legend">
+              <div class="legend-item"><div class="legend-color" style="background: #10b981;"></div> Start (S) ziehen</div>
+              <div class="legend-item"><div class="legend-color" style="background: #f43f5e;"></div> Ziel (Z) ziehen</div>
+              <div class="legend-item"><div class="legend-color" style="background: #334155;"></div> Klick &amp; Ziehen = Wand zeichnen/löschen</div>
+              <div class="legend-item"><div class="legend-color" style="background: #38bdf8;"></div> Gefundener A*-Pfad</div>
+            </div>
+          </div>
+
+          <h2>1. <code>NavGrid</code> (<code>mklib.path.NavGrid</code>)</h2>
+          <p>Speichert das 2D-Raster in einem flachen 1D-Array (<code>0 = frei</code>, <code>1 = blockiert</code>).</p>
+
+          <h3>Eigenschaften</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Eigenschaft</th>
+                  <th>Typ</th>
+                  <th>Modifizierer</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>width</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public (default, null)</code></td>
+                  <td>Breite des Rasters in Zellen (Spalten).</td>
+                </tr>
+                <tr>
+                  <td><code>height</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public (default, null)</code></td>
+                  <td>Höhe des Rasters in Zellen (Zeilen).</td>
+                </tr>
+                <tr>
+                  <td><code>gridSize</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public (default, null)</code></td>
+                  <td>Kantenlänge einer Zelle in Pixeln (z. B. <code>16</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>data</code></td>
+                  <td><code>Array&lt;Int&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Lineares 1D-Array aller Zellen (Größe <code>width * height</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methoden</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(w:Int, h:Int, gridSize:Int = 16, defaultValue:Int = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt ein neues NavGrid.</td>
+                </tr>
+                <tr>
+                  <td><code>isInBounds</code></td>
+                  <td><code>(cx:Int, cy:Int):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob <code>(cx, cy)</code> innerhalb der Map-Grenzen liegt.</td>
+                </tr>
+                <tr>
+                  <td><code>getIndex</code></td>
+                  <td><code>(cx:Int, cy:Int):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Berechnet <code>(cy * width) + cx</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>get</code></td>
+                  <td><code>(cx:Int, cy:Int):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Gibt den Zellwert zurück (oder <code>1</code> außerhalb).</td>
+                </tr>
+                <tr>
+                  <td><code>set</code></td>
+                  <td><code>(cx:Int, cy:Int, value:Int):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Setzt den Wert einer Zelle.</td>
+                </tr>
+                <tr>
+                  <td><code>isWalkable</code></td>
+                  <td><code>(cx:Int, cy:Int):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob eine Zelle frei ist (<code>value == 0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>isAreaWalkable</code></td>
+                  <td><code>(cx:Int, cy:Int, spanX:Int = 1, spanY:Int = 1):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft einen ganzen Bereich für Multi-Tile-Einheiten.</td>
+                </tr>
+                <tr>
+                  <td><code>setArea</code></td>
+                  <td><code>(cx:Int, cy:Int, spanX:Int, spanY:Int, value:Int = 1):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Setzt einen rechteckigen Bereich auf <code>value</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>setEntity</code></td>
+                  <td><code>(entity:ldtk.Entity, value:Int = 1):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Blockiert die Fläche einer LDtk-Entity anhand ihrer Pixelmaße.</td>
+                </tr>
+                <tr>
+                  <td><code>worldToGridX</code></td>
+                  <td><code>(worldX:Float):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Konvertiert Pixel-X in Raster-X.</td>
+                </tr>
+                <tr>
+                  <td><code>worldToGridY</code></td>
+                  <td><code>(worldY:Float):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Konvertiert Pixel-Y in Raster-Y.</td>
+                </tr>
+                <tr>
+                  <td><code>gridToWorldX</code></td>
+                  <td><code>(cx:Int, centered:Bool = false):Float</code></td>
+                  <td><code>Float</code></td>
+                  <td>Konvertiert Raster-X in Pixel-X (optional mit Zentrierung).</td>
+                </tr>
+                <tr>
+                  <td><code>gridToWorldY</code></td>
+                  <td><code>(cy:Int, centered:Bool = false):Float</code></td>
+                  <td><code>Float</code></td>
+                  <td>Konvertiert Raster-Y in Pixel-Y (optional mit Zentrierung).</td>
+                </tr>
+                <tr>
+                  <td><code>clear</code></td>
+                  <td><code>(value:Int = 0):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Setzt alle Zellen auf <code>value</code> zurück.</td>
+                </tr>
+                <tr>
+                  <td><code>clone</code></td>
+                  <td><code>():NavGrid</code></td>
+                  <td><code>NavGrid</code></td>
+                  <td>Erstellt eine tiefe Kopie des Grids.</td>
+                </tr>
+                <tr>
+                  <td><code>toString</code></td>
+                  <td><code>():String</code></td>
+                  <td><code>String</code></td>
+                  <td>Gibt eine ASCII-Vorschau des Grids zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>NavGridBuilder</code> (<code>mklib.path.NavGridBuilder</code>)</h2>
+          <p>Fluent Builder zum automatischen Extrahieren von Hindernissen aus LDtk-Leveln.</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(w:Int, h:Int, gridSize:Int = 16, defaultValue:Int = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt einen Builder mit festen Maßen.</td>
+                </tr>
+                <tr>
+                  <td><code>fromLevel</code></td>
+                  <td><code>(levelObj:Dynamic, defaultGridSize:Int = 16)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Erstellt Builder aus LDtk-Levelobjekt.</td>
+                </tr>
+                <tr>
+                  <td><code>addIntGrid</code></td>
+                  <td><code>(layer:Dynamic, ?isSolid:(val:Int)-&gt;Bool)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Fügt IntGrid-Layer hinzu.</td>
+                </tr>
+                <tr>
+                  <td><code>addTileLayer</code></td>
+                  <td><code>(layer:Dynamic, ?isSolid:(tileId:Int)-&gt;Bool)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Fügt Tile- oder AutoLayer hinzu.</td>
+                </tr>
+                <tr>
+                  <td><code>addEntityLayer</code></td>
+                  <td><code>(layer:Dynamic, ?filter:(e:ldtk.Entity)-&gt;Bool)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Fügt Entity-Layer hinzu.</td>
+                </tr>
+                <tr>
+                  <td><code>addLayerByName</code></td>
+                  <td><code>(name:String, ?isSolidEntity:(e:ldtk.Entity)-&gt;Bool)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Löst Layer nach Name auf.</td>
+                </tr>
+                <tr>
+                  <td><code>autoBuild</code></td>
+                  <td><code>(levelObj:Dynamic, ?isSolidEntity:(e:ldtk.Entity)-&gt;Bool, defaultGridSize:Int = 16)</code></td>
+                  <td><code>NavGrid</code></td>
+                  <td>Scannt alle Layer automatisch und baut das Grid fertig.</td>
+                </tr>
+                <tr>
+                  <td><code>build</code></td>
+                  <td><code>():NavGrid</code></td>
+                  <td><code>NavGrid</code></td>
+                  <td>Liefert das konfigurierte `NavGrid` zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>3. <code>AStar</code> & <code>GridPoint</code> (<code>mklib.path.AStar</code>)</h2>
+          
+          <h3><code>GridPoint</code></h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>x</code></td>
+                  <td><code>Int</code> (Eigenschaft)</td>
+                  <td>Die X-Rasterkoordinate.</td>
+                </tr>
+                <tr>
+                  <td><code>y</code></td>
+                  <td><code>Int</code> (Eigenschaft)</td>
+                  <td>Die Y-Rasterkoordinate.</td>
+                </tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(x:Int, y:Int)</code> (Methode)</td>
+                  <td>Erstellt einen neuen Punkt.</td>
+                </tr>
+                <tr>
+                  <td><code>equals</code></td>
+                  <td><code>(other:GridPoint):Bool</code> (Methode)</td>
+                  <td>Prüft Koordinatengleichheit.</td>
+                </tr>
+                <tr>
+                  <td><code>toString</code></td>
+                  <td><code>():String</code> (Methode)</td>
+                  <td>Gibt <code>"(x, y)"</code> zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3><code>AStar</code></h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>SQRT2</code></td>
+                  <td><code>Float = 1.41421356237</code> (Konstante)</td>
+                  <td>Diagonale Schrittkosten.</td>
+                </tr>
+                <tr>
+                  <td><code>findPath</code></td>
+                  <td><code>(grid:NavGrid, startX:Int, startY:Int, goalX:Int, goalY:Int, agentSpanX:Int = 1, agentSpanY:Int = 1, allowDiagonal:Bool = false):Array&lt;GridPoint&gt;</code></td>
+                  <td>Pfadsuche in Rasterkoordinaten.</td>
+                </tr>
+                <tr>
+                  <td><code>findWorldPath</code></td>
+                  <td><code>(grid:NavGrid, startWorldX:Float, startWorldY:Float, goalWorldX:Float, goalWorldY:Float, agentSpanX:Int = 1, agentSpanY:Int = 1, allowDiagonal:Bool = false, centered:Bool = true):Array&lt;FlxPoint&gt;</code></td>
+                  <td>Pfadsuche direkt in Flixel-Weltkoordinaten (<code>FlxPoint</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="physics.html" class="nav-page-btn">← Physik & Sensoren</a>
+            <a href="lighting.html" class="nav-page-btn">GPU Lighting System →</a>
+          </div>
+        </div>
+        <div data-lang="en">
+<h1>🧭 Pathfinding & A* (<code>mklib.path.*</code>)</h1>
+          <p class="section-desc">Performante 2D A*-Wegfindung für 4- und 8-Wege-Bewegung sowie Multi-Tile-Einheiten.</p>
+
+          <!-- Interactive Live Demo -->
+          <div class="simulator-card">
+            <div class="simulator-header">
+              <h3>⚡ Interaktiver Live-A*-Simulator</h3>
+              <div class="sim-controls">
+                <label class="sim-switch-label">
+                  <input type="checkbox" id="sim-diagonal"> Diagonale (8-Wege)
+                </label>
+                <label class="sim-switch-label">
+                  Größe:
+                  <select id="sim-span" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px;">
+                    <option value="1">1x1 Kachel</option>
+                    <option value="2">2x2 Kacheln</option>
+                  </select>
+                </label>
+                <button id="sim-maze" class="sim-btn">🎲 Zufallswände</button>
+                <button id="sim-clear" class="sim-btn">🗑️ Leeren</button>
+              </div>
+            </div>
+
+            <div class="canvas-container">
+              <canvas id="astar-canvas"></canvas>
+            </div>
+
+            <div class="sim-legend">
+              <div class="legend-item"><div class="legend-color" style="background: #10b981;"></div> Start (S) ziehen</div>
+              <div class="legend-item"><div class="legend-color" style="background: #f43f5e;"></div> Ziel (Z) ziehen</div>
+              <div class="legend-item"><div class="legend-color" style="background: #334155;"></div> Klick &amp; Ziehen = Wand zeichnen/löschen</div>
+              <div class="legend-item"><div class="legend-color" style="background: #38bdf8;"></div> Gefundener A*-Pfad</div>
+            </div>
+          </div>
+
+          <h2>1. <code>NavGrid</code> (<code>mklib.path.NavGrid</code>)</h2>
+          <p>Speichert das 2D-Raster in einem flachen 1D-Array (<code>0 = frei</code>, <code>1 = blockiert</code>).</p>
+
+          <h3>Properties</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>width</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public (default, null)</code></td>
+                  <td>Breite des Rasters in Zellen (Spalten).</td>
+                </tr>
+                <tr>
+                  <td><code>height</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public (default, null)</code></td>
+                  <td>Höhe des Rasters in Zellen (Zeilen).</td>
+                </tr>
+                <tr>
+                  <td><code>gridSize</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public (default, null)</code></td>
+                  <td>Kantenlänge einer Zelle in Pixeln (z. B. <code>16</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>data</code></td>
+                  <td><code>Array&lt;Int&gt;</code></td>
+                  <td><code>public</code></td>
+                  <td>Lineares 1D-Array aller Zellen (Größe <code>width * height</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methods</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(w:Int, h:Int, gridSize:Int = 16, defaultValue:Int = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt ein neues NavGrid.</td>
+                </tr>
+                <tr>
+                  <td><code>isInBounds</code></td>
+                  <td><code>(cx:Int, cy:Int):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob <code>(cx, cy)</code> innerhalb der Map-Grenzen liegt.</td>
+                </tr>
+                <tr>
+                  <td><code>getIndex</code></td>
+                  <td><code>(cx:Int, cy:Int):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Berechnet <code>(cy * width) + cx</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>get</code></td>
+                  <td><code>(cx:Int, cy:Int):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Gibt den Zellwert zurück (oder <code>1</code> außerhalb).</td>
+                </tr>
+                <tr>
+                  <td><code>set</code></td>
+                  <td><code>(cx:Int, cy:Int, value:Int):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Setzt den Wert einer Zelle.</td>
+                </tr>
+                <tr>
+                  <td><code>isWalkable</code></td>
+                  <td><code>(cx:Int, cy:Int):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob eine Zelle frei ist (<code>value == 0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>isAreaWalkable</code></td>
+                  <td><code>(cx:Int, cy:Int, spanX:Int = 1, spanY:Int = 1):Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft einen ganzen Bereich für Multi-Tile-Einheiten.</td>
+                </tr>
+                <tr>
+                  <td><code>setArea</code></td>
+                  <td><code>(cx:Int, cy:Int, spanX:Int, spanY:Int, value:Int = 1):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Setzt einen rechteckigen Bereich auf <code>value</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>setEntity</code></td>
+                  <td><code>(entity:ldtk.Entity, value:Int = 1):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Blockiert die Fläche einer LDtk-Entity anhand ihrer Pixelmaße.</td>
+                </tr>
+                <tr>
+                  <td><code>worldToGridX</code></td>
+                  <td><code>(worldX:Float):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Konvertiert Pixel-X in Raster-X.</td>
+                </tr>
+                <tr>
+                  <td><code>worldToGridY</code></td>
+                  <td><code>(worldY:Float):Int</code></td>
+                  <td><code>Int</code></td>
+                  <td>Konvertiert Pixel-Y in Raster-Y.</td>
+                </tr>
+                <tr>
+                  <td><code>gridToWorldX</code></td>
+                  <td><code>(cx:Int, centered:Bool = false):Float</code></td>
+                  <td><code>Float</code></td>
+                  <td>Konvertiert Raster-X in Pixel-X (optional mit Zentrierung).</td>
+                </tr>
+                <tr>
+                  <td><code>gridToWorldY</code></td>
+                  <td><code>(cy:Int, centered:Bool = false):Float</code></td>
+                  <td><code>Float</code></td>
+                  <td>Konvertiert Raster-Y in Pixel-Y (optional mit Zentrierung).</td>
+                </tr>
+                <tr>
+                  <td><code>clear</code></td>
+                  <td><code>(value:Int = 0):Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Setzt alle Zellen auf <code>value</code> zurück.</td>
+                </tr>
+                <tr>
+                  <td><code>clone</code></td>
+                  <td><code>():NavGrid</code></td>
+                  <td><code>NavGrid</code></td>
+                  <td>Erstellt eine tiefe Kopie des Grids.</td>
+                </tr>
+                <tr>
+                  <td><code>toString</code></td>
+                  <td><code>():String</code></td>
+                  <td><code>String</code></td>
+                  <td>Gibt eine ASCII-Vorschau des Grids zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>NavGridBuilder</code> (<code>mklib.path.NavGridBuilder</code>)</h2>
+          <p>Fluent Builder zum automatischen Extrahieren von Hindernissen aus LDtk-Leveln.</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(w:Int, h:Int, gridSize:Int = 16, defaultValue:Int = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt einen Builder mit festen Maßen.</td>
+                </tr>
+                <tr>
+                  <td><code>fromLevel</code></td>
+                  <td><code>(levelObj:Dynamic, defaultGridSize:Int = 16)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Erstellt Builder aus LDtk-Levelobjekt.</td>
+                </tr>
+                <tr>
+                  <td><code>addIntGrid</code></td>
+                  <td><code>(layer:Dynamic, ?isSolid:(val:Int)-&gt;Bool)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Fügt IntGrid-Layer hinzu.</td>
+                </tr>
+                <tr>
+                  <td><code>addTileLayer</code></td>
+                  <td><code>(layer:Dynamic, ?isSolid:(tileId:Int)-&gt;Bool)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Fügt Tile- oder AutoLayer hinzu.</td>
+                </tr>
+                <tr>
+                  <td><code>addEntityLayer</code></td>
+                  <td><code>(layer:Dynamic, ?filter:(e:ldtk.Entity)-&gt;Bool)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Fügt Entity-Layer hinzu.</td>
+                </tr>
+                <tr>
+                  <td><code>addLayerByName</code></td>
+                  <td><code>(name:String, ?isSolidEntity:(e:ldtk.Entity)-&gt;Bool)</code></td>
+                  <td><code>NavGridBuilder</code></td>
+                  <td>Löst Layer nach Name auf.</td>
+                </tr>
+                <tr>
+                  <td><code>autoBuild</code></td>
+                  <td><code>(levelObj:Dynamic, ?isSolidEntity:(e:ldtk.Entity)-&gt;Bool, defaultGridSize:Int = 16)</code></td>
+                  <td><code>NavGrid</code></td>
+                  <td>Scannt alle Layer automatisch und baut das Grid fertig.</td>
+                </tr>
+                <tr>
+                  <td><code>build</code></td>
+                  <td><code>():NavGrid</code></td>
+                  <td><code>NavGrid</code></td>
+                  <td>Liefert das konfigurierte `NavGrid` zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>3. <code>AStar</code> & <code>GridPoint</code> (<code>mklib.path.AStar</code>)</h2>
+          
+          <h3><code>GridPoint</code></h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>x</code></td>
+                  <td><code>Int</code> (Eigenschaft)</td>
+                  <td>Die X-Rasterkoordinate.</td>
+                </tr>
+                <tr>
+                  <td><code>y</code></td>
+                  <td><code>Int</code> (Eigenschaft)</td>
+                  <td>Die Y-Rasterkoordinate.</td>
+                </tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(x:Int, y:Int)</code> (Methode)</td>
+                  <td>Erstellt einen neuen Punkt.</td>
+                </tr>
+                <tr>
+                  <td><code>equals</code></td>
+                  <td><code>(other:GridPoint):Bool</code> (Methode)</td>
+                  <td>Prüft Koordinatengleichheit.</td>
+                </tr>
+                <tr>
+                  <td><code>toString</code></td>
+                  <td><code>():String</code> (Methode)</td>
+                  <td>Gibt <code>"(x, y)"</code> zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3><code>AStar</code></h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>SQRT2</code></td>
+                  <td><code>Float = 1.41421356237</code> (Konstante)</td>
+                  <td>Diagonale Schrittkosten.</td>
+                </tr>
+                <tr>
+                  <td><code>findPath</code></td>
+                  <td><code>(grid:NavGrid, startX:Int, startY:Int, goalX:Int, goalY:Int, agentSpanX:Int = 1, agentSpanY:Int = 1, allowDiagonal:Bool = false):Array&lt;GridPoint&gt;</code></td>
+                  <td>Pfadsuche in Rasterkoordinaten.</td>
+                </tr>
+                <tr>
+                  <td><code>findWorldPath</code></td>
+                  <td><code>(grid:NavGrid, startWorldX:Float, startWorldY:Float, goalWorldX:Float, goalWorldY:Float, agentSpanX:Int = 1, agentSpanY:Int = 1, allowDiagonal:Bool = false, centered:Bool = true):Array&lt;FlxPoint&gt;</code></td>
+                  <td>Pfadsuche direkt in Flixel-Weltkoordinaten (<code>FlxPoint</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="physics.html" class="nav-page-btn">← Physik & Sensoren</a>
+            <a href="lighting.html" class="nav-page-btn">GPU Lighting System →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

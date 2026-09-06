@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools & Mathematik — mklib Dokumentation</title>
+  <meta name="description" content="Lückenlose Dokumentation und API-Referenz für mklib — Jede Klasse, Methode und Eigenschaft für HaxeFlixel, LDtk und Nape 2D.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Glow Backgrounds -->
+  <div class="bg-decorations">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="icon-btn mobile-menu-btn" aria-label="Menü öffnen">☰</button>
+      <a href="index.html" class="logo-group">
+        <div class="logo-badge">mk</div>
+        <div>
+          <span class="logo-title">mklib</span>
+          <span class="logo-version">v1.0.1</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Search Input -->
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="docs-search" class="search-input" placeholder="Klasse, Methode oder Feld suchen..." data-de="Klasse, Methode oder Feld suchen..." data-en="Search class, method, or field..." autocomplete="off">
+    </div>
+
+    <!-- Header Actions (Language Switcher & Theme Toggle & GitHub) -->
+    <div class="header-actions">
+      <!-- Language Switcher -->
+      <div class="lang-switch-group">
+        <button class="lang-btn active" data-set-lang="de" title="Deutsch">DE</button>
+        <button class="lang-btn" data-set-lang="en" title="English">EN</button>
+      </div>
+
+      <button id="theme-toggle" class="icon-btn" title="Thema wechseln">☀️</button>
+      <a href="https://github.com/markuskahl/mklib" target="_blank" rel="noopener noreferrer" class="github-link">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- App Layout Container -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div>
+          <div class="nav-section-title" data-de="Einführung" data-en="Introduction">Einführung</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="index.html"><span class="nav-icon">📖</span> <span data-de="Übersicht & API-Matrix" data-en="Overview & API Matrix">Übersicht & API-Matrix</span></a></li>
+            <li class="nav-item"><a href="getting-started.html"><span class="nav-icon">🚀</span> <span data-de="Schnellstart" data-en="Quick Start">Schnellstart</span></a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-section-title" data-de="Kern-Module & Klassen" data-en="Core Modules & Classes">Kern-Module & Klassen</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="ldtk-guide.html"><span class="nav-icon">🗺️</span> <span data-de="LDtk Guide & Felder" data-en="LDtk Guide & Fields">LDtk Guide & Felder</span></a></li>
+            <li class="nav-item"><a href="state.html"><span class="nav-icon">🎮</span> <span data-de="State Management" data-en="State Management">State Management</span></a></li>
+            <li class="nav-item"><a href="layers.html"><span class="nav-icon">🗺️</span> <span data-de="Layer System" data-en="Layer System">Layer System</span></a></li>
+            <li class="nav-item"><a href="entities.html"><span class="nav-icon">👾</span> <span data-de="Entities & Sprites" data-en="Entities & Sprites">Entities & Sprites</span></a></li>
+            <li class="nav-item"><a href="save.html"><span class="nav-icon">💾</span> <span data-de="Save & Persistence" data-en="Save & Persistence">Save & Persistence</span></a></li>
+            <li class="nav-item"><a href="animation.html"><span class="nav-icon">🎬</span> <span data-de="Animationen & Makros" data-en="Animations & Macros">Animationen & Makros</span></a></li>
+            <li class="nav-item"><a href="physics.html"><span class="nav-icon">⚡</span> <span data-de="Physik & Sensoren" data-en="Physics & Sensors">Physik & Sensoren</span></a></li>
+            <li class="nav-item"><a href="pathfinding.html"><span class="nav-icon">🧭</span> <span data-de="Pathfinding & A*" data-en="Pathfinding & A*">Pathfinding & A*</span></a></li>
+            <li class="nav-item"><a href="lighting.html"><span class="nav-icon">💡</span> <span data-de="GPU Lighting System" data-en="GPU Lighting System">GPU Lighting System</span></a></li>
+            <li class="nav-item"><a href="effects.html"><span class="nav-icon">🎨</span> <span data-de="Shader & Effekte" data-en="Shaders & Effects">Shader & Effekte</span></a></li>
+            <li class="nav-item active"><a href="tools-math.html"><span class="nav-icon">📐</span> <span data-de="Tools & Mathematik" data-en="Tools & Mathematics">Tools & Mathematik</span></a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Section: tools-math -->
+<section id="tools-math" class="doc-section active">
+        <div data-lang="de">
+<h1>🛠️ Tools & Mathematik (<code>mklib.tools.*</code> & <code>mklib.math.*</code>)</h1>
+          <p class="section-desc">Hilfsklassen für responsive Auflösungen und mathematische Berechnungen.</p>
+
+          <h2>1. <code>AspectRatio</code> (<code>mklib.tools.AspectRatio</code>)</h2>
+          <p>Berechnet anhand der Bildschirmauflösung automatisch die optimale Spielbreite für eine feste vertikale Design-Höhe:</p>
+
+          <h3>Eigenschaften</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Eigenschaft</th>
+                  <th>Typ</th>
+                  <th>Modifizierer</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>width</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Die berechnete Spielbreite in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>height</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Die berechnete Spielhöhe in Pixeln (Standard: <code>180</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>isDefault</code></td>
+                  <td><code>Bool</code></td>
+                  <td><code>public</code></td>
+                  <td>Gibt an, ob die Fallback-Maße (<code>400x180</code>) verwendet wurden.</td>
+                </tr>
+                <tr>
+                  <td><code>screenRatio</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>private</code></td>
+                  <td>Das tatsächliche Seitenverhältnis des Displays.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methoden</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(?screenWidth:Float = 0, ?screenHeight:Float = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt die Instanz und berechnet sofort die Maße via <code>calc()</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>calc</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Führt die interne Berechnung von `width` und `height` durch.</td>
+                </tr>
+                <tr>
+                  <td><code>isInRange</code></td>
+                  <td><code>():Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob das Seitenverhältnis im Breitbildbereich (1.77 bis 2.22) liegt.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>GamepadHelper</code> (<code>mklib.tools.GamepadHelper</code>)</h2>
+          <p>Hilfsklasse zum Auslösen von Gamepad-Rumble und Controller-Vibrationen über HaxeFlixel und Lime:</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>vibrate</code></td>
+                  <td><code>(gamepadID:Int = 0, lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Löst Controller-Vibration auf dem angegebenen Gamepad aus (Tieffrequenz- & Hochfrequenzmotor in ms).</td>
+                </tr>
+                <tr>
+                  <td><code>rumble</code></td>
+                  <td><code>(gamepadID:Int = 0, lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Direkter Inline-Alias für <code>vibrate()</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>stopVibration</code></td>
+                  <td><code>(gamepadID:Int = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Stoppt die Vibration auf dem angegebenen Gamepad sofort.</td>
+                </tr>
+                <tr>
+                  <td><code>vibrateAll</code></td>
+                  <td><code>(lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Löst eine Vibration auf allen aktuell verbundenen Gamepads aus.</td>
+                </tr>
+                <tr>
+                  <td><code>stopAllVibrations</code></td>
+                  <td><code>()</code></td>
+                  <td><code>Void</code></td>
+                  <td>Stoppt alle aktiven Vibrationen auf sämtlichen Gamepads.</td>
+                </tr>
+                <tr>
+                  <td><code>getLimeGamepad</code></td>
+                  <td><code>(gamepadID:Int = 0)</code></td>
+                  <td><code>LimeGamepad</code></td>
+                  <td>Gibt das native <code>lime.ui.Gamepad</code>-Gerät zurück.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="code-box" style="margin-top: 1.5rem;">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code>import mklib.tools.GamepadHelper;
+
+// Standard-Feedback (Spieler 1, 200ms)
+GamepadHelper.vibrate(0);
+
+// Starker Explosionstreffer (Tiefer Motor 1.0, Hoher Motor 0.2, 400ms)
+GamepadHelper.vibrate(0, 1.0, 0.2, 400);
+
+// Vibration bei allen verbundenen Controllern
+GamepadHelper.vibrateAll(0.7, 0.7, 250);</code></pre>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>3. <code>MathTool</code> (<code>mklib.math.MathTool</code>)</h2>
+          <p>Hilfsfunktion zur Rundung von Gleitkommazahlen auf feste Nachkommastellen:</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode</th>
+                  <th>Signatur</th>
+                  <th>Rückgabe</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>floatFix</code></td>
+                  <td><code>(v:Float, length:Int):Float</code></td>
+                  <td><code>Float</code></td>
+                  <td>Rundet <code>v</code> auf <code>length</code> Nachkommastellen (z. B. <code>MathTool.floatFix(3.1415, 2) == 3.14</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="effects.html" class="nav-page-btn">← Wasser & Wellen-Shader</a>
+            <a href="index.html" class="nav-page-btn">Zurück zur Übersicht ↺</a>
+          </div>
+        </div>
+        <div data-lang="en">
+<h1>🛠️ Tools & Mathematik (<code>mklib.tools.*</code> & <code>mklib.math.*</code>)</h1>
+          <p class="section-desc">Hilfsklassen für responsive Auflösungen und mathematische Berechnungen.</p>
+
+          <h2>1. <code>AspectRatio</code> (<code>mklib.tools.AspectRatio</code>)</h2>
+          <p>Berechnet anhand der Bildschirmauflösung automatisch die optimale Spielbreite für eine feste vertikale Design-Höhe:</p>
+
+          <h3>Properties</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Modifier</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>width</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Die berechnete Spielbreite in Pixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>height</code></td>
+                  <td><code>Int</code></td>
+                  <td><code>public</code></td>
+                  <td>Die berechnete Spielhöhe in Pixeln (Standard: <code>180</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>isDefault</code></td>
+                  <td><code>Bool</code></td>
+                  <td><code>public</code></td>
+                  <td>Gibt an, ob die Fallback-Maße (<code>400x180</code>) verwendet wurden.</td>
+                </tr>
+                <tr>
+                  <td><code>screenRatio</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>private</code></td>
+                  <td>Das tatsächliche Seitenverhältnis des Displays.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Methods</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Rückgabe</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(?screenWidth:Float = 0, ?screenHeight:Float = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Erstellt die Instanz und berechnet sofort die Maße via <code>calc()</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>calc</code></td>
+                  <td><code>():Void</code></td>
+                  <td><code>Void</code></td>
+                  <td>Führt die interne Berechnung von `width` und `height` durch.</td>
+                </tr>
+                <tr>
+                  <td><code>isInRange</code></td>
+                  <td><code>():Bool</code></td>
+                  <td><code>Bool</code></td>
+                  <td>Prüft, ob das Seitenverhältnis im Breitbildbereich (1.77 bis 2.22) liegt.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>2. <code>GamepadHelper</code> (<code>mklib.tools.GamepadHelper</code>)</h2>
+          <p>Helper class for triggering gamepad rumble and controller vibration via HaxeFlixel and Lime:</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Return</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>vibrate</code></td>
+                  <td><code>(gamepadID:Int = 0, lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Triggers controller vibration on the specified gamepad (low & high frequency motors in ms).</td>
+                </tr>
+                <tr>
+                  <td><code>rumble</code></td>
+                  <td><code>(gamepadID:Int = 0, lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Direct inline alias for <code>vibrate()</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>stopVibration</code></td>
+                  <td><code>(gamepadID:Int = 0)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Stops vibration on the specified gamepad immediately.</td>
+                </tr>
+                <tr>
+                  <td><code>vibrateAll</code></td>
+                  <td><code>(lowFreq:Float = 0.5, highFreq:Float = 0.5, durationMs:Int = 200)</code></td>
+                  <td><code>Void</code></td>
+                  <td>Triggers vibration on all currently connected gamepads.</td>
+                </tr>
+                <tr>
+                  <td><code>stopAllVibrations</code></td>
+                  <td><code>()</code></td>
+                  <td><code>Void</code></td>
+                  <td>Stops all active vibrations on all gamepads.</td>
+                </tr>
+                <tr>
+                  <td><code>getLimeGamepad</code></td>
+                  <td><code>(gamepadID:Int = 0)</code></td>
+                  <td><code>LimeGamepad</code></td>
+                  <td>Returns the native <code>lime.ui.Gamepad</code> device instance.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="code-box" style="margin-top: 1.5rem;">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code>import mklib.tools.GamepadHelper;
+
+// Default haptic feedback (Player 1, 200ms)
+GamepadHelper.vibrate(0);
+
+// Heavy impact / explosion (Low motor 1.0, High motor 0.2, 400ms)
+GamepadHelper.vibrate(0, 1.0, 0.2, 400);
+
+// Rumble all connected controllers
+GamepadHelper.vibrateAll(0.7, 0.7, 250);</code></pre>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>3. <code>MathTool</code> (<code>mklib.math.MathTool</code>)</h2>
+          <p>Utility functions for rounding floating point numbers to fixed decimal places:</p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Signature</th>
+                  <th>Return</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>floatFix</code></td>
+                  <td><code>(v:Float, length:Int):Float</code></td>
+                  <td><code>Float</code></td>
+                  <td>Rounds <code>v</code> to <code>length</code> decimal places (e.g. <code>MathTool.floatFix(3.1415, 2) == 3.14</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="effects.html" class="nav-page-btn">← Wasser & Wellen-Shader</a>
+            <a href="index.html" class="nav-page-btn">Zurück zur Übersicht ↺</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

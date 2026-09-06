@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shader & Effekte — mklib Dokumentation</title>
+  <meta name="description" content="Lückenlose Dokumentation und API-Referenz für mklib — Jede Klasse, Methode und Eigenschaft für HaxeFlixel, LDtk und Nape 2D.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Glow Backgrounds -->
+  <div class="bg-decorations">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="icon-btn mobile-menu-btn" aria-label="Menü öffnen">☰</button>
+      <a href="index.html" class="logo-group">
+        <div class="logo-badge">mk</div>
+        <div>
+          <span class="logo-title">mklib</span>
+          <span class="logo-version">v1.0.1</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Search Input -->
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="docs-search" class="search-input" placeholder="Klasse, Methode oder Feld suchen..." data-de="Klasse, Methode oder Feld suchen..." data-en="Search class, method, or field..." autocomplete="off">
+    </div>
+
+    <!-- Header Actions (Language Switcher & Theme Toggle & GitHub) -->
+    <div class="header-actions">
+      <!-- Language Switcher -->
+      <div class="lang-switch-group">
+        <button class="lang-btn active" data-set-lang="de" title="Deutsch">DE</button>
+        <button class="lang-btn" data-set-lang="en" title="English">EN</button>
+      </div>
+
+      <button id="theme-toggle" class="icon-btn" title="Thema wechseln">☀️</button>
+      <a href="https://github.com/markuskahl/mklib" target="_blank" rel="noopener noreferrer" class="github-link">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- App Layout Container -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div>
+          <div class="nav-section-title" data-de="Einführung" data-en="Introduction">Einführung</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="index.html"><span class="nav-icon">📖</span> <span data-de="Übersicht & API-Matrix" data-en="Overview & API Matrix">Übersicht & API-Matrix</span></a></li>
+            <li class="nav-item"><a href="getting-started.html"><span class="nav-icon">🚀</span> <span data-de="Schnellstart" data-en="Quick Start">Schnellstart</span></a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-section-title" data-de="Kern-Module & Klassen" data-en="Core Modules & Classes">Kern-Module & Klassen</div>
+          <ul class="nav-list">
+            <li class="nav-item"><a href="ldtk-guide.html"><span class="nav-icon">🗺️</span> <span data-de="LDtk Guide & Felder" data-en="LDtk Guide & Fields">LDtk Guide & Felder</span></a></li>
+            <li class="nav-item"><a href="state.html"><span class="nav-icon">🎮</span> <span data-de="State Management" data-en="State Management">State Management</span></a></li>
+            <li class="nav-item"><a href="layers.html"><span class="nav-icon">🗺️</span> <span data-de="Layer System" data-en="Layer System">Layer System</span></a></li>
+            <li class="nav-item"><a href="entities.html"><span class="nav-icon">👾</span> <span data-de="Entities & Sprites" data-en="Entities & Sprites">Entities & Sprites</span></a></li>
+            <li class="nav-item"><a href="save.html"><span class="nav-icon">💾</span> <span data-de="Save & Persistence" data-en="Save & Persistence">Save & Persistence</span></a></li>
+            <li class="nav-item"><a href="animation.html"><span class="nav-icon">🎬</span> <span data-de="Animationen & Makros" data-en="Animations & Macros">Animationen & Makros</span></a></li>
+            <li class="nav-item"><a href="physics.html"><span class="nav-icon">⚡</span> <span data-de="Physik & Sensoren" data-en="Physics & Sensors">Physik & Sensoren</span></a></li>
+            <li class="nav-item"><a href="pathfinding.html"><span class="nav-icon">🧭</span> <span data-de="Pathfinding & A*" data-en="Pathfinding & A*">Pathfinding & A*</span></a></li>
+            <li class="nav-item"><a href="lighting.html"><span class="nav-icon">💡</span> <span data-de="GPU Lighting System" data-en="GPU Lighting System">GPU Lighting System</span></a></li>
+            <li class="nav-item active"><a href="effects.html"><span class="nav-icon">🎨</span> <span data-de="Shader & Effekte" data-en="Shaders & Effects">Shader & Effekte</span></a></li>
+            <li class="nav-item"><a href="tools-math.html"><span class="nav-icon">📐</span> <span data-de="Tools & Mathematik" data-en="Tools & Mathematics">Tools & Mathematik</span></a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Section: effects -->
+<section id="effects" class="doc-section active">
+        <div data-lang="de">
+          <h1>🎨 Shader- & Post-Processing-System (<code>mklib.effect.*</code>)</h1>
+          <p class="section-desc">Hardwarebeschleunigte 2D-GPU-Shader und spezialisierte Spielobjekte für authentische CRT-Retro-Filter, animierte Lava-/Säurebecken und dynamische Wasserspiegelungen.</p>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">📺</div>
+              <h3>CRT & Retro-Arcade</h3>
+              <p><code>CrtShader</code> simuliert Röhrenmonitore mit Wölbung, Scanlines, RGB-Phosphormaske, Glitch und Bloom.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🧪</div>
+              <h3>Lava & Säure-Flüssigkeiten</h3>
+              <p><code>HazardLiquidPlane</code> rendert prozedurale Lava, Säure/Slime und Giftwasser mit Kruste, Blubbern und Schaden.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🌊</div>
+              <h3>Wasser & Reflexionen</h3>
+              <p><code>WaterReflectionPlane</code> und Shader für Echtzeit-Wasserspiegelung, Wellenverzerrung und Gischtkanten.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🦆</div>
+              <h3>Entity-Begleiter</h3>
+              <p><code>EntityWaterReflection</code> spiegelt Spielfiguren automatisch an deren Fußkante und synchronisiert Animationen.</p>
+            </div>
+          </div>
+
+          <h2>🧭 Welcher Ansatz für welchen Zweck?</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Werkzeug / Komponente</th>
+                  <th>Einsatzbereich</th>
+                  <th>Vorteil</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong><code>WaterReflectionShader</code></strong><br><small>(Kamera-Filter)</small></td>
+                  <td><strong>Seen, Teiche, Flüsse, Meere</strong> im Level mit definierter Position & Größe (<code>setWaterArea</code>) oder Vollbild-Wasserlinie.</td>
+                  <td><strong>GPU-Echtzeit:</strong> Spiegelt alle Kacheln, Entities, Deko und Lichter automatisch mit 0 CPU-Overhead.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>EntityWaterReflection</code></strong><br><small>(Begleiter-Sprite)</small></td>
+                  <td><strong>Einzelne Spielfiguren (<code>Hero</code>, NPCs, Monster)</strong>, die im Wasser waten oder schwimmen.</td>
+                  <td><strong>Exakte Kontrolle:</strong> Spiegelt Frames und Animationen live unter den Füßen mit sanftem Wogen.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>WaterReflectionPlane</code></strong><br><small>(Platziertes FlxSprite)</small></td>
+                  <td><strong>Eigenständiges Spielobjekt</strong> (<code>FlxSprite</code>) an festen Weltkoordinaten.</td>
+                  <td>Verhält sich wie ein normales Flixel-Sprite in Gruppen und Render-Hierarchien.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🚀 Code-Beispiele & Schnellstart</h2>
+
+          <h3>1. Begrenzte Wasserfläche mit Position & Größe (Kamera-Filter)</h3>
+          <p>Definiert ein fixes Wasser-Rechteck in Weltkoordinaten. Außerhalb bleibt die Spielwelt völlig normal, innerhalb spiegelt sich alles oberhalb mit Wellen:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> flixel.FlxG;
+<span class="hl-keyword">import</span> openfl.filters.ShaderFilter;
+<span class="hl-keyword">import</span> mklib.state.State;
+<span class="hl-keyword">import</span> mklib.effect.shader.WaterReflectionShader;
+
+<span class="hl-keyword">class</span> <span class="hl-type">PlayState</span> <span class="hl-keyword">extends</span> <span class="hl-type">State</span>&lt;Data.Data_Level&gt; {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> waterShader:<span class="hl-type">WaterReflectionShader</span>;
+
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">create</span>():<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.create();
+
+        <span class="hl-comment">// 1. Shader instanziieren</span>
+        waterShader = <span class="hl-keyword">new</span> <span class="hl-type">WaterReflectionShader</span>();
+
+        <span class="hl-comment">// 2. Wasserfläche definieren: Welt-X=0, Welt-Y=120, Breite=320px, Tiefe=80px</span>
+        waterShader.setWaterArea(<span class="hl-num">0</span>, <span class="hl-num">120</span>, <span class="hl-num">320</span>, <span class="hl-num">80</span>);
+
+        <span class="hl-comment">// 3. Wellen-Dynamik einstellen (Speed, Frequenz, Amplitude, Kreuzwellen)</span>
+        waterShader.setWaveParams(<span class="hl-num">2.8</span>, <span class="hl-num">30.0</span>, <span class="hl-num">0.012</span>, <span class="hl-num">0.5</span>);
+
+        <span class="hl-comment">// 4. Wassertönung und Schaumkante einstellen</span>
+        waterShader.setWaterColor(<span class="hl-num">0x3366AA</span>, <span class="hl-num">0.45</span>);
+        waterShader.setFoam(<span class="hl-num">0.008</span>, <span class="hl-num">0xFFFFFF</span>);
+
+        <span class="hl-comment">// 5. Als Kamerafilter aktivieren</span>
+        FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type">ShaderFilter</span>(waterShader)];
+    }
+
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">update</span>(elapsed:<span class="hl-type">Float</span>):<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.update(elapsed);
+
+        <span class="hl-comment">// WICHTIG: Zählt Wellenzeit hoch und synchronisiert Kamera-Scroll/Zoom automatisch</span>
+        <span class="hl-keyword">if</span> (waterShader != <span class="hl-keyword">null</span>) {
+            waterShader.update(elapsed);
+        }
+    }
+}</code></pre>
+          </div>
+
+          <h3>2. Vollbild-Wasserspiegelung (Ab relativer Wasserlinie)</h3>
+          <p>Ideal für 2D-Platformer mit durchgehendem Meer/Wasser am unteren Bildschirmrand:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-comment">// Wasserlinie bei 65% der Bildschirmhöhe festlegen (0.0 = oben, 1.0 = unten)</span>
+waterShader.setWaterLevel(<span class="hl-num">0.65</span>);
+waterShader.setWaveParams(<span class="hl-num">3.0</span>, <span class="hl-num">35.0</span>, <span class="hl-num">0.01</span>, <span class="hl-num">0.5</span>);
+waterShader.setWaterColor(<span class="hl-num">0x103060</span>, <span class="hl-num">0.5</span>);
+
+FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type">ShaderFilter</span>(waterShader)];</code></pre>
+          </div>
+
+          <h3>3. Entity-Wasserreflexion (Spielfiguren-Begleiter)</h3>
+          <p>Erzeugt eine dynamische Wasser-Reflexion für den Spieler (<code>Hero</code>) oder NPCs:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span> entities;
+
+<span class="hl-keyword">import</span> mklib.entity.EntityNapeSprite;
+<span class="hl-keyword">import</span> mklib.effect.EntityWaterReflection;
+<span class="hl-keyword">import</span> ldtk.Entity;
+
+<span class="hl-keyword">class</span> <span class="hl-type">Hero</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntityNapeSprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> waterReflection:<span class="hl-type">EntityWaterReflection</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:ldtk.<span class="hl-type">Entity</span>) {
+        <span class="hl-keyword">super</span>(entity);
+
+        <span class="hl-comment">// 1. Wasserreflexion für diesen Hero erstellen (Alpha=0.6, Farbe=0x3366AA)</span>
+        waterReflection = <span class="hl-keyword">new</span> <span class="hl-type">EntityWaterReflection</span>(<span class="hl-keyword">this</span>, <span class="hl-num">0.6</span>, <span class="hl-num">0x3366AA</span>);
+
+        <span class="hl-comment">// 2. Wellenparameter für die Spielfigur einstellen</span>
+        waterReflection.setWaveParams(<span class="hl-num">4.0</span>, <span class="hl-num">20.0</span>, <span class="hl-num">0.08</span>);
+
+        <span class="hl-comment">// 3. Perspektivische Stauchung (z. B. 0.85)</span>
+        waterReflection.verticalScale = <span class="hl-num">0.85</span>;
+
+        <span class="hl-comment">// 4. Zum State hinzufügen</span>
+        <span class="hl-keyword">if</span> (state != <span class="hl-keyword">null</span>) {
+            state.add(waterReflection);
+        }
+    }
+}</code></pre>
+          </div>
+
+          <h3>4. Horizontaler Spiegel-Modus (<code>HORIZONTAL_MIRROR</code>)</h3>
+          <p>Für magische Wandspiegel, Raumportale oder seitliche Wasserwände:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> mklib.effect.WaterReflectionMode;
+
+<span class="hl-keyword">var</span> mirrorShader = <span class="hl-keyword">new</span> <span class="hl-type">WaterReflectionShader</span>();
+
+<span class="hl-comment">// 1. Modus auf horizontalen Spiegel schalten:</span>
+mirrorShader.setMode(WaterReflectionMode.HORIZONTAL_MIRROR);
+
+<span class="hl-comment">// 2. Spiegelachse bei 50% der Bildschirmbreite (X-Achse):</span>
+mirrorShader.setWaterLevel(<span class="hl-num">0.5</span>);
+mirrorShader.setWaveParams(<span class="hl-num">2.0</span>, <span class="hl-num">20.0</span>, <span class="hl-num">0.006</span>);
+
+          </div>
+
+          <h3>5. CRT- & Retro-Arcade-Filter (<code>CrtShader</code>)</h3>
+          <p>Wendet Bildschirmwölbung, Scanlines, RGB-Phosphormaske und sanftes Glühen auf die Kamera an:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> mklib.effect.shader.CrtShader;
+
+<span class="hl-keyword">var</span> crt = <span class="hl-keyword">new</span> <span class="hl-type">CrtShader</span>();
+crt.presetArcade(); <span class="hl-comment">// Vordefiniertes 80s Arcade-Preset</span>
+FlxG.camera.filters = [crt.filter];
+
+<span class="hl-comment">// Im State update(elapsed):</span>
+crt.update(elapsed, FlxG.camera);</code></pre>
+          </div>
+
+          <h3>6. Lava-, Säure- und Giftbecken (<code>HazardLiquidPlane</code>)</h3>
+          <p>Erstellt ein animiertes Flüssigkeitsbecken mit prozeduraler Kruste, Blubbern, Wellen und Umgebungsschaden:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Kopieren</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> mklib.effect.HazardLiquidPlane;
+<span class="hl-keyword">import</span> mklib.effect.HazardLiquidType;
+
+<span class="hl-comment">// 1. Glühendes Lava-Becken erzeugen (X, Y, Breite, Höhe, Typ)</span>
+<span class="hl-keyword">var</span> lava = <span class="hl-keyword">new</span> <span class="hl-type">HazardLiquidPlane</span>(<span class="hl-num">100</span>, <span class="hl-num">400</span>, <span class="hl-num">300</span>, <span class="hl-num">80</span>, HazardLiquidType.LAVA);
+lava.damagePerSecond = <span class="hl-num">40.0</span>;
+add(lava);
+
+<span class="hl-comment">// 2. Im State update(elapsed) Schaden auf den Spieler anwenden:</span>
+lava.applyHazardDamage(hero, elapsed);</code></pre>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🏛️ Detaillierte API-Referenz</h2>
+
+          <h3>1. <code>WaterReflectionShader</code> (<code>mklib.effect.shader.WaterReflectionShader</code>)</h3>
+          <p>Erbt von <code>flixel.system.FlxAssets.FlxShader</code>. Bietet komfortable Methoden zur Konfiguration aller Uniform-Parameter:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode / Eigenschaft</th>
+                  <th>Signatur / Typ</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Erstellt den Shader mit ausgewogenen Standardwerten für Wellengeschwindigkeit, Amplitude und Tönung.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaterArea</code></td>
+                  <td><code>(x:Float, y:Float, width:Float, height:Float, isWorldCoords:Bool = true, ?camera:FlxCamera):Void</code></td>
+                  <td>Definiert ein begrenztes Wasser-Rechteck in Weltkoordinaten. Außerhalb bleibt das Bild normal.</td>
+                </tr>
+                <tr>
+                  <td><code>clearWaterArea</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Deaktiviert die Flächenbegrenzung und schaltet zurück in den Vollbild-Modus.</td>
+                </tr>
+                <tr>
+                  <td><code>update</code></td>
+                  <td><code>(elapsed:Float, ?camera:FlxCamera):Void</code></td>
+                  <td>Aktualisiert den Zeitzähler (<code>u_time</code>) und synchronisiert automatisch Kamera-Scroll und Zoom.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaterLevel</code></td>
+                  <td><code>(level:Float):Void</code></td>
+                  <td>Setzt die relative Position der Wasserlinie im UV-Raum (<code>0.0</code> bis <code>1.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>syncWithCamera</code></td>
+                  <td><code>(worldY:Float, ?camera:FlxCamera):Void</code></td>
+                  <td>Verankert die Wasserlinie an einer absoluten Weltkoordinate und synchronisiert Scroll/Zoom.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaveParams</code></td>
+                  <td><code>(speed:Float, frequency:Float, amplitude:Float, secondaryWave:Float = 0.5):Void</code></td>
+                  <td>Konfiguriert Geschwindigkeit, Dichte, Amplitude und Kreuzwellen-Wichtung.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaterColor</code></td>
+                  <td><code>(color:FlxColor, tintIntensity:Float = 0.4):Void</code></td>
+                  <td>Setzt Grundfarbe und Mischfaktor des Wassers.</td>
+                </tr>
+                <tr>
+                  <td><code>setFoam</code></td>
+                  <td><code>(thickness:Float, ?color:FlxColor):Void</code></td>
+                  <td>Aktiviert und konfiguriert die Schaum- / Glanzkante an der Wasseroberfläche.</td>
+                </tr>
+                <tr>
+                  <td><code>setFade</code></td>
+                  <td><code>(depthFactor:Float, minAlpha:Float = 0.15):Void</code></td>
+                  <td>Steuert das Ausblenden der Reflexion mit zunehmender Wassertiefe.</td>
+                </tr>
+                <tr>
+                  <td><code>setMode</code></td>
+                  <td><code>(mode:WaterReflectionMode):Void</code></td>
+                  <td>Wählt zwischen vertikaler Wasseroberfläche (0), horizontalem Spiegel (1) und reiner Verzerrung (2).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>2. <code>EntityWaterReflection</code> (<code>mklib.effect.EntityWaterReflection</code>)</h3>
+          <p>Begleiter-Sprite zur Darstellung animierter Wasser-Reflexionen unter Spielfiguren:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>target</code></td>
+                  <td><code>FlxSprite</code></td>
+                  <td>Das überwachte Quell-Sprite (z. B. <code>Hero</code> oder NPC).</td>
+                </tr>
+                <tr>
+                  <td><code>offsetX</code> / <code>offsetY</code></td>
+                  <td><code>Float</code></td>
+                  <td>Zusätzlicher Positionsversatz relativ zum Quell-Entity.</td>
+                </tr>
+                <tr>
+                  <td><code>verticalScale</code></td>
+                  <td><code>Float</code> (Standard: <code>1.0</code>)</td>
+                  <td>Perspektivische Stauchung der Reflexionshöhe (z. B. <code>0.85</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(?target:FlxSprite, alpha:Float = 0.6, waterColor:FlxColor = 0x66104080)</code></td>
+                  <td>Erstellt das Reflexions-Sprite und richtet den Wellen-Shader ein.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaveParams</code></td>
+                  <td><code>(speed:Float, frequency:Float, amplitude:Float, secondaryWave:Float = 0.5):Void</code></td>
+                  <td>Konfiguriert die Wellenbewegung des Entity-Begleiters.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaterColor</code></td>
+                  <td><code>(color:FlxColor, tintIntensity:Float = 0.35):Void</code></td>
+                  <td>Setzt Grundfarbe und Mischfaktor der Entity-Reflexion.</td>
+                </tr>
+                <tr>
+                  <td><code>syncWithTarget</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Synchronisiert Frames, Animationen und Koordinaten mit dem Quell-Sprite.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>3. <code>WaterReflectionPlane</code> (<code>mklib.effect.WaterReflectionPlane</code>)</h3>
+          <p>Ein einsatzbereites <code>FlxSprite</code> für platzierte Wasserflächen in der Welt:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>shaderInstance</code></td>
+                  <td><code>WaterReflectionShader</code></td>
+                  <td>Die zugeordnete Shader-Instanz für direkte Feineinstellungen.</td>
+                </tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(x:Float, y:Float, width:Int, height:Int, waterColor:FlxColor = 0x66104080)</code></td>
+                  <td>Erzeugt die Wasserfläche an den angegebenen Weltkoordinaten.</td>
+                </tr>
+                <tr>
+                  <td><code>addReflectTarget</code></td>
+                  <td><code>(target:Dynamic):Void</code></td>
+                  <td>Fügt ein spezifisches Ziel (z. B. <code>TileLayer</code>, <code>Hero</code>) zur Spiegelung hinzu.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaveParams</code></td>
+                  <td><code>(speed:Float, frequency:Float, amplitude:Float, secondaryWave:Float = 0.5):Void</code></td>
+                  <td>Schnellkonfiguration der Wellenbewegung.</td>
+                </tr>
+                <tr>
+                  <td><code>setFoam</code></td>
+                  <td><code>(thickness:Float, ?color:FlxColor):Void</code></td>
+                  <td>Konfiguration der Schaumlinie an der Wasseroberkante.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>4. <code>CrtShader</code> (<code>mklib.effect.shader.CrtShader</code>)</h3>
+          <p>Hardwarebeschleunigter CRT- & Retro-Arcade Post-Processing-Shader für <code>FlxCamera.filters</code> oder einzelne Sprites:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode / Eigenschaft</th>
+                  <th>Signatur / Typ</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>filter</code></td>
+                  <td><code>ShaderFilter</code></td>
+                  <td>Gibt einen gecachten <code>ShaderFilter</code> für <code>FlxG.camera.filters = [crt.filter]</code> zurück.</td>
+                </tr>
+                <tr>
+                  <td><code>update</code></td>
+                  <td><code>(elapsed:Float, ?camera:FlxCamera):Void</code></td>
+                  <td>Aktualisiert Zeitzähler (Scanline-Scroll & Flicker) und Viewport-Auflösung.</td>
+                </tr>
+                <tr>
+                  <td><code>setCurvature</code></td>
+                  <td><code>(h:Float = 0.08, v:Float = 0.08, smoothness:Float = 0.01):Void</code></td>
+                  <td>Konfiguriert horizontale/vertikale Bildschirmwölbung (Barrel Distortion) & Bezel-Rand.</td>
+                </tr>
+                <tr>
+                  <td><code>setScanlines</code></td>
+                  <td><code>(intensity:Float = 0.22, lines:Float = 240.0, speed:Float = 0.0):Void</code></td>
+                  <td>Stärke, Linienanzahl und vertikale Rollgeschwindigkeit der Scanlines.</td>
+                </tr>
+                <tr>
+                  <td><code>setRgbMask</code></td>
+                  <td><code>(intensity:Float = 0.12, scale:Float = 1.0):Void</code></td>
+                  <td>Stärke und Skalierung der RGB-Phosphor-Triad-Subpixelmaske.</td>
+                </tr>
+                <tr>
+                  <td><code>setChromaticAberration</code></td>
+                  <td><code>(amount:Float = 0.003):Void</code></td>
+                  <td>Stärke des RGB-Farbversatzes am Bildschirmrand.</td>
+                </tr>
+                <tr>
+                  <td><code>setVignette</code></td>
+                  <td><code>(intensity:Float = 0.3, roundness:Float = 0.28):Void</code></td>
+                  <td>Rand- und Eckenabschattung der Röhre.</td>
+                </tr>
+                <tr>
+                  <td><code>setBloom</code></td>
+                  <td><code>(brightness:Float = 1.05, contrast:Float = 1.05):Void</code></td>
+                  <td>Phosphor-Leuchten, Helligkeits- und Kontrast-Multiplikatoren.</td>
+                </tr>
+                <tr>
+                  <td><code>setAnalogNoise</code></td>
+                  <td><code>(flicker:Float = 0.015, noise:Float = 0.012):Void</code></td>
+                  <td>50/60Hz Netzflimmern und analoges körniges Rauschen.</td>
+                </tr>
+                <tr>
+                  <td><code>presetSubtle</code> / <code>presetArcade</code> / <code>presetVhsGlitch</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Vordefinierte Voreinstellungen für modernes Gameplay, 80s Arcade-Cabinet oder VHS-Glitch.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>5. <code>HazardLiquidShader</code> (<code>mklib.effect.shader.HazardLiquidShader</code>)</h3>
+          <p>GPU-Flüssigkeits-Shader für prozedurale Lava, Säure, Schleim und Giftmorast mit Kruste und Glühen:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Methode / Eigenschaft</th>
+                  <th>Signatur / Typ</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>update</code></td>
+                  <td><code>(elapsed, worldX, worldY, width, height, ?camera):Void</code></td>
+                  <td>Aktualisiert Strömungszeit, Position, Ausdehnung und synchronisiert mit der Kamera.</td>
+                </tr>
+                <tr>
+                  <td><code>setColors</code></td>
+                  <td><code>(deep:FlxColor, surface:FlxColor, glow:FlxColor, crust:FlxColor):Void</code></td>
+                  <td>Definiert den 4-stufigen thermischen/chemischen Farbverlauf.</td>
+                </tr>
+                <tr>
+                  <td><code>setFlowAndTurbulence</code></td>
+                  <td><code>(flowX:Float, flowY:Float, scaleX:Float, scaleY:Float, turbulence:Float):Void</code></td>
+                  <td>Steuert Strömungsdrift, Noise-Dichte und organische fBm-Wirbelbildung.</td>
+                </tr>
+                <tr>
+                  <td><code>setSurfaceWave</code></td>
+                  <td><code>(speed:Float, freq:Float, amp:Float, ?glow:FlxColor, glowHeight:Float):Void</code></td>
+                  <td>Konfiguriert Oberflächen-Wellenbewegung und die emissive Glühkante.</td>
+                </tr>
+                <tr>
+                  <td><code>setBubbles</code></td>
+                  <td><code>(speed:Float = 1.2, intensity:Float = 0.35):Void</code></td>
+                  <td>Steuert Aufstiegsgeschwindigkeit und Intensität blubbernder Blasen.</td>
+                </tr>
+                <tr>
+                  <td><code>setCrustThresholds</code></td>
+                  <td><code>(crust:Float = 0.42, glow:Float = 0.65, softness:Float = 0.12):Void</code></td>
+                  <td>Schwellenwerte für aufbrechende Basalt-/Schaumkruste und Hitzeadern.</td>
+                </tr>
+                <tr>
+                  <td><code>presetLava</code> / <code>presetAcid</code> / <code>presetToxic</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Vordefinierte Voreinstellungen für Lava, Säure/Slime oder Giftwasser.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>6. <code>HazardLiquidPlane</code> (<code>mklib.effect.HazardLiquidPlane</code>)</h3>
+          <p>Direkt im Level platzierbares Spielobjekt (<code>FlxSprite</code>) für gefährliche Flüssigkeiten:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Typ / Signatur</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>shaderInstance</code></td>
+                  <td><code>HazardLiquidShader</code></td>
+                  <td>Die zugeordnete Shader-Instanz für direkte Parameter-Feineinstellungen.</td>
+                </tr>
+                <tr>
+                  <td><code>liquidType</code></td>
+                  <td><code>HazardLiquidType</code></td>
+                  <td>Aktueller Typ (<code>LAVA</code>, <code>ACID_SLIME</code>, <code>TOXIC_WATER</code>, <code>CUSTOM</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>damagePerSecond</code></td>
+                  <td><code>Float</code> (Standard: <code>20.0</code>)</td>
+                  <td>Schadensmenge pro Sekunde bei Berührung.</td>
+                </tr>
+                <tr>
+                  <td><code>isHazardous</code></td>
+                  <td><code>Bool</code> (Standard: <code>true</code>)</td>
+                  <td>Aktiviert oder deaktiviert den Umgebungsschaden.</td>
+                </tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(x:Float, y:Float, width:Int, height:Int, type:HazardLiquidType = LAVA)</code></td>
+                  <td>Erstellt das Flüssigkeitsbecken in der Welt mit automatischem Shader-Binding.</td>
+                </tr>
+                <tr>
+                  <td><code>isOverlapping</code></td>
+                  <td><code>(object:FlxObject):Bool</code></td>
+                  <td>Prüft, ob ein Objekt in das Becken eingetaucht ist.</td>
+                </tr>
+                <tr>
+                  <td><code>applyHazardDamage</code></td>
+                  <td><code>(sprite:FlxSprite, elapsed:Float, ?onCustomDamage):Void</code></td>
+                  <td>Wendet automatisch fortlaufenden Schaden auf <code>sprite.hurt(dmg)</code> oder via Callback an.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🎛️ Feintuning & Shader-Uniforms</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Uniform / Eigenschaft</th>
+                  <th>Methode</th>
+                  <th>Typ / Bereich</th>
+                  <th>Standard</th>
+                  <th>Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>u_waterArea</code> / <code>u_hasArea</code></td>
+                  <td><code>setWaterArea(...)</code></td>
+                  <td><code>vec4 (X, Y, W, H)</code></td>
+                  <td><code>[0, 0, 0, 0]</code></td>
+                  <td>Definiert eine feste Bounding-Box für die Wasserfläche in Weltpixeln.</td>
+                </tr>
+                <tr>
+                  <td><code>u_time</code></td>
+                  <td><code>update(elapsed)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.0</code></td>
+                  <td>Fortlaufender Zeitzähler in Sekunden für die Wellenanimation.</td>
+                </tr>
+                <tr>
+                  <td><code>u_mode</code></td>
+                  <td><code>setMode(mode)</code></td>
+                  <td><code>Int (0..2)</code></td>
+                  <td><code>0</code></td>
+                  <td>Betriebsmodus: Vertikal (0), Horizontal (1) oder Verzerrung (2).</td>
+                </tr>
+                <tr>
+                  <td><code>u_waterLevel</code></td>
+                  <td><code>setWaterLevel(val)</code></td>
+                  <td><code>Float (0.0..1.0)</code></td>
+                  <td><code>0.65</code></td>
+                  <td>Normierte Position der Wasser- oder Spiegelachse im Viewport.</td>
+                </tr>
+                <tr>
+                  <td><code>u_waveSpeed</code></td>
+                  <td><code>setWaveParams(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>2.8</code></td>
+                  <td>Geschwindigkeit der Hauptwellenbewegung.</td>
+                </tr>
+                <tr>
+                  <td><code>u_waveFrequency</code></td>
+                  <td><code>setWaveParams(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>35.0</code></td>
+                  <td>Raumfrequenz (Dichte der Wellenkämme).</td>
+                </tr>
+                <tr>
+                  <td><code>u_waveAmplitude</code></td>
+                  <td><code>setWaveParams(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.012</code></td>
+                  <td>Maximale Verzerrungsstärke (Auslenkung der Pixel).</td>
+                </tr>
+                <tr>
+                  <td><code>u_secondaryWave</code></td>
+                  <td><code>setWaveParams(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.5</code></td>
+                  <td>Wichtung der überlagerten Kreuzwelle für natürlichere Bewegung.</td>
+                </tr>
+                <tr>
+                  <td><code>u_waterColor</code></td>
+                  <td><code>setWaterColor(...)</code></td>
+                  <td><code>vec4 (RGBA)</code></td>
+                  <td><code>[0.08, 0.35, 0.65, 0.4]</code></td>
+                  <td>RGB-Farbfilter und Mischfaktor der Wassertiefe.</td>
+                </tr>
+                <tr>
+                  <td><code>u_fadeDepth</code></td>
+                  <td><code>setFade(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>2.0</code></td>
+                  <td>Dämpfungsfaktor für das Ausblenden der Reflexion mit zunehmender Tiefe.</td>
+                </tr>
+                <tr>
+                   <div data-lang="en">
+          <h1>🎨 Shader & Post-Processing System (<code>mklib.effect.*</code>)</h1>
+          <p class="section-desc">Hardware-accelerated 2D GPU shaders and specialized game objects for authentic CRT retro filters, animated lava/acid pools, and dynamic water reflections.</p>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">📺</div>
+              <h3>CRT & Retro-Arcade</h3>
+              <p><code>CrtShader</code> simulates cathode-ray tube monitors with curvature, scanlines, RGB phosphor mask, glitch, and bloom.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🧪</div>
+              <h3>Lava & Acid Liquids</h3>
+              <p><code>HazardLiquidPlane</code> renders procedural lava, acid/slime, and toxic sludge with crust, bubbling, and contact damage.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🌊</div>
+              <h3>Water & Reflections</h3>
+              <p><code>WaterReflectionPlane</code> and shader for real-time water reflections, wave distortion, and foam edges.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🦆</div>
+              <h3>Entity Companion</h3>
+              <p><code>EntityWaterReflection</code> automatically mirrors characters at their feet and synchronizes animations.</p>
+            </div>
+          </div>
+
+          <h2>🧭 Which Approach for Which Purpose?</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Tool / Component</th>
+                  <th>Use Case</th>
+                  <th>Advantage</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong><code>CrtShader</code></strong><br><small>(Camera Filter / Fullscreen)</small></td>
+                  <td><strong>Global Screen Post-Processing</strong> for arcade games, retro titles, or in-game computer terminals.</td>
+                  <td><strong>Authentic Look:</strong> Complete CRT pipeline with curvature, scanlines, shadow mask, and bloom with 0 CPU overhead.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>HazardLiquidPlane</code></strong><br><small>(Placed FlxSprite)</small></td>
+                  <td><strong>Lava pools, acid pits, and toxic swamps</strong> placed directly in level geometry.</td>
+                  <td><strong>Procedural & Dynamic:</strong> GPU fBm noise, bubbling, dynamic crust, and built-in damage handling.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>WaterReflectionShader</code></strong><br><small>(Camera Filter)</small></td>
+                  <td><strong>Lakes, ponds, rivers, oceans</strong> with defined bounds (<code>setWaterArea</code>) or fullscreen waterlines.</td>
+                  <td><strong>GPU Real-Time:</strong> Automatically mirrors tiles, entities, props, and lights.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>EntityWaterReflection</code></strong><br><small>(Companion Sprite)</small></td>
+                  <td><strong>Individual characters (<code>Hero</code>, NPCs)</strong> wading or swimming in water.</td>
+                  <td><strong>Precise Control:</strong> Mirrors frames and animations live beneath feet with gentle undulation.</td>
+                </tr>
+                <tr>
+                  <td><strong><code>WaterReflectionPlane</code></strong><br><small>(Placed FlxSprite)</small></td>
+                  <td><strong>Dedicated water plane object</strong> (<code>FlxSprite</code>) at fixed world coordinates.</td>
+                  <td>Behaves like a standard Flixel sprite in groups and render hierarchies.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🚀 Code Examples & Quick Start</h2>
+
+          <h3>1. Bounded Water Area with Position & Size (Camera Filter)</h3>
+          <p>Defines a fixed water rectangle in world coordinates. Outside remains completely normal, inside reflects everything above with waves:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span>;
+
+<span class="hl-keyword">import</span> flixel.FlxG;
+<span class="hl-keyword">import</span> openfl.filters.ShaderFilter;
+<span class="hl-keyword">import</span> mklib.state.State;
+<span class="hl-keyword">import</span> mklib.effect.shader.WaterReflectionShader;
+
+<span class="hl-keyword">class</span> <span class="hl-type">PlayState</span> <span class="hl-keyword">extends</span> <span class="hl-type">State</span>&lt;Data.Data_Level&gt; {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> waterShader:<span class="hl-type">WaterReflectionShader</span>;
+
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">create</span>():<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.create();
+
+        // 1. Instantiate shader
+        waterShader = <span class="hl-keyword">new</span> <span class="hl-type">WaterReflectionShader</span>();
+
+        // 2. Define water area: World-X=0, World-Y=120, Width=320px, Height=80px
+        waterShader.setWaterArea(<span class="hl-num">0</span>, <span class="hl-num">120</span>, <span class="hl-num">320</span>, <span class="hl-num">80</span>);
+
+        // 3. Configure wave dynamics (speed, frequency, amplitude, secondary wave)
+        waterShader.setWaveParams(<span class="hl-num">2.8</span>, <span class="hl-num">30.0</span>, <span class="hl-num">0.012</span>, <span class="hl-num">0.5</span>);
+
+        // 4. Set tint and foam edge
+        waterShader.setWaterColor(<span class="hl-num">0x3366AA</span>, <span class="hl-num">0.45</span>);
+        waterShader.setFoam(<span class="hl-num">0.008</span>, <span class="hl-num">0xFFFFFF</span>);
+
+        // 5. Apply to camera filters
+        FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type">ShaderFilter</span>(waterShader)];
+    }
+
+    <span class="hl-keyword">override</span> <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">update</span>(elapsed:<span class="hl-type">Float</span>):<span class="hl-type">Void</span> {
+        <span class="hl-keyword">super</span>.update(elapsed);
+
+        // IMPORTANT: Updates wave time and syncs camera scroll/zoom automatically
+        <span class="hl-keyword">if</span> (waterShader != <span class="hl-keyword">null</span>) {
+            waterShader.update(elapsed);
+        }
+    }
+}</code></pre>
+          </div>
+
+          <h3>2. Fullscreen Water Reflection (From Relative Waterline)</h3>
+          <p>Ideal for 2D platformers with sea/water at the lower screen border:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-comment">// Set waterline at 65% of screen height (0.0 = top, 1.0 = bottom)</span>
+waterShader.setWaterLevel(<span class="hl-num">0.65</span>);
+waterShader.setWaveParams(<span class="hl-num">3.0</span>, <span class="hl-num">35.0</span>, <span class="hl-num">0.01</span>, <span class="hl-num">0.5</span>);
+waterShader.setWaterColor(<span class="hl-num">0x103060</span>, <span class="hl-num">0.5</span>);
+
+FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type">ShaderFilter</span>(waterShader)];</code></pre>
+          </div>
+
+          <h3>3. Entity Water Reflection (Character Companion)</h3>
+          <p>Creates a dynamic companion water reflection for player (<code>Hero</code>) or NPCs:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">package</span> entities;
+
+<span class="hl-keyword">import</span> mklib.entity.EntityNapeSprite;
+<span class="hl-keyword">import</span> mklib.effect.EntityWaterReflection;
+<span class="hl-keyword">import</span> ldtk.Entity;
+
+<span class="hl-keyword">class</span> <span class="hl-type">Hero</span> <span class="hl-keyword">extends</span> <span class="hl-type">EntityNapeSprite</span> {
+    <span class="hl-keyword">public</span> <span class="hl-keyword">var</span> waterReflection:<span class="hl-type">EntityWaterReflection</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-func">new</span>(entity:ldtk.<span class="hl-type">Entity</span>) {
+        <span class="hl-keyword">super</span>(entity);
+
+        // 1. Create reflection sprite for Hero (Alpha=0.6, Tint=0x3366AA)
+        waterReflection = <span class="hl-keyword">new</span> <span class="hl-type">EntityWaterReflection</span>(<span class="hl-keyword">this</span>, <span class="hl-num">0.6</span>, <span class="hl-num">0x3366AA</span>);
+
+        // 2. Configure character wave parameters
+        waterReflection.setWaveParams(<span class="hl-num">4.0</span>, <span class="hl-num">20.0</span>, <span class="hl-num">0.08</span>);
+
+        // 3. Perspective squash factor
+        waterReflection.verticalScale = <span class="hl-num">0.85</span>;
+
+        // 4. Add to state
+        <span class="hl-keyword">if</span> (state != <span class="hl-keyword">null</span>) {
+            state.add(waterReflection);
+        }
+    }
+}</code></pre>
+          </div>
+
+          <h3>4. Horizontal Mirror Mode (<code>HORIZONTAL_MIRROR</code>)</h3>
+          <p>For magic wall mirrors, dimensional portals, or side waterfalls:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> mklib.effect.WaterReflectionMode;
+
+<span class="hl-keyword">var</span> mirrorShader = <span class="hl-keyword">new</span> <span class="hl-type">WaterReflectionShader</span>();
+
+// 1. Set mode to horizontal mirror:
+mirrorShader.setMode(WaterReflectionMode.HORIZONTAL_MIRROR);
+
+// 2. Mirror axis at 50% of screen width (X-axis):
+mirrorShader.setWaterLevel(<span class="hl-num">0.5</span>);
+mirrorShader.setWaveParams(<span class="hl-num">2.0</span>, <span class="hl-num">20.0</span>, <span class="hl-num">0.006</span>);
+
+FlxG.camera.filters = [<span class="hl-keyword">new</span> <span class="hl-type">ShaderFilter</span>(mirrorShader)];</code></pre>
+          </div>
+
+          <h3>5. CRT & Retro-Arcade Screen Filter (<code>CrtShader</code>)</h3>
+          <p>Applies screen curvature, scanlines, RGB phosphor triad mask, and bloom to the camera:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> mklib.effect.shader.CrtShader;
+
+<span class="hl-keyword">var</span> crt = <span class="hl-keyword">new</span> <span class="hl-type">CrtShader</span>();
+crt.presetArcade(); <span class="hl-comment">// Built-in 80s arcade cabinet preset</span>
+FlxG.camera.filters = [crt.filter];
+
+<span class="hl-comment">// In state update(elapsed):</span>
+crt.update(elapsed, FlxG.camera);</code></pre>
+          </div>
+
+          <h3>6. Lava, Acid, & Toxic Pools (<code>HazardLiquidPlane</code>)</h3>
+          <p>Creates an animated liquid pool with procedural crust, bubbles, surface waves, and contact damage:</p>
+          <div class="code-box">
+            <div class="code-header">
+              <span class="code-lang-badge">Haxe</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="hl-keyword">import</span> mklib.effect.HazardLiquidPlane;
+<span class="hl-keyword">import</span> mklib.effect.HazardLiquidType;
+
+<span class="hl-comment">// 1. Create glowing lava pool (X, Y, Width, Height, Type)</span>
+<span class="hl-keyword">var</span> lava = <span class="hl-keyword">new</span> <span class="hl-type">HazardLiquidPlane</span>(<span class="hl-num">100</span>, <span class="hl-num">400</span>, <span class="hl-num">300</span>, <span class="hl-num">80</span>, HazardLiquidType.LAVA);
+lava.damagePerSecond = <span class="hl-num">40.0</span>;
+add(lava);
+
+<span class="hl-comment">// 2. In state update(elapsed) apply continuous damage to player:</span>
+lava.applyHazardDamage(hero, elapsed);</code></pre>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🏛️ Detailed API Reference</h2>
+
+          <h3>1. <code>WaterReflectionShader</code> (<code>mklib.effect.shader.WaterReflectionShader</code>)</h3>
+          <p>Inherits from <code>flixel.system.FlxAssets.FlxShader</code>. Provides comprehensive methods for configuring uniforms:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method / Property</th>
+                  <th>Signature / Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Instantiates shader with balanced defaults for speed, amplitude, and tint.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaterArea</code></td>
+                  <td><code>(x:Float, y:Float, width:Float, height:Float, isWorldCoords:Bool = true, ?camera:FlxCamera):Void</code></td>
+                  <td>Defines a bounded water rectangle in world coordinates. Outside remains normal.</td>
+                </tr>
+                <tr>
+                  <td><code>clearWaterArea</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Clears bounds and reverts to fullscreen axis mode.</td>
+                </tr>
+                <tr>
+                  <td><code>update</code></td>
+                  <td><code>(elapsed:Float, ?camera:FlxCamera):Void</code></td>
+                  <td>Updates accumulated time (<code>u_time</code>) and synchronizes camera scroll/zoom.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaterLevel</code></td>
+                  <td><code>(level:Float):Void</code></td>
+                  <td>Sets the relative waterline position in UV space (<code>0.0</code> to <code>1.0</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>syncWithCamera</code></td>
+                  <td><code>(worldY:Float, ?camera:FlxCamera):Void</code></td>
+                  <td>Anchors waterline to absolute world coordinate and synchronizes scroll/zoom.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaveParams</code></td>
+                  <td><code>(speed:Float, frequency:Float, amplitude:Float, secondaryWave:Float = 0.5):Void</code></td>
+                  <td>Configures wave propagation speed, density, amplitude, and cross-wave weight.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaterColor</code></td>
+                  <td><code>(color:FlxColor, tintIntensity:Float = 0.4):Void</code></td>
+                  <td>Sets base color tint and blending intensity.</td>
+                </tr>
+                <tr>
+                  <td><code>setFoam</code></td>
+                  <td><code>(thickness:Float, ?color:FlxColor):Void</code></td>
+                  <td>Enables and configures the surface foam edge line.</td>
+                </tr>
+                <tr>
+                  <td><code>setFade</code></td>
+                  <td><code>(depthFactor:Float, minAlpha:Float = 0.15):Void</code></td>
+                  <td>Controls reflection transparency falloff with depth.</td>
+                </tr>
+                <tr>
+                  <td><code>setMode</code></td>
+                  <td><code>(mode:WaterReflectionMode):Void</code></td>
+                  <td>Selects vertical surface (0), horizontal mirror (1), or wave distortion only (2).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>2. <code>EntityWaterReflection</code> (<code>mklib.effect.EntityWaterReflection</code>)</h3>
+          <p>Companion sprite for rendering animated reflections under characters:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Type / Signature</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>target</code></td>
+                  <td><code>FlxSprite</code></td>
+                  <td>Monitored source sprite (e.g. <code>Hero</code> or NPC).</td>
+                </tr>
+                <tr>
+                  <td><code>offsetX</code> / <code>offsetY</code></td>
+                  <td><code>Float</code></td>
+                  <td>Positional offset relative to source entity.</td>
+                </tr>
+                <tr>
+                  <td><code>verticalScale</code></td>
+                  <td><code>Float</code> (Default: <code>1.0</code>)</td>
+                  <td>Perspective height compression factor (e.g. <code>0.85</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(?target:FlxSprite, alpha:Float = 0.6, waterColor:FlxColor = 0x66104080)</code></td>
+                  <td>Creates reflection sprite and sets up wave shader.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaveParams</code></td>
+                  <td><code>(speed:Float, frequency:Float, amplitude:Float, secondaryWave:Float = 0.5):Void</code></td>
+                  <td>Configures wave dynamics for character companion.</td>
+                </tr>
+                <tr>
+                  <td><code>setWaterColor</code></td>
+                  <td><code>(color:FlxColor, tintIntensity:Float = 0.35):Void</code></td>
+                  <td>Sets tint color and blend factor.</td>
+                </tr>
+                <tr>
+                  <td><code>syncWithTarget</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Synchronizes frames, animation clips, and coordinates with target.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>3. <code>WaterReflectionPlane</code> (<code>mklib.effect.WaterReflectionPlane</code>)</h3>
+          <p>Ready-to-use <code>FlxSprite</code> for placed water surfaces in the world:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Type / Signature</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>shaderInstance</code></td>
+                  <td><code>WaterReflectionShader</code></td>
+                  <td>Assigned shader instance for direct fine-tuning.</td>
+                </tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(x:Float, y:Float, width:Int, height:Int, waterColor:FlxColor = 0x66104080)</code></td>
+                  <td>Creates water plane at specified world coordinates.</td>
+                </tr>
+                <tr>
+                  <td><code>addReflectTarget</code></td>
+                  <td><code>(target:Dynamic):Void</code></td>
+                  <td>Adds specific reflection target (e.g. <code>TileLayer</code>, <code>Hero</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>setWaveParams</code></td>
+                  <td><code>(speed:Float, frequency:Float, amplitude:Float, secondaryWave:Float = 0.5):Void</code></td>
+                  <td>Quick configuration of wave motion.</td>
+                </tr>
+                <tr>
+                  <td><code>setFoam</code></td>
+                  <td><code>(thickness:Float, ?color:FlxColor):Void</code></td>
+                  <td>Configures surface foam edge line.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>4. <code>CrtShader</code> (<code>mklib.effect.shader.CrtShader</code>)</h3>
+          <p>Hardware-accelerated CRT & retro arcade post-processing shader for <code>FlxCamera.filters</code> or sprites:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method / Property</th>
+                  <th>Signature / Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>filter</code></td>
+                  <td><code>ShaderFilter</code></td>
+                  <td>Returns a cached <code>ShaderFilter</code> for <code>FlxG.camera.filters = [crt.filter]</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>update</code></td>
+                  <td><code>(elapsed:Float, ?camera:FlxCamera):Void</code></td>
+                  <td>Updates time uniform (scanline scrolling & flicker) and viewport resolution.</td>
+                </tr>
+                <tr>
+                  <td><code>setCurvature</code></td>
+                  <td><code>(h:Float = 0.08, v:Float = 0.08, smoothness:Float = 0.01):Void</code></td>
+                  <td>Configures horizontal/vertical barrel distortion & bezel border smoothness.</td>
+                </tr>
+                <tr>
+                  <td><code>setScanlines</code></td>
+                  <td><code>(intensity:Float = 0.22, lines:Float = 240.0, speed:Float = 0.0):Void</code></td>
+                  <td>Scanline intensity, count, and vertical rolling speed.</td>
+                </tr>
+                <tr>
+                  <td><code>setRgbMask</code></td>
+                  <td><code>(intensity:Float = 0.12, scale:Float = 1.0):Void</code></td>
+                  <td>RGB phosphor triad subpixel shadow mask strength and scaling.</td>
+                </tr>
+                <tr>
+                  <td><code>setChromaticAberration</code></td>
+                  <td><code>(amount:Float = 0.003):Void</code></td>
+                  <td>Color channel separation (RGB-split) toward screen edges.</td>
+                </tr>
+                <tr>
+                  <td><code>setVignette</code></td>
+                  <td><code>(intensity:Float = 0.3, roundness:Float = 0.28):Void</code></td>
+                  <td>Tube edge and corner darkening.</td>
+                </tr>
+                <tr>
+                  <td><code>setBloom</code></td>
+                  <td><code>(brightness:Float = 1.05, contrast:Float = 1.05):Void</code></td>
+                  <td>Phosphor glow, brightness, and contrast multipliers.</td>
+                </tr>
+                <tr>
+                  <td><code>setAnalogNoise</code></td>
+                  <td><code>(flicker:Float = 0.015, noise:Float = 0.012):Void</code></td>
+                  <td>50/60Hz AC flicker and analog grain noise.</td>
+                </tr>
+                <tr>
+                  <td><code>presetSubtle</code> / <code>presetArcade</code> / <code>presetVhsGlitch</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Built-in presets for modern gameplay, 80s arcade cabinet, or VHS glitch style.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>5. <code>HazardLiquidShader</code> (<code>mklib.effect.shader.HazardLiquidShader</code>)</h3>
+          <p>Procedural GPU fluid shader for lava, acid/slime, and toxic sludge with dynamic crust and glow:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method / Property</th>
+                  <th>Signature / Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>update</code></td>
+                  <td><code>(elapsed, worldX, worldY, width, height, ?camera):Void</code></td>
+                  <td>Updates flow time, position, size, and synchronizes with camera.</td>
+                </tr>
+                <tr>
+                  <td><code>setColors</code></td>
+                  <td><code>(deep:FlxColor, surface:FlxColor, glow:FlxColor, crust:FlxColor):Void</code></td>
+                  <td>Defines 4-tiered thermal/chemical color gradient.</td>
+                </tr>
+                <tr>
+                  <td><code>setFlowAndTurbulence</code></td>
+                  <td><code>(flowX:Float, flowY:Float, scaleX:Float, scaleY:Float, turbulence:Float):Void</code></td>
+                  <td>Controls drift velocity, noise scale, and organic fBm turbulence.</td>
+                </tr>
+                <tr>
+                  <td><code>setSurfaceWave</code></td>
+                  <td><code>(speed:Float, freq:Float, amp:Float, ?glow:FlxColor, glowHeight:Float):Void</code></td>
+                  <td>Configures surface wave oscillation and emissive surface glow edge.</td>
+                </tr>
+                <tr>
+                  <td><code>setBubbles</code></td>
+                  <td><code>(speed:Float = 1.2, intensity:Float = 0.35):Void</code></td>
+                  <td>Controls rising bubble speed and frequency.</td>
+                </tr>
+                <tr>
+                  <td><code>setCrustThresholds</code></td>
+                  <td><code>(crust:Float = 0.42, glow:Float = 0.65, softness:Float = 0.12):Void</code></td>
+                  <td>Thresholds for floating basalt/scum crust and glowing heat veins.</td>
+                </tr>
+                <tr>
+                  <td><code>presetLava</code> / <code>presetAcid</code> / <code>presetToxic</code></td>
+                  <td><code>():Void</code></td>
+                  <td>Built-in presets for lava, acid/slime, or toxic swamp.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>6. <code>HazardLiquidPlane</code> (<code>mklib.effect.HazardLiquidPlane</code>)</h3>
+          <p>Placeable level game object (<code>FlxSprite</code>) for hazardous fluids with collision damage:</p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th>Type / Signature</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>shaderInstance</code></td>
+                  <td><code>HazardLiquidShader</code></td>
+                  <td>Assigned shader instance for direct parameter adjustments.</td>
+                </tr>
+                <tr>
+                  <td><code>liquidType</code></td>
+                  <td><code>HazardLiquidType</code></td>
+                  <td>Current fluid type (<code>LAVA</code>, <code>ACID_SLIME</code>, <code>TOXIC_WATER</code>, <code>CUSTOM</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>damagePerSecond</code></td>
+                  <td><code>Float</code> (Default: <code>20.0</code>)</td>
+                  <td>Continuous damage dealt per second on contact.</td>
+                </tr>
+                <tr>
+                  <td><code>isHazardous</code></td>
+                  <td><code>Bool</code> (Default: <code>true</code>)</td>
+                  <td>Enables or disables environmental contact damage.</td>
+                </tr>
+                <tr>
+                  <td><code>new</code></td>
+                  <td><code>(x:Float, y:Float, width:Int, height:Int, type:HazardLiquidType = LAVA)</code></td>
+                  <td>Creates liquid pool in world space with automatic shader binding.</td>
+                </tr>
+                <tr>
+                  <td><code>isOverlapping</code></td>
+                  <td><code>(object:FlxObject):Bool</code></td>
+                  <td>Checks if an object is submerged within the pool bounds.</td>
+                </tr>
+                <tr>
+                  <td><code>applyHazardDamage</code></td>
+                  <td><code>(sprite:FlxSprite, elapsed:Float, ?onCustomDamage):Void</code></td>
+                  <td>Applies continuous damage to <code>sprite.hurt(dmg)</code> or via custom callback.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+          <h2>🎛️ Fine-Tuning & Shader Uniforms</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Uniform / Property</th>
+                  <th>Method</th>
+                  <th>Type / Range</th>
+                  <th>Default</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>u_waterArea</code> / <code>u_hasArea</code></td>
+                  <td><code>setWaterArea(...)</code></td>
+                  <td><code>vec4 (X, Y, W, H)</code></td>
+                  <td><code>[0, 0, 0, 0]</code></td>
+                  <td>Defines a fixed bounding box for water plane in world pixels.</td>
+                </tr>
+                <tr>
+                  <td><code>u_time</code></td>
+                  <td><code>update(elapsed)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.0</code></td>
+                  <td>Continuous time counter in seconds for wave and fluid motion.</td>
+                </tr>
+                <tr>
+                  <td><code>u_mode</code></td>
+                  <td><code>setMode(mode)</code></td>
+                  <td><code>Int (0..2)</code></td>
+                  <td><code>0</code></td>
+                  <td>Operating mode: Vertical (0), Horizontal (1), or Distortion (2).</td>
+                </tr>
+                <tr>
+                  <td><code>u_waterLevel</code></td>
+                  <td><code>setWaterLevel(val)</code></td>
+                  <td><code>Float (0.0..1.0)</code></td>
+                  <td><code>0.65</code></td>
+                  <td>Normalized waterline or mirror axis position in viewport.</td>
+                </tr>
+                <tr>
+                  <td><code>u_waveSpeed</code></td>
+                  <td><code>setWaveParams(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>2.8</code></td>
+                  <td>Propagation speed of primary waves.</td>
+                </tr>
+                <tr>
+                  <td><code>u_waveFrequency</code></td>
+                  <td><code>setWaveParams(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>35.0</code></td>
+                  <td>Spatial frequency (crest density) of waves.</td>
+                </tr>
+                <tr>
+                  <td><code>u_waveAmplitude</code></td>
+                  <td><code>setWaveParams(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.012</code></td>
+                  <td>Maximum wave displacement amplitude.</td>
+                </tr>
+                <tr>
+                  <td><code>u_secondaryWave</code></td>
+                  <td><code>setWaveParams(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.5</code></td>
+                  <td>Superimposed cross-wave factor for organic motion.</td>
+                </tr>
+                <tr>
+                  <td><code>u_waterColor</code></td>
+                  <td><code>setWaterColor(...)</code></td>
+                  <td><code>vec4 (RGBA)</code></td>
+                  <td><code>[0.08, 0.35, 0.65, 0.4]</code></td>
+                  <td>RGB water tint and alpha blend intensity.</td>
+                </tr>
+                <tr>
+                  <td><code>u_fadeDepth</code></td>
+                  <td><code>setFade(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>2.0</code></td>
+                  <td>Damping factor for reflection fading with depth.</td>
+                </tr>
+                <tr>
+                  <td><code>u_minAlpha</code></td>
+                  <td><code>setFade(...)</code></td>
+                  <td><code>Float (0.0..1.0)</code></td>
+                  <td><code>0.15</code></td>
+                  <td>Minimum remaining alpha transparency at bed bottom.</td>
+                </tr>
+                <tr>
+                  <td><code>u_foamThickness</code></td>
+                  <td><code>setFoam(...)</code></td>
+                  <td><code>Float</code></td>
+                  <td><code>0.006</code></td>
+                  <td>Thickness of surface foam edge line (<code>0.0</code> = off).</td>
+                </tr>
+                <tr>
+                  <td><code>u_foamColor</code></td>
+                  <td><code>setFoam(...)</code></td>
+                  <td><code>vec4 (RGBA)</code></td>
+                  <td><code>[0.95, 0.98, 1.0, 0.75]</code></td>
+                  <td>Color and opacity of foam line.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-nav-footer">
+            <a href="lighting.html" class="nav-page-btn">← GPU Lighting System</a>
+            <a href="tools-math.html" class="nav-page-btn">Tools & Mathe →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
