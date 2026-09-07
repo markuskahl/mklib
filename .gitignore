@@ -4,3 +4,11 @@ assets/
 source/
 compile.bat
 Project.xml
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Tool backups
+*.bak
+
