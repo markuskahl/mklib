@@ -115,16 +115,31 @@ class AnimationRegistry {
 
 ## 🎮 Entity-Integration & Verwendung
 
-### 1. LDtk-Workflow: Das Enum `Animations` (Best Practice)
+### 1. LDtk-Workflow: Vorschau-Datei & das Enum `Animations` (Best Practice)
 
-Um Tippfehler im Level-Editor zu vermeiden, empfiehlt sich in LDtk folgende Vorgehensweise:
+Um in LDtk direkt im Level-Editor eine visuelle Vorschau der platzierten animierten Entities zu sehen und Tippfehler zu vermeiden, empfiehlt sich folgender 4-Schritte-Workflow:
 
-1. **Enum anlegen:** In LDtk unter *Project Settings &rarr; Enums* ein Enum namens `Animations` erstellen. Als Werte die Namen der Animationsdateien eintragen (z. B. `Fire`, `Hero`, `Platform`).
-2. **Entity-Feld definieren:** Bei der Entity-Definition ein Custom Field namens `Animations` vom Typ `Enum.Animations` anlegen.
-3. **Im Level zuweisen:** Beim Platzieren der Entity im Level-Editor einfach die gewünschte Animation aus dem Dropdown-Menü auswählen.
+1. **Vorschau-Grafik anlegen (`assets/spritesheets/Animations.png`):**
+   - Erstelle eine Spritesheet-Datei (z. B. 320×320 Pixel mit einem 32×32-Kachelraster), die für jedes Spritesheet bzw. jede Animations-Definition ein einzelnes Vorschaubild (z. B. Frame 0) als Kachel enthält.
+   - *Beispiel:* Kachel `(0, 0)` = `Hero`, Kachel `(32, 0)` = `Warg`, Kachel `(64, 0)` = `Fire`.
+2. **Tileset in LDtk einbinden:**
+   - In LDtk unter *Project Settings &rarr; Tilesets* ein neues Tileset namens `Animations` anlegen.
+   - Als Bilddatei `assets/spritesheets/Animations.png` auswählen und die Kachelgröße (z. B. 32×32) festlegen.
+3. **Enum `Animations` mit Icon-Tileset konfigurieren:**
+   - In LDtk unter *Project Settings &rarr; Enums* ein Enum namens `Animations` erstellen.
+   - Bei **Icon tileset** das zuvor erstellte Tileset `Animations` auswählen.
+   - Als Werte die exakten Dateinamen der JSON-Dateien aus `assets/data/animations/` eintragen (ohne `.json`, z. B. `Hero`, `Warg`, `Fire`).
+   - Jedem Enum-Wert per Klick das passende Vorschaubild-Icon aus der Kachelgrafik zuweisen.
+4. **Entity-Feld `Animations` definieren:**
+   - Bei der Entity-Definition (z. B. `Hero` oder generischen Entities) ein Custom Field anlegen:
+     - **Identifier:** `Animations` (oder `animations`)
+     - **Type:** `Enum.Animations` (bzw. `LocalEnum.Animations`)
+     - **Editor display mode:** `EntityTile` (oder `Cover` / `Above`)
+   - Beim Platzieren der Entity im Level-Editor zeigt LDtk sofort das ausgewählte Vorschaubild direkt auf der Entity an!
 
 > [!NOTE]
-> `EntitySprite` und `EntityNapeSprite` prüfen im Konstruktor automatisch mit `hasField("Animations")`, lesen den Wert als String aus und initialisieren die passenden Animationen direkt aus `AnimationRegistry.db`.
+> **Automatisches Laden zur Laufzeit:**  
+> `EntitySprite` und `EntityNapeSprite` prüfen im Konstruktor automatisch `hasField("Animations")`. Die temporäre Vorschaukachel aus `Animations.png` wird im Spiel automatisch ignoriert. Stattdessen lädt der `AnimationManager` das tatsächliche, vollständige Spritesheet aus der JSON-Datei (`assets/data/animations/<Name>.json`), registriert alle Clips und startet die Standard-Animation.
 
 ### 2. Automatisch im Code (`source/entities/Fire.hx`)
 
@@ -141,7 +156,7 @@ import ldtk.Entity;
 class Fire extends EntitySprite {
     public function new(entity:ldtk.Entity) {
         // super(entity) liest automatisch das LDtk-Enum-Feld "Animations"
-        // und lädt die Clips aus AnimationRegistry.db!
+        // und lädt die Clips aus AnimationRegistry.db bzw. assets/data/animations/!
         super(entity);
     }
 }
@@ -152,7 +167,7 @@ class Fire extends EntitySprite {
 `initAnimation(?animKey:String)` delegiert intern direkt an den `AnimationManager`:
 
 ```haxe
-// Manuelles Laden / Wechseln der Animationen:
+// Manuelles Laden / Wechseln der Animationen (z. B. "Fire", "Fire.json" oder Pfad):
 myEntity.initAnimation("Fire");
 
 // Clip manuell wechseln:
@@ -169,10 +184,12 @@ Der `AnimationManager` kapselt das Laden der Grafik, die Registrierung aller Ani
 
 | Methode | Signatur | Rückgabewert | Beschreibung |
 | :--- | :--- | :--- | :--- |
-| `apply` | `(sprite:FlxSprite, animKey:String, forceGraphic:Bool = false)` | `Bool` | Sucht `animKey` in `AnimationRegistry.db`, lädt die Grafik und registriert alle Clips auf `sprite`. |
-| `applyData` | `(sprite:FlxSprite, data:SpriteSheetData, forceGraphic:Bool = false)` | `Bool` | Wendet ein `SpriteSheetData`-Objekt direkt auf `sprite` an. |
-| `get` | `(animKey:String)` | `Null<SpriteSheetData>` | Liefert den Datensatz aus `AnimationRegistry.db` oder `null`. |
-| `exists` | `(animKey:String)` | `Bool` | Prüft, ob ein Eintrag für `animKey` in `AnimationRegistry.db` vorliegt. |
+| `apply` | `(sprite:FlxSprite, animKey:String, forceGraphic:Bool = true)` | `Bool` | Sucht `animKey` in `AnimationRegistry.db` (oder lädt die JSON zur Laufzeit aus `assets/data/animations/`), lädt die Grafik und registriert alle Clips auf `sprite`. |
+| `applyData` | `(sprite:FlxSprite, data:SpriteSheetData, forceGraphic:Bool = true)` | `Bool` | Wendet ein `SpriteSheetData`-Objekt direkt auf `sprite` an und lädt das Spritesheet, falls nötig. |
+| `cleanKey` | `(animKey:String)` | `String` | Normalisiert Eingaben (entfernt Verzeichnisse und die Endung `.json`, z. B. `"assets/data/animations/Hero.json"` $\rightarrow$ `"Hero"`). |
+| `get` | `(animKey:String)` | `Null<SpriteSheetData>` | Liefert den Datensatz aus dem Cache, der `AnimationRegistry.db` oder lädt die JSON-Datei zur Laufzeit nach. |
+| `exists` | `(animKey:String)` | `Bool` | Prüft, ob ein Eintrag für `animKey` in der Registry, im Cache oder als Datei in `assets/data/animations/` vorliegt. |
+| `loadFromJsonFile` | `(key:String)` | `Null<SpriteSheetData>` | Lädt eine JSON-Animationsdatei zur Laufzeit direkt aus `assets/data/animations/` ein und normalisiert Pfade. |
 
 ### Verwendung mit beliebigen `FlxSprite`s
 

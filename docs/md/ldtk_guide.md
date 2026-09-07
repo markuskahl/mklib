@@ -129,7 +129,7 @@ Diese Felder kannst du in LDtk unter **Project Settings > Entities > (Entity aus
 | **`TileRect`** *(oder `tileRect`)* | `Tile (Single value)` | `EntitySprite`, `EntityNapeSprite`, `EntityLayer` | `null` | Schneidet den im Level ausgewählten Kachelausschnitt exakt aus dem Tileset aus, weist ihn dem Sprite zu und erzeugt bei `EntityNapeSprite` automatisch einen statischen Nape-Körper (`BodyType.STATIC`). |
 | **`sensor`** *(oder `sensorEnabled`)* | `Boolean` | `EntityNapeSprite`, `EntityLayer` | `false` | Schaltet alle Shapes des Nape-Körpers auf **Sensor** (`shape.sensorEnabled = true`). Erkennt Kollisionen/Überlappungen in Listenern, ohne physisch abzuprallen oder zu blockieren (z. B. für Münzen, Trigger, Checkpoints). |
 | **`allowMovement`** | `Boolean` | `EntityNapeSprite`, `EntityLayer` | `true` | Setzt `body.allowMovement`. Wenn `false`, kann der Physik-Körper durch Impulse oder Gravitation nicht verschoben werden. |
-| **`Animations`** *(oder `animations`)* | `String` | `EntitySprite`, `EntityNapeSprite` | `null` | Name des Animations-Schlüssels in `AnimationRegistry.db` (z. B. `"Fire"`, `"Hero"`, `"Water"`). Lädt das Spritesheet und startet die Standardanimation. |
+| **`Animations`** *(oder `animations`)* | `Enum (Animations)` oder `String` | `EntitySprite`, `EntityNapeSprite` | `null` | Name der Animations-JSON in `assets/data/animations/` (z. B. `"Hero"`, `"Warg"`). Wird idealerweise als LDtk-Enum `Animations` mit verknüpftem Vorschau-Tileset (`Animations.png`) und Editor-Modus `EntityTile` angelegt: Zeigt die Vorschau im Level-Editor und lädt im Spiel automatisch das volle Spritesheet. |
 | **`visible`** | `Boolean` | `EntitySprite`, `EntityNapeSprite` | `true` | Schaltet die Sichtbarkeit des Sprites (`sprite.visible`) beim Spawnen um. |
 | **`alpha`** | `Float` (0.0 bis 1.0) | `EntitySprite`, `EntityNapeSprite` | `1.0` | Setzt die Deckkraft/Transparenz (`sprite.alpha`) des Sprites. |
 | **`iid`** | `String` *(LDtk intern)* | `SaveManager`, alle Entities | UUID | Weltweit eindeutige Instanz-ID aus LDtk. Wird von `SaveManager` genutzt, um aufgesammelte/zerstörte Objekte dauerhaft zu speichern. |
@@ -309,6 +309,10 @@ Lege unter **Layers** folgende 3 Ebenen an (von oben nach unten):
 > [!TIP]
 > **Enum-Name exakt beachten:**  
 > Das Enum in LDtk muss exakt `Tags` heißen (großes **T**, kleines **ags**). `mklib.state.State.addCbTypes()` sucht genau nach dieser Definition.
+
+> [!TIP]
+> **Animierte Entities mit Vorschau-Datei & Enum `Animations`:**  
+> Lege in LDtk ein Enum namens `Animations` an und verknüpfe es mit einem Vorschau-Tileset (z. B. `assets/spritesheets/Animations.png`). Trage als Enum-Werte die Namen deiner JSON-Dateien aus `assets/data/animations/` ein und weise ihnen ihre Vorschaubilder zu. Setze das Entity-Feld `Animations` auf den Editor-Anzeigemodus `EntityTile` — so siehst du im Level-Editor sofort das Kachelbild, während im Spiel vollautomatisch das passende Animations-Spritesheet geladen wird!
 
 > [!IMPORTANT]
 > **`TileRect` mit Nape STATIC Bodies:**  

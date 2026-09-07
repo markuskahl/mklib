@@ -74,6 +74,11 @@ class EntityNapeSprite extends FlxNapeSprite {
 			tileRectField = getField("tileRect");
 		}
 
+		var animKeyVal:Dynamic = getField("Animations");
+		if (animKeyVal == null) {
+			animKeyVal = getField("animations");
+		}
+
 		if (tileRectField != null) {
 			var tilesetUid:Int = Reflect.hasField(tileRectField, "tilesetUid") ? Reflect.field(tileRectField, "tilesetUid") : 0;
 			var tileX:Int = Reflect.hasField(tileRectField, "x") ? Reflect.field(tileRectField, "x") : 0;
@@ -101,13 +106,15 @@ class EntityNapeSprite extends FlxNapeSprite {
 
 			graphicPath = getGraphicPath();
 
-			if (hasGraphic && _entity.tileInfos != null) {
+			if (animKeyVal != null) {
+				initAnimation(Std.string(animKeyVal));
+			} else if (hasGraphic && _entity.tileInfos != null) {
 				loadGraphic(graphicPath, true, _entity.tileInfos.w, _entity.tileInfos.h);
 			}
 		}
 
-		if (hasField("Animations")) {
-			initAnimation(getField("Animations"));
+		if (animKeyVal != null && graphic == null) {
+			initAnimation(Std.string(animKeyVal));
 		}
 
 		if (hasField("sensor")) {
@@ -910,6 +917,18 @@ class EntityNapeSprite extends FlxNapeSprite {
 			}
 		}
 
+		var animField:Dynamic = getField("Animations");
+		if (animField == null) {
+			animField = getField("animations");
+		}
+		if (animField != null) {
+			var animData = AnimationManager.get(Std.string(animField));
+			if (animData != null && animData.imagePath != null) {
+				hasGraphic = true;
+				return animData.imagePath;
+			}
+		}
+
 		if (_entity.tileInfos != null) {
 			var path = resolveTilesetPath(_entity.tileInfos.tilesetUid);
 			if (path != null) {
@@ -982,17 +1001,28 @@ class EntityNapeSprite extends FlxNapeSprite {
 	}
 
 	/**
-	 * Initialisiert und startet Animationen aus der `AnimationRegistry` für diese Entity.
+	 * Initialisiert und startet Animationen aus der `AnimationRegistry` bzw. den JSON-Dateien für diese Entity.
 	 *
-	 * @param animKey Name/Schlüssel der Animationsdefinition in `AnimationRegistry.db` (z. B. "Fire").
-	 *                Falls nicht angegeben, wird das LDtk-Feld `"Animations"` verwendet.
+	 * @param animKey Name/Schlüssel der Animationsdefinition (z. B. "Hero", "Warg").
+	 *                Falls nicht angegeben, wird das LDtk-Feld `"Animations"` bzw. `"animations"` verwendet.
 	 */
 	public function initAnimation(?animKey:String):Void {
 		if (animKey == null) {
-			animKey = getField("Animations");
+			var fieldVal:Dynamic = getField("Animations");
+			if (fieldVal == null) {
+				fieldVal = getField("animations");
+			}
+			if (fieldVal != null) {
+				animKey = Std.string(fieldVal);
+			}
 		}
 		if (animKey != null) {
-			AnimationManager.apply(this, animKey);
+			AnimationManager.apply(this, animKey, true);
+			var animData = AnimationManager.get(animKey);
+			if (animData != null && animData.imagePath != null) {
+				graphicPath = animData.imagePath;
+				hasGraphic = true;
+			}
 		}
 	}
 

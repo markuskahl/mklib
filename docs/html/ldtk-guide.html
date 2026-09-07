@@ -326,10 +326,10 @@
                 </tr>
                 <tr>
                   <td><strong><code>Animations</code></strong> / <code>animations</code></td>
-                  <td><code>String</code></td>
+                  <td><code>Enum (Animations)</code> / <code>String</code></td>
                   <td><code>EntitySprite</code>, <code>EntityNapeSprite</code></td>
                   <td><code>null</code></td>
-                  <td>Name des Animations-Schl&uuml;ssels in <code>AnimationRegistry.db</code> (z. B. <code>"Fire"</code>, <code>"Hero"</code>). L&auml;dt das Spritesheet, registriert alle Clips und startet die Standardanimation.</td>
+                  <td>Verweist auf die Animations-JSON in <code>assets/data/animations/</code> (z.&nbsp;B. <code>"Hero"</code>, <code>"Warg"</code>). In Kombination mit dem LDtk-Enum <code>Animations</code> (Icon-Tileset <code>Animations.png</code> und Anzeigemodus <code>EntityTile</code>) sieht man im Level-Editor sofort die Kachel-Vorschau, während im Spiel automatisch das volle Spritesheet geladen wird.</td>
                 </tr>
                 <tr>
                   <td><strong><code>visible</code></strong></td>
@@ -845,10 +845,10 @@
                 </tr>
                 <tr>
                   <td><strong><code>Animations</code></strong> / <code>animations</code></td>
-                  <td><code>String</code></td>
+                  <td><code>Enum (Animations)</code> / <code>String</code></td>
                   <td><code>EntitySprite</code>, <code>EntityNapeSprite</code></td>
                   <td><code>null</code></td>
-                  <td>Name of the animation key in <code>AnimationRegistry.db</code> (e.g. <code>"Fire"</code>, <code>"Hero"</code>). Loads spritesheet, registers clips, and plays default animation.</td>
+                  <td>Points to the animation JSON in <code>assets/data/animations/</code> (e.g. <code>"Hero"</code>, <code>"Warg"</code>). When combined with LDtk's <code>Animations</code> Enum (using icon tileset <code>Animations.png</code> and display mode <code>EntityTile</code>), it renders a live tile preview in the editor while automatically loading the full spritesheet at runtime.</td>
                 </tr>
                 <tr>
                   <td><strong><code>visible</code></strong></td>

@@ -25,17 +25,17 @@ Erbt von `flixel.FlxSprite`. Position (`pixelX`, `pixelY`), Abmessungen (`width`
 
 | Methode | Signatur | Rückgabewert | Beschreibung |
 | :--- | :--- | :--- | :--- |
-| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntitySprite`, setzt Position (`pixelX`, `pixelY`), `width`, `height`, `iid`, bindet den aktuellen `State`, initialisiert `graphicPath` sowie `hasGraphic` (inkl. Zuschnitt bei `TileRect`) und startet automatisch Animationen, falls das Feld `"Animations"` vorhanden ist. |
+| `new` | `(entity:ldtk.Entity)` | `Void` | Erstellt eine neue Instanz von `EntitySprite`, setzt Position (`pixelX`, `pixelY`), `width`, `height`, `iid`, bindet den aktuellen `State`, initialisiert `graphicPath` sowie `hasGraphic` (inkl. Zuschnitt bei `TileRect`) und startet automatisch Animationen, falls das Feld `"Animations"` (oder `"animations"`) vorhanden ist (überspringt dabei temporäre LDtk-Vorschaukacheln). |
 | `resolveTilesetPath` | `(tilesetUid:Int)` | `Null<String>` | Löst den relativen Asset-Pfad einer Tileset-Grafik anhand ihrer UID im LDtk-Projekt auf. |
 | `loadTileRectGraphic` | `(path:String, tileX:Int, tileY:Int, tileW:Int, tileH:Int)` | `Void` | Schneidet den angegebenen Bereich aus der Tileset-Textur aus, cacht diesen in `FlxG.bitmap` und weist ihn dem Sprite zu. |
-| `getGraphicPath` | `()` | `Null<String>` | Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`), falls ein Tile oder `TileRect` in LDtk definiert ist, und setzt `hasGraphic`. |
+| `getGraphicPath` | `()` | `Null<String>` | Ermittelt und normalisiert den Pfad zur Grafikdatei (beginnend mit `assets/`). Bei vorhandenem `Animations`-Feld wird der tatsächliche Spritesheet-Pfad aus den Animationsdaten bezogen. |
 | `getField` | `(identifier:String)` | `Dynamic` | Liest den Wert eines benutzerdefinierten LDtk-Feldes (`fieldInstances`) aus oder `null`. |
 | `hasField` | `(identifier:String)` | `Bool` | Prüft, ob ein benutzerdefiniertes LDtk-Feld für diese Entity existiert. |
-| `initAnimation` | `(?animKey:String)` | `Void` | Lädt und registriert alle Animationsclips aus `AnimationRegistry.db` und startet die Standardanimation. Falls `animKey` nicht angegeben wird, wird `getField("Animations")` verwendet. |
+| `initAnimation` | `(?animKey:String)` | `Void` | Lädt und registriert alle Animationsclips via `AnimationManager` (aus `AnimationRegistry.db` oder `assets/data/animations/`), setzt `graphicPath` und startet die Standardanimation. |
 
 ### Beispiel: Animierte Feuer-Dekoration (`Fire.hx`)
 
-Da `EntitySprite` das LDtk-Feld `"Animations"` automatisch über die `AnimationRegistry` auflöst und initialisiert, ist keine manuelle Animationslogik mehr nötig:
+Da `EntitySprite` das LDtk-Feld `"Animations"` (Typ `Enum.Animations`) automatisch über den `AnimationManager` auflöst und initialisiert, ist keine manuelle Animationslogik nötig. Im LDtk-Editor wird durch `EntityTile` das Vorschaubild aus `Animations.png` gerendert, während im Spiel nahtlos das animierte Spritesheet läuft:
 
 ```haxe
 package entities;
@@ -46,6 +46,8 @@ import ldtk.Entity;
 @:keep
 class Fire extends EntitySprite {
     public function new(entity:ldtk.Entity) {
+        // super(entity) liest automatisch das LDtk-Feld "Animations"
+        // und lädt das Spritesheet aus assets/data/animations/Fire.json!
         super(entity);
     }
 }

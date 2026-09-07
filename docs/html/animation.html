@@ -338,20 +338,21 @@
 }</code></pre>
           </div>
 
-          <h3>3. LDtk-Workflow: Das Enum <code>Animations</code> (Best Practice)</h3>
+          <h3>3. LDtk-Workflow: Vorschau-Datei &amp; das Enum <code>Animations</code> (Best Practice)</h3>
           <p>
-            Um Tippfehler zu vermeiden und im Level-Editor ein komfortables Dropdown-Menü bereitzustellen, empfiehlt sich in LDtk die Verwendung eines Enums:
+            Um in LDtk direkt im Level-Editor eine visuelle Vorschau der platzierten animierten Entities zu sehen und Tippfehler zu vermeiden, empfiehlt sich folgender 4-Schritte-Workflow:
           </p>
           <ol style="margin-left: 1.25rem; margin-bottom: 1.25rem;">
-            <li><strong>Enum anlegen:</strong> Erstelle in LDtk unter <em>Project Settings &rarr; Enums</em> ein Enum namens <code>Animations</code> mit den Namen der Animationsdateien (z.&nbsp;B. <code>Fire</code>, <code>Hero</code>, <code>Platform</code>).</li>
-            <li><strong>Entity-Feld definieren:</strong> Füge der gewünschten Entity-Definition ein Feld namens <code>Animations</code> vom Typ <code>Enum.Animations</code> hinzu.</li>
-            <li><strong>Level platzieren:</strong> Wähle beim Platzieren der Entity im Level-Editor einfach die gewünschte Animation aus dem Dropdown-Menü aus.</li>
+            <li><strong>Vorschau-Grafik anlegen (<code>assets/spritesheets/Animations.png</code>):</strong> Erstelle eine Grafik mit Raster (z.&nbsp;B. 320&times;320 px mit 32&times;32 Kacheln), die für jedes Spritesheet bzw. jede JSON-Definition ein einzelnes Vorschaubild (Frame 0) enthält.</li>
+            <li><strong>Tileset in LDtk einbinden:</strong> Erstelle unter <em>Project Settings &rarr; Tilesets</em> ein Tileset namens <code>Animations</code>, das auf <code>assets/spritesheets/Animations.png</code> verweist.</li>
+            <li><strong>Enum <code>Animations</code> mit Icon-Tileset anlegen:</strong> Erstelle unter <em>Project Settings &rarr; Enums</em> das Enum <code>Animations</code>. Wähle als <em>Icon tileset</em> das zuvor erstellte Tileset <code>Animations</code> und trage als Enum-Werte die exakten Dateinamen deiner JSONs aus <code>assets/data/animations/</code> (z.&nbsp;B. <code>Hero</code>, <code>Warg</code>, <code>Fire</code>) ein. Weise jedem Wert per Klick das passende Kachelicon zu.</li>
+            <li><strong>Entity-Feld definieren:</strong> Lege bei der Entity-Definition ein Feld <code>Animations</code> vom Typ <code>Enum.Animations</code> an und setze den <em>Editor display mode</em> auf <code>EntityTile</code>. Dadurch rendert LDtk im Editor sofort das Kachelbild auf der Entity!</li>
           </ol>
 
           <div class="callout callout-info">
             <span class="callout-icon">ℹ️</span>
             <div>
-              <strong>Automatische Bindung:</strong> <code>EntitySprite</code> und <code>EntityNapeSprite</code> prüfen im Basis-Konstruktor automatisch mit <code>hasField("Animations")</code>, lesen den gewählten Enum-Wert als String aus (z.&nbsp;B. <code>"Fire"</code>) und laden die Grafik sowie Clips direkt aus <code>AnimationRegistry.db</code>.
+              <strong>Automatische Bindung zur Laufzeit:</strong> <code>EntitySprite</code> und <code>EntityNapeSprite</code> prüfen im Basis-Konstruktor automatisch <code>hasField("Animations")</code>. Die temporäre Vorschaukachel aus <code>Animations.png</code> wird im Spiel ignoriert; stattdessen lädt der <code>AnimationManager</code> automatisch das tatsächliche Spritesheet aus <code>assets/data/animations/&lt;Name&gt;.json</code>, registriert alle Clips und startet die Standard-Animation.
             </div>
           </div>
 
@@ -665,20 +666,21 @@ myEntity.animation.<span class="hl-func">play</span>(<span class="hl-str">"burn"
 }</code></pre>
           </div>
 
-          <h3>3. LDtk Workflow: The <code>Animations</code> Enum (Best Practice)</h3>
+          <h3>3. LDtk Workflow: Preview Atlas &amp; the <code>Animations</code> Enum (Best Practice)</h3>
           <p>
-            Um Tippfehler zu vermeiden und im Level-Editor ein komfortables Dropdown-Menü bereitzustellen, empfiehlt sich in LDtk die Verwendung eines Enums:
+            To enjoy a live visual preview of animated entities directly inside the LDtk level editor while avoiding typos, use this 4-step workflow:
           </p>
           <ol style="margin-left: 1.25rem; margin-bottom: 1.25rem;">
-            <li><strong>Enum anlegen:</strong> Erstelle in LDtk unter <em>Project Settings &rarr; Enums</em> ein Enum namens <code>Animations</code> mit den Namen der Animationsdateien (z.&nbsp;B. <code>Fire</code>, <code>Hero</code>, <code>Platform</code>).</li>
-            <li><strong>Entity-Feld definieren:</strong> Füge der gewünschten Entity-Definition ein Feld namens <code>Animations</code> vom Typ <code>Enum.Animations</code> hinzu.</li>
-            <li><strong>Level platzieren:</strong> Wähle beim Platzieren der Entity im Level-Editor einfach die gewünschte Animation aus dem Dropdown-Menü aus.</li>
+            <li><strong>Create Preview Atlas (<code>assets/spritesheets/Animations.png</code>):</strong> Create a tiled image (e.g. 320&times;320 px with a 32&times;32 tile grid) containing a single preview frame (frame 0) for each spritesheet / animation definition.</li>
+            <li><strong>Add Tileset in LDtk:</strong> In LDtk under <em>Project Settings &rarr; Tilesets</em>, add a new tileset named <code>Animations</code> pointing to <code>assets/spritesheets/Animations.png</code>.</li>
+            <li><strong>Configure Enum <code>Animations</code> with Icon Tileset:</strong> Under <em>Project Settings &rarr; Enums</em>, create an enum named <code>Animations</code>. Set <em>Icon tileset</em> to <code>Animations</code>, enter the exact JSON filenames from <code>assets/data/animations/</code> (e.g. <code>Hero</code>, <code>Warg</code>, <code>Fire</code>), and click to assign each value its preview tile icon.</li>
+            <li><strong>Define Entity Field:</strong> In your entity definition, add a custom field <code>Animations</code> of type <code>Enum.Animations</code> and set its <em>Editor display mode</em> to <code>EntityTile</code>. LDtk will immediately display the preview icon on the entity in the level editor!</li>
           </ol>
 
           <div class="callout callout-info">
             <span class="callout-icon">ℹ️</span>
             <div>
-              <strong>Automatische Bindung:</strong> <code>EntitySprite</code> und <code>EntityNapeSprite</code> prüfen im Basis-Konstruktor automatisch mit <code>hasField("Animations")</code>, lesen den gewählten Enum-Wert als String aus (z.&nbsp;B. <code>"Fire"</code>) und laden die Grafik sowie Clips direkt aus <code>AnimationRegistry.db</code>.
+              <strong>Automatic Runtime Binding:</strong> <code>EntitySprite</code> and <code>EntityNapeSprite</code> check <code>hasField("Animations")</code> in their base constructor. The temporary editor preview tile from <code>Animations.png</code> is ignored in-game; instead, <code>AnimationManager</code> automatically loads the actual spritesheet from <code>assets/data/animations/&lt;Name&gt;.json</code>, registers all clips, and starts the default animation.
             </div>
           </div>
 
