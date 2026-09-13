@@ -8,7 +8,7 @@ import flixel.util.FlxColor;
  * Initialisiert einen statischen Nape-Körper, zentriert die Form und übernimmt automatisch LDtk-Tags.
  */
 @:keep
-class Wall extends EntityNapeSprite {
+class EntityWall extends EntityNapeSprite {
 	/**
 	 * Erstellt eine neue Instanz von `Wall` mit statischem Nape-Körper.
 	 *

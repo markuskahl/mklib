@@ -8,7 +8,7 @@ import nape.phys.BodyType;
  * und seine festen Nape-Kollisions-Shapes vollautomatisch aus der sichtbaren Pixelgrafik erzeugt.
  */
 @:keep
-class Obstacle extends EntityNapeSprite {
+class EntityObstacle extends EntityNapeSprite {
 	public function new(entity:ldtk.Entity) {
 		super(entity);
 
